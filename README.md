@@ -1,2 +1,2 @@
-# vtu
+# VTU
 VTU application
