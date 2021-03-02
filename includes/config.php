@@ -31,9 +31,9 @@ if (SERVER != 'localhost' AND SERVER != '127.0.0.1' ) {
     define('DB_HOST', 'localhost');    
 }else{
     define('BASE_PATH', '/2021vtu/', true);
-    define('DB_NAME', '2021vtu');
-    define('DB_USER', 'root');
-    define('DB_PASSWORD', '');
+    define('DB_NAME', 'generals_2021vtu');
+    define('DB_USER', 'generals_2021vtu_super');
+    define('DB_PASSWORD', 'g~(dU-Qb$iBp');
     define('DB_HOST', 'localhost');
 }
 
