@@ -25,28 +25,27 @@ define('SCRIPT_NAME',$_SERVER['SCRIPT_NAME']);
 
 if (SERVER != 'localhost' AND SERVER != '127.0.0.1' ) {
     define('BASE_PATH', '/2021vtu/', true);
-    define('DB_NAME', 'globalfa_personality');
-    define('DB_USER', 'globalfa_faaiz');
-    define('DB_PASSWORD', 'glob@lf@@iz');
-    define('DB_HOST', 'localhost');    
-}else{
-    define('BASE_PATH', '/2021vtu/', true);
     define('DB_NAME', 'generals_2021vtu');
     define('DB_USER', 'generals_2021vtu_super');
     define('DB_PASSWORD', 'g~(dU-Qb$iBp');
     define('DB_HOST', 'localhost');
+}else{
+    define('BASE_PATH', '/2021vtu/', true);
+    define('DB_NAME', '2021vtu');
+    define('DB_USER', 'root');
+    define('DB_PASSWORD', '');
+    define('DB_HOST', 'localhost');
 }
 
 define('BASE_URL', SCHEME.'://'.SERVER.BASE_PATH, true);
+define('USER_ROOT', 'app/');
+define('ADMIN_ROOT', 'admin/');
 
 
 $page = explode('.', PAGE);
 define('PAGE_NAME', $page['0']);
 
 require_once('Database.php');
-include_once('session_check.php');
-include_once('language.php');
-include_once('functions.php');
 
 $dsn = "mysql:dbname=" . DB_NAME . ";host=" . DB_HOST . "";
 $pdo = "";
@@ -56,6 +55,13 @@ try {
     echo "Connection failed: " . $e->getMessage();
 }
 $db = new Database($pdo);
+
+include_once 'session_check.php';
+include_once 'language.php';
+include_once 'functions.php';
+include_once '../model/Utility.php';
+
+$utility = new Utility($db);
 
 /*
  * SMTP Debug.

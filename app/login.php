@@ -1,31 +1,45 @@
 <?php
-require_once '../includes/config.php'
+require_once '../includes/config.php';
+require_once '../model/App.php';
+require_once '../components/head.php';
+
+$app = new App($db);
+$appInfo = $app->getAppInfo();
 ?>
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title>Login</title>
-		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+		<!--begin::Page Custom Styles(used by this page)-->
+		<link href="assets/css/pages/login/classic/login-3.css" rel="stylesheet" type="text/css" />
+		<!--end::Page Custom Styles-->
 	</head>
-	<body>
-		<div class="login">
-			<h1>Login</h1>
-			<?php if (isset($_SESSION['errorMessage'])) { ?>
-				<em><?php echo $_SESSION['errorMessage'];?></em>
-			<?php } unset($_SESSION['errorMessage']) ?>
-			<form action="<?php echo BASE_URL?>controller/auth.php" method="post">
-				<input type="hidden" name="form_url" value="<?php echo BASE_URL?>app/login.php">
-				<label for="username">
-					<i class="fas fa-user"></i>
-				</label>
-				<input type="text" name="username" placeholder="Username" id="username" required>
-				<label for="password">
-					<i class="fas fa-lock"></i>
-				</label>
-				<input type="password" name="password" placeholder="Password" id="password" required>
-				<input type="submit" value="Login" name="login">
-			</form>
+	<!--begin::Body-->
+	<body id="kt_body" style="background-image: url(assets/media/bg/bg-10.jpg)" class="quick-panel-right demo-panel-right offcanvas-right header-fixed subheader-enabled page-loading">
+	<!--begin::Main-->
+	<div class="d-flex flex-column flex-root">
+		<!--begin::Login-->
+		<div class="login login-3 login-signin-on d-flex flex-row-fluid" id="kt_login">
+			<div class="d-flex flex-center bgi-size-cover bgi-no-repeat flex-row-fluid" style="background-image: url(assets/media/bg/bg-1.jpg);">
+				<div class="login-form text-center text-white p-7 position-relative overflow-hidden">
+					<!--begin::Login Header-->
+					<div class="d-flex flex-center mb-15">
+						<a href="#">
+							<img src="<?php echo BASE_URL.$appInfo->logo?>" class="max-h-100px" alt="" />
+						</a>
+					</div>
+					<!--end::Login Header-->
+
+					<?php include_once '../components/signin.php'?>
+					<?php include_once '../components/signup.php'?>
+					<?php include_once '../components/forgotPassword.php'?>
+					</div>
+				</div>
+			</div>
+			<!--end::Login-->
 		</div>
+		<!--end::Main-->
+
+		<?php include_once '../components/js.php';?>
+		<!--begin::Page Scripts(used by this page)-->
+		<script src="assets/js/pages/custom/login/login-general.js"></script>
+		<!--end::Page Scripts-->
 	</body>
+	<!--end::Body-->
 </html>

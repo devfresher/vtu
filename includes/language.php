@@ -15,6 +15,10 @@
 
 	// for user account vefified
 	$clientLang['user_verified']='Your account has been verified';
+
+	$clientLang['account_not_active']='Account not active';
+
+	$clientLang['unexpected_error']='Unexpected error occured';
 	
 	// for user account vefified
 	$clientLang['account_not_verified']='Account not verified. Check email to verify';
@@ -29,7 +33,10 @@
 	$clientLang['username_exist']="Username already exist";
 
 	// for email exist
-	$clientLang['email_exist']="Email already exist";
+	$clientLang['email_exist']="User Email already exist";
+
+	// for email exist
+	$clientLang['phone_exist']="User Phone Number already exist";
 
 	// for minimum password length
 	$clientLang['pass_len_6']="Minimum password length must be 6";
@@ -68,6 +75,6 @@
     $clientLang['update_fail']="Update failed";
     
     // for required fields
-	$clientLang['required_fields']="All fields are required";
+	$clientLang['required_fields']="Fill all required field";
 
 ?>

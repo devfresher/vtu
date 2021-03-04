@@ -142,7 +142,7 @@ class Database
 		$params['a'.$s] = $val;
 		$s++;
 	}
-	//echo "SELECT  count(*)	as count ,$tableName.* FROM $tableName WHERE 1 ".$cond;	
+	// echo "SELECT  count(*)	as count ,$tableName.* FROM $tableName WHERE 1 ".$cond;	
 	$stmt = $this->pdo->prepare("SELECT  $tableName.* FROM $tableName WHERE 1 ".$cond);
         try {
 		
