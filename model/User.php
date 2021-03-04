@@ -116,7 +116,7 @@ class User extends Utility {
     public function processRegister($userData) {
         $result = $this->db->insert("users", $userData);
 
-        if (count($result) > 0) {
+        if ($result) {
             $this->responseBody = true;
         }else {
             $this->responseBody = false;

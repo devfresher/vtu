@@ -2,7 +2,7 @@
 		<div id="kt_header_mobile" class="header-mobile">
 			<!--begin::Logo-->
 			<a href="index.html">
-				<img alt="Logo" src="<?php echo BASE_URL.USER_ROOT?>assets/media/logos/logo-letter-1.png" class="logo-default max-h-30px" />
+				<img alt="Logo" src="<?php echo BASE_URL.$appInfo->logo?>" class="logo-default max-h-30px" />
 			</a>
 			<!--end::Logo-->
 			<!--begin::Toolbar-->

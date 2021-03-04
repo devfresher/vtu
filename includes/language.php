@@ -7,6 +7,9 @@
 	// for invalid email format
 	$clientLang['invalid_email_format']="Invalid Email Format";
 
+	// for invalid phone number
+	$clientLang['invalid_phone_number']="Enter a valid phone number";
+
 	// for otp sent
 	$clientLang['otp_sent']="OTP has been sent on your email";
 

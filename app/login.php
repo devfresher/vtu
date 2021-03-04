@@ -40,6 +40,11 @@ $appInfo = $app->getAppInfo();
 		<!--begin::Page Scripts(used by this page)-->
 		<script src="assets/js/pages/custom/login/login-general.js"></script>
 		<!--end::Page Scripts-->
+
+		<!--begin::Page Scripts(used by this page)-->
+		<script>
+		</script>
+		<!--end::Page Scripts-->
 	</body>
 	<!--end::Body-->
 </html>

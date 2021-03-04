@@ -1,7 +1,11 @@
 <?php
 require_once '../includes/config.php';
 require_once '../model/App.php';
+
+	$app = new App($db);
+	$appInfo = $app->getAppInfo();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 	<!--begin::Head-->
@@ -24,4 +28,4 @@ require_once '../model/App.php';
 		<!--begin::Layout Themes(used by all pages)-->
 		<!--end::Layout Themes-->
 
-		<link rel="shortcut icon" href="<?php echo BASE_URL.USER_ROOT?>assets/media/logos/net-logo.png" />
+		<link rel="shortcut icon" href="<?php echo BASE_URL.$appInfo->logo?>" />

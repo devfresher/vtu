@@ -2,7 +2,7 @@
 require_once '../includes/config.php';
 include_once '../model/User.php';
 
-if (isset($_POST["login"]) AND !empty($_POST['login'])) {
+if (isset($_POST["login"])) {
 
     $username = filter_var($_POST["username"], FILTER_SANITIZE_STRING);
     $password = filter_var($_POST['password'], FILTER_SANITIZE_STRING);
@@ -12,7 +12,7 @@ if (isset($_POST["login"]) AND !empty($_POST['login'])) {
         if (in_array($field, array_keys($_POST)) AND $_POST[$field] != '') {
             continue;
         }else {
-            $_SESSION['errorMessage'] = $clientLang['required_fields'];
+            $_SESSION['errorLoginMessage'] = $clientLang['required_fields'];
             header("Location: ".$_POST['form_url']);
             exit();
         }
@@ -27,14 +27,14 @@ if (isset($_POST["login"]) AND !empty($_POST['login'])) {
     if(!empty($userResult)) {
         if (password_verify($password, $hashPassword)) {
             if ($userResult->status == 0) {
-                $_SESSION['errorMessage'] = $clientLang['account_not_active'];
+                $_SESSION['errorLoginMessage'] = $clientLang['account_not_active'];
                 header("Location: ".$_POST['form_url']);
                 exit();
             }else {
                 $loggedIn = $user->processLogin($username, $password);
 
                 if (!$loggedIn) {
-                    $_SESSION["errorMessage"] = $clientLang['unexpected_error'];
+                    $_SESSION["errorLoginMessage"] = $clientLang['unexpected_error'];
                     header("Location: ".$_POST['form_url']);
                     exit();
                 }else {
@@ -43,47 +43,59 @@ if (isset($_POST["login"]) AND !empty($_POST['login'])) {
                 } 
             }
         } else {
-            $_SESSION['errorMessage'] = $clientLang['invalid_password'];
+            $_SESSION['errorLoginMessage'] = $clientLang['invalid_password'];
             header("Location: ".$_POST['form_url']);
             exit();
         }
     } else {
-        $_SESSION['errorMessage'] = $clientLang['invalid_credentials'];
+        $_SESSION['errorLoginMessage'] = $clientLang['invalid_credentials'];
         header("Location: ".$_POST['form_url']);
         exit();
     }
 
 }
 
-elseif (isset($_POST["register"]) AND !empty($_POST['register'])) {
+
+elseif (isset($_POST["register"])) {
     extract($_POST);
-    print_r($_POST);
 
     $required_fields = array('firstname', 'lastname', 'phoneNumber', 'password', 'cPassword');
     foreach ($required_fields as $field) {
         if (in_array($field, array_keys($_POST)) AND $_POST[$field] != '') {
             continue;
         }else {
-            $_SESSION['errorMessage'] = $clientLang['required_fields'];
+            $_SESSION['errorRegisterMessage'] = $clientLang['required_fields'];
             header("Location: ".$_POST['form_url']);
             exit();
         }
     }
 
-    if(strlen($password) < 6){
-        $_SESSION['errorMessage'] = $clientLang['pass_len_6'];
+    if(!filter_var($email,FILTER_VALIDATE_EMAIL)){
+        $_SESSION["errorRegisterMessage"] = $clientLang['invalid_email_format'];
+        header("Location: ".$_POST['form_url']);
+        exit();
+    }
+
+    elseif(!filter_var($phoneNumber,FILTER_VALIDATE_INT) OR strlen($phoneNumber) != 11){
+        $_SESSION["errorRegisterMessage"] = $clientLang['invalid_phone_number'];
+        header("Location: ".$_POST['form_url']);
+        exit();
+    }
+
+    elseif(strlen($password) < 6){
+        $_SESSION['errorRegisterMessage'] = $clientLang['pass_len_6'];
         header("Location: ".$_POST['form_url']);
         exit();
     }
 
     elseif($password != $cPassword){
-        $_SESSION['errorMessage'] = $clientLang['password_not_match'];
+        $_SESSION['errorRegisterMessage'] = $clientLang['password_not_match'];
         header("Location: ".$_POST['form_url']);
         exit();
     }
 
-    elseif(!filter_var($email,FILTER_VALIDATE_EMAIL)){
-        $_SESSION["errorMessage"] = $clientLang['invalid_email_format'];
+    elseif($agree != 'on'){
+        $_SESSION['errorRegisterMessage'] = $clientLang['accept_terms'];
         header("Location: ".$_POST['form_url']);
         exit();
     }
@@ -101,12 +113,12 @@ elseif (isset($_POST["register"]) AND !empty($_POST['register'])) {
         $userPhoneResult = $user->getUserByPhone($phone);
         $userEmailResult = $user->getUserByEmail($email);
 
-        if (count($userPhoneResult) > 0) {
-            $_SESSION["errorMessage"] = $clientLang['phone_exist'];
+        if ($userPhoneResult !== false) {
+            $_SESSION["errorRegisterMessage"] = $clientLang['phone_exist'];
             header("Location: ".$_POST['form_url']);
             exit();
-        } elseif (count($userEmailResult) > 0) {
-            $_SESSION["errorMessage"] = $clientLang['email_exist'];
+        } elseif ($userEmailResult !== false) {
+            $_SESSION["errorRegisterMessage"] = $clientLang['email_exist'];
             header("Location: ".$_POST['form_url']);
             exit();
         }else {
@@ -124,14 +136,12 @@ elseif (isset($_POST["register"]) AND !empty($_POST['register'])) {
                 'date_joined'=>$date_joined,
                 'status'=>1,
                 'token'=>$token
-            );
-            print_r($userData);
-            
+            );            
             $isRegitered = $user->processRegister($userData);
     
             if ($isRegitered) {
-                // header("Location: ".BASE_URL.USER_ROOT.'login.php');
-                // exit();
+                header("Location: ".BASE_URL.USER_ROOT.'login.php');
+                exit();
             }
         }
 
