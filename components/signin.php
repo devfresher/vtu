@@ -5,7 +5,7 @@
 								<p class="opacity-60 font-weight-bold">Enter your details to login to your account:</p>
 							</div>
                             <?php if (isset($_SESSION['errorLoginMessage'])) { ?>
-                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <div class="alert alert-light-danger alert-dismissible fade show" role="alert">
                                     <strong>Error:</strong> <?php echo $_SESSION['errorLoginMessage'];?>
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>

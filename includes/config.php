@@ -56,12 +56,16 @@ try {
 }
 $db = new Database($pdo);
 
-include_once 'session_check.php';
-include_once 'language.php';
-include_once 'functions.php';
+include_once '../model/App.php';
 include_once '../model/Utility.php';
 
 $utility = new Utility($db);
+$app = new APP($db);
+$appInfo = $app->getAppInfo();
+
+include_once 'session_check.php';
+include_once 'language.php';
+include_once 'functions.php';
 
 /*
  * SMTP Debug.

@@ -5,7 +5,7 @@
 								<p class="opacity-60">Enter your details to create your account</p>
 							</div>
 							<?php if (isset($_SESSION['errorRegisterMessage'])) { ?>
-                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <div class="alert alert-light-danger alert-dismissible fade show" role="alert">
                                     <strong>Error:</strong> <?php echo $_SESSION['errorRegisterMessage'];?>
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>

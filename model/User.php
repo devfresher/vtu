@@ -32,6 +32,9 @@ class User extends Utility {
     
             $role = new Role($db);
             $this->role = $this->arrayToObject($role->getrole($this->roleId));
+
+            $wallet = new Wallet($db);
+            $this->walletBalance = $wallet->getWalletBalance($this->userId);
         }
     }
 

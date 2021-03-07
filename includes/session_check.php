@@ -17,6 +17,7 @@ $authentication_pages = array(
 );
 $authenticated_pages = array(
     BASE_PATH.USER_ROOT.'dashboard.php',
+    BASE_PATH.USER_ROOT.'wallet.php',
 );
 
 if ($user->isLoggedIn()) {

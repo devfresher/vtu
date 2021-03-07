@@ -8,25 +8,34 @@ var KTDatatableHtmlTableDemo = function() {
   var demo = function() {
 
     var datatable = $('#kt_datatable').KTDatatable({
-      data: {
-        saveState: {cookie: false},
-      },
+      // data: {
+      //   saveState: {cookie: false},
+      // },
       search: {
         input: $('#kt_datatable_search_query'),
         key: 'generalSearch',
       },
       layout: {
         class: 'datatable-bordered',
+        scroll: 'true',
       },
       columns: [
         {
-          field: 'DepositPaid',
+          field: 'Amount',
           type: 'number',
         },
         {
-          field: 'OrderDate',
+          field: 'Previous Balance',
+          type: 'number',
+        },
+        {
+          field: 'New Balance',
+          type: 'number',
+        },
+        {
+          field: 'Date',
           type: 'date',
-          format: 'YYYY-MM-DD',
+          format: 'YYYY-MM-DD HH:ii:ss',
         }, {
           field: 'Status',
           title: 'Status',
@@ -39,28 +48,16 @@ var KTDatatableHtmlTableDemo = function() {
                 'class': ' label-light-warning',
               },
               2: {
-                'title': 'Delivered',
+                'title': 'Declined',
                 'class': ' label-light-danger',
               },
               3: {
-                'title': 'Canceled',
-                'class': ' label-light-primary',
-              },
-              4: {
-                'title': 'Success',
+                'title': 'Approved',
                 'class': ' label-light-success',
               },
-              5: {
-                'title': 'Info',
-                'class': ' label-light-info',
-              },
               6: {
-                'title': 'Danger',
-                'class': ' label-light-danger',
-              },
-              7: {
-                'title': 'Warning',
-                'class': ' label-light-warning',
+                'title': 'Successful',
+                'class': ' label-light-success',
               },
             };
             return '<span class="label font-weight-bold label-lg' + status[row.Status].class + ' label-inline">' + status[row.Status].title + '</span>';
@@ -73,16 +70,24 @@ var KTDatatableHtmlTableDemo = function() {
           template: function(row) {
             var status = {
               1: {
-                'title': 'Online',
-                'state': 'danger',
+                'title': 'Fund Wallet',
+                'state': 'success',
               },
               2: {
-                'title': 'Retail',
-                'state': 'primary',
+                'title': 'Recieve Share',
+                'state': 'success',
               },
               3: {
-                'title': 'Direct',
-                'state': 'success',
+                'title': 'Share Out',
+                'state': 'danger',
+              },
+              4: {
+                'title': 'Purchase',
+                'state': 'danger',
+              },
+              5: {
+                'title': 'Withdrawal',
+                'state': 'danger',
               },
             };
             return '<span class="label label-' + status[row.Type].state + ' label-dot mr-2"></span><span class="font-weight-bold text-' + status[row.Type].state + '">' + status[row.Type].title + '</span>';

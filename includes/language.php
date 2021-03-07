@@ -10,6 +10,9 @@
 	// for invalid phone number
 	$clientLang['invalid_phone_number']="Enter a valid phone number";
 
+	// for invalid amount
+	$clientLang['invalid_amount'] ="Enter a valid amount";
+
 	// for otp sent
 	$clientLang['otp_sent']="OTP has been sent on your email";
 
