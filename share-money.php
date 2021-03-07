@@ -3,7 +3,7 @@ require_once './components/head.php';
 
 $loggedInUser = $user->loggedInUser();
 $wallet = new Wallet($db);
-$walletHistory = $wallet->walletRead($loggedInUser->id);
+$shareHistory = $wallet->walletReadItem($loggedInUser->id, 'wallet_out', 3);
 ?>
 		<!--begin::Page Vendors Styles(used by this page)-->
 		<link href="<?php echo BASE_URL.USER_ROOT?>assets/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
@@ -168,14 +168,14 @@ $walletHistory = $wallet->walletRead($loggedInUser->id);
                                                     <ul class="nav nav-tabs nav-bold nav-tabs-line" role="tablist">
                                                         <li class="nav-item">
                                                             <a class="nav-link active" data-toggle="tab" href="#fund_wallet">
-                                                                <span class="nav-icon"><i class="fas fa-wallet"></i></span>
-                                                                <span class="nav-text">Fund Wallet Request</span>
+                                                                <span class="nav-icon"><i class="fas fa-share-square"></i></span>
+                                                                <span class="nav-text">Share</span>
                                                             </a>
                                                         </li>
                                                         <li class="nav-item">
                                                             <a class="nav-link" data-toggle="tab" href="#wallet_history">
                                                                 <span class="nav-icon"><i class="fas fa-history"></i></span>
-                                                                <span class="nav-text">Wallet History</span>
+                                                                <span class="nav-text">Share History</span>
                                                             </a>
                                                         </li>
                                                     </ul>
@@ -224,31 +224,25 @@ $walletHistory = $wallet->walletRead($loggedInUser->id);
 																<div class="form-group">
 																	<label>Amount</label>
 																	<div class="">
-																		<input type="number" name="amount_requested" id="amount_requested" class="form-control" id="" min="<?php echo $appInfo->min_fund_request?>"/>
-																		<span class="form-text text-muted"><code>Minimum of <?php echo $appInfo->currency_code.$appInfo->min_fund_request?></code></span>
+																		<input type="number" name="amount" id="amount" class="form-control" />
 																	</div>
 																</div>
 	
 																<div class="form-group">
-																	<label>Payment Method:</label>
-																	<select name="method" id="pay_method" class="form-control selectpicker" data-size="4">
-																		<option value="">--Select--</option>
-																		<option value="auto_fund">Auto Funding (<?php echo $appInfo->auto_funding_bank?>)</option>
-																		<option value="manual">Manual Funding (Bank Deposit/Tranfer)</option>
-																	</select>
-																	<span class="form-text text-muted">A preferred method of payment</span>
+																	<label>Reciever's Phone Number</label>
+																	<input type="text" name="phone_number" id="phone_number" class="form-control" max="11"/>
 																</div>
 
 																<div class="form-group" style="display: none;">
-																	<label>Amount to be Credited</label>
-																	<input class="form-control" name="" id="wallet_credit" value="0" disabled>
+																	<label>Password</label>
+																	<input class="form-control" name="password" id="password">
 																</div>
 
-																<input type="submit" name="fund_wallet" class="btn btn-primary mr-2" value="Request">
+																<input type="submit" name="share_money" class="btn btn-primary mr-2" value="Share">
 															</form>
-
 														</div>
                                                     </div>
+
                                                     <div class="tab-pane fade" id="wallet_history" role="tabpanel" aria-labelledby="kt_tab_pane_2_4">
 														<div class="card-body">
 															<!--begin::Search Form-->
@@ -354,9 +348,9 @@ $walletHistory = $wallet->walletRead($loggedInUser->id);
 																	</tr>
 																</thead>
 																<tbody>
-																	<?php if($walletHistory !== false){
+																	<?php if($shareHistory !== false){
 																		
-																	 	foreach ($walletHistory as $history) {?>
+																	 	foreach ($shareHistory as $history) {?>
 																			<tr>
 																				<td><?php echo $history['reference']?></td>
 																				<td><?php echo $history['date']?></td>

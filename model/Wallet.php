@@ -49,6 +49,20 @@ class Wallet Extends Utility
         return $this->responseBody;
     }
 
+    public function walletReadItem($userId, $table, $type)
+    {
+        $walletOut = $this->db->getAllRecords($table, "*", "AND user_id = '$userId' AND type = '$type'");
+
+        if ($walletOut) {
+            $feedback = $walletOut;
+            $this->responseBody = $this->arrayToObject($feedback);
+        } else {
+            $this->responseBody = false;
+        }
+
+        return $this->responseBody;
+    }
+
     public function fundWalletRequest($walletRequestData)
     {
         $topUp = $this->db->insert('wallet_in', $walletRequestData);

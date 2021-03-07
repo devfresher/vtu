@@ -6,7 +6,7 @@
 							<div class="d-flex align-items-stretch mr-3">
 								<!--begin::Header Logo-->
 								<div class="header-logo">
-									<a href="<?php echo BASE_URL?>index.php">
+									<a href="<?php echo BASE_URL.USER_ROOT?>index.php">
 										<img alt="Logo" src="<?php echo BASE_URL.$appInfo->logo?>" class="logo-default max-h-40px" />
 										<img alt="Logo" src="<?php echo BASE_URL.$appInfo->logo?>" class="logo-sticky max-h-40px" />
 									</a>
