@@ -1,8 +1,8 @@
 <?php
-require_once '../model/Utility.php';
-require_once '../model/Wallet.php';
-require_once '../model/Plan.php';
-require_once '../model/Role.php';
+require_once MODEL_DIR.'Utility.php';
+require_once MODEL_DIR.'Wallet.php';
+require_once MODEL_DIR.'Plan.php';
+require_once MODEL_DIR.'Role.php';
 
 class User extends Utility {
     protected $db;

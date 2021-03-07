@@ -1,7 +1,7 @@
 <?php
-require_once '../includes/config.php';
-require_once '../model/App.php';
-require_once '../components/head.php';
+require_once './includes/config.php';
+require_once MODEL_DIR.'App.php';
+require_once COMPONENT_DIR.'head.php';
 
 $app = new App($db);
 $appInfo = $app->getAppInfo();
@@ -26,9 +26,9 @@ $appInfo = $app->getAppInfo();
 					</div>
 					<!--end::Login Header-->
 
-					<?php include_once '../components/signin.php'?>
-					<?php include_once '../components/signup.php'?>
-					<?php include_once '../components/forgotPassword.php'?>
+					<?php include_once COMPONENT_DIR.'signin.php'?>
+					<?php include_once COMPONENT_DIR.'signup.php'?>
+					<?php include_once COMPONENT_DIR.'forgotPassword.php'?>
 					</div>
 				</div>
 			</div>
@@ -36,7 +36,7 @@ $appInfo = $app->getAppInfo();
 		</div>
 		<!--end::Main-->
 
-		<?php include_once '../components/js.php';?>
+		<?php include_once './components/js.php';?>
 		<!--begin::Page Scripts(used by this page)-->
 		<script src="assets/js/pages/custom/login/login-general.js"></script>
 		<!--end::Page Scripts-->

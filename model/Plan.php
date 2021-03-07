@@ -1,5 +1,5 @@
 <?php
-require_once '../model/Utility.php';
+require_once MODEL_DIR.'/Utility.php';
 class Plan Extends Utility
 {
 

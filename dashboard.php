@@ -1,5 +1,5 @@
 <?php
-require_once '../components/head.php';
+require_once './components/head.php';
 ?>
 		<!--begin::Page Vendors Styles(used by this page)-->
 		<link href="<?php echo BASE_URL.USER_ROOT?>assets/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
@@ -10,7 +10,7 @@ require_once '../components/head.php';
 	<body id="kt_body" style="background-image: url(assets/media/bg/bg-10.jpg)" class="quick-panel-right demo-panel-right offcanvas-right header-fixed subheader-enabled page-loading">
 		<!--begin::Main-->
 		
-		<?php include_once '../components/mobileHeader.php'; ?>
+		<?php include_once './components/mobileHeader.php'; ?>
 
 		<div class="d-flex flex-column flex-root">
 
@@ -20,7 +20,7 @@ require_once '../components/head.php';
 				<!--begin::Wrapper-->
 				<div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
 
-					<?php include_once '../components/toolbar.php';?>
+					<?php include_once './components/toolbar.php';?>
 
 					<!--begin::Content-->
 					<div class="content d-flex flex-column flex-column-fluid" id="kt_content">
@@ -1523,7 +1523,7 @@ require_once '../components/head.php';
 					</div>
 					<!--end::Content-->
 					
-					<?php include_once '../components/footer.php';?>
+					<?php include_once './components/footer.php';?>
 
 				</div>
 				<!--end::Wrapper-->
@@ -1532,10 +1532,10 @@ require_once '../components/head.php';
 		</div>
 		<!--end::Main-->
 
-		<?php include_once '../components/quickUser.php';?>
+		<?php include_once './components/quickUser.php';?>
 
-		<?php include_once '../components/scrollTop.php';?>
-		<?php include_once '../components/js.php';?>
+		<?php include_once './components/scrollTop.php';?>
+		<?php include_once './components/js.php';?>
 
 		<!--begin::Page Vendors(used by this page)-->
 		<script src="assets/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>

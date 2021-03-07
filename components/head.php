@@ -1,9 +1,6 @@
 <?php
-require_once '../includes/config.php';
-require_once '../model/App.php';
-
-	$app = new App($db);
-	$appInfo = $app->getAppInfo();
+require_once './includes/config.php';
+require_once './model/App.php';
 ?>
 
 <!DOCTYPE html>

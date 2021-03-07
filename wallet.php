@@ -1,5 +1,5 @@
 <?php
-require_once '../components/head.php';
+require_once './components/head.php';
 
 $loggedInUser = $user->loggedInUser();
 $wallet = new Wallet($db);
@@ -14,7 +14,7 @@ $walletHistory = $wallet->walletRead($loggedInUser->id);
 	<body id="kt_body" style="background-image: url(assets/media/bg/bg-10.jpg)" class="quick-panel-right demo-panel-right offcanvas-right header-fixed subheader-enabled page-loading">
 		<!--begin::Main-->
 		
-		<?php include_once '../components/mobileHeader.php'; ?>
+		<?php include_once './components/mobileHeader.php'; ?>
 
 		<div class="d-flex flex-column flex-root">
 
@@ -24,7 +24,7 @@ $walletHistory = $wallet->walletRead($loggedInUser->id);
 				<!--begin::Wrapper-->
 				<div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
 
-					<?php include_once '../components/toolbar.php';?>
+					<?php include_once './components/toolbar.php';?>
 
 					<!--begin::Content-->
 					<div class="content d-flex flex-column flex-column-fluid" id="kt_content">
@@ -386,7 +386,7 @@ $walletHistory = $wallet->walletRead($loggedInUser->id);
 					</div>
 					<!--end::Content-->
 					
-					<?php include_once '../components/footer.php';?>
+					<?php include_once './components/footer.php';?>
 
 				</div>
 				<!--end::Wrapper-->
@@ -395,10 +395,10 @@ $walletHistory = $wallet->walletRead($loggedInUser->id);
 		</div>
 		<!--end::Main-->
 
-		<?php include_once '../components/quickUser.php';?>
+		<?php include_once './components/quickUser.php';?>
 
-		<?php include_once '../components/scrollTop.php';?>
-		<?php include_once '../components/js.php';?>
+		<?php include_once './components/scrollTop.php';?>
+		<?php include_once './components/js.php';?>
 		
 		<!--begin::Page Scripts(used by this page)-->
 		<script src="assets/js/pages/crud/ktdatatable/base/html-table.js"></script>
