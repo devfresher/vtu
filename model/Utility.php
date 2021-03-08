@@ -94,4 +94,13 @@ class Utility extends Database {
             return $ref; 
         } 
     } 
+
+
+    public function niceDateFormat($date)
+    {
+        $timestamp = strtotime($date);
+        $niceFormat = date('D j, M Y G:ia', $timestamp);
+
+        return $niceFormat;
+    }
 }

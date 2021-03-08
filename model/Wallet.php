@@ -51,7 +51,7 @@ class Wallet Extends Utility
 
     public function walletReadItem($userId, $table, $type)
     {
-        $walletOut = $this->db->getAllRecords($table, "*", "AND user_id = '$userId' AND type = '$type'");
+        $walletOut = $this->db->getAllRecords($table, "*", "AND user_id = '$userId' AND type = '$type'", "ORDER BY date ASC");
 
         if ($walletOut) {
             $feedback = $walletOut;

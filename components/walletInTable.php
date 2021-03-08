@@ -15,7 +15,7 @@
 																		
 																	 	foreach ($histories as $history) {?>
 																			<tr>
-																				<td><?php echo $history['date'].'<br><br><strong>'.$history['reference']?></strong></td>
+																				<td><?php echo $utility->niceDateFormat($history['date']).'<br><br><strong>'.$history['reference']?></strong></td>
 																				<td><?php echo $appInfo->currency_code?><?php echo $history['old_balance']?></td>
 																				<td><?php echo $appInfo->currency_code?><?php echo $history['amount']?></td>
 																				<td><?php echo $appInfo->currency_code.$history['balance_after']?></td>
