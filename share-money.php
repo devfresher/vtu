@@ -2,7 +2,7 @@
 require_once './components/head.php';
 
 $wallet = new Wallet($db);
-$shareHistory = $wallet->walletReadItem($user->currentUser->id, 'wallet_out', 3);
+$histories = $wallet->walletReadItem($user->currentUser->id, 'wallet_out', 3);
 ?>
 		<!--begin::Page Vendors Styles(used by this page)-->
 		<link href="<?php echo BASE_URL.USER_ROOT?>assets/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
@@ -335,37 +335,7 @@ $shareHistory = $wallet->walletReadItem($user->currentUser->id, 'wallet_out', 3)
 															</div>
 															<!--end: Search Form-->
 
-															<!--begin: Datatable-->
-															<table class="datatable datatable-bordered datatable-head-custom" id="kt_datatable">
-																<thead>
-																	<tr>
-																		<th title="Field #1">Reference</th>
-																		<th title="Field #2">Date</th>
-																		<th title="Field #3">Previous Balance</th>
-																		<th title="Field #4">Amount</th>
-																		<th title="Field #5">New Balance</th>
-																		<th title="Field #6">Type</th>
-																		<th title="Field #7">Status</th>
-																	</tr>
-																</thead>
-																<tbody>
-																	<?php if($shareHistory !== false){
-																		
-																	 	foreach ($shareHistory as $history) {?>
-																			<tr>
-																				<td><?php echo $history['reference']?></td>
-																				<td><?php echo $history['date']?></td>
-																				<td><?php echo $appInfo->currency_code?><?php echo $history['old_balance']?></td>
-																				<td><?php echo $appInfo->currency_code?><?php echo $history['amount']?></td>
-																				<td><?php echo $appInfo->currency_code.$history['balance_after']?></td>
-																				<td class="text-center"><?php echo $history['type']?></td>
-																				<td class="text-center"><?php echo $history['status']?></td>
-																			</tr>
-																		<?php } ?>
-																	<?php } ?>
-																</tbody>
-															</table>
-															<!--end: Datatable-->
+															<?php include_once './components/walletOutTable.php'?>
 														</div>
                                                     </div>
                                                 </div>
@@ -400,7 +370,8 @@ $shareHistory = $wallet->walletReadItem($user->currentUser->id, 'wallet_out', 3)
 		<script src="assets/js/pages/features/miscellaneous/sweetalert2.js"></script>
 		<script>
 			var ajaxProcessUrl = "<?php echo BASE_URL.'controller/auth.php'?>";
-			var currentUser = JSON.parse('<?php echo json_encode($user->loggedInUser())?>');
+			var currentUser = <?php echo "'".json_encode($user->currentUser)."'"?>;
+			currentUser = JSON.parse(currentUser);
 
 			function validate(amount, receiverPhone) {
 				console.log(currentUser);
@@ -509,7 +480,7 @@ $shareHistory = $wallet->walletReadItem($user->currentUser->id, 'wallet_out', 3)
 			$('#phone_number, #amount').on('keydown', function () {
 				$('#password').val('');
 				$('#password').parent().hide();
-				$('#shareBtn').attr('disabled');
+				$('#shareBtn').prop('disabled', true);
 
 			})
 			

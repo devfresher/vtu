@@ -3,7 +3,7 @@ require_once './components/head.php';
 
 $loggedInUser = $user->loggedInUser();
 $wallet = new Wallet($db);
-$walletHistory = $wallet->walletRead($loggedInUser->id);
+$histories = $wallet->walletReadItem($user->currentUser->id, 'wallet_in', 1);;
 ?>
 		<!--begin::Page Vendors Styles(used by this page)-->
 		<link href="<?php echo BASE_URL.USER_ROOT?>assets/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
@@ -225,7 +225,7 @@ $walletHistory = $wallet->walletRead($loggedInUser->id);
 																	<label>Amount</label>
 																	<div class="">
 																		<input type="number" name="amount_requested" id="amount_requested" class="form-control" id="" min="<?php echo $appInfo->min_fund_request?>"/>
-																		<span class="form-text text-muted"><code>Minimum of <?php echo $appInfo->currency_code.$appInfo->min_fund_request?></code></span>
+																		<span class="form-text text-muted"><code>Minimum wallet funding is <?php echo $appInfo->currency_code.$appInfo->min_fund_request?></code></span>
 																	</div>
 																</div>
 	
@@ -340,37 +340,7 @@ $walletHistory = $wallet->walletRead($loggedInUser->id);
 															</div>
 															<!--end: Search Form-->
 
-															<!--begin: Datatable-->
-															<table class="datatable datatable-bordered datatable-head-custom" id="kt_datatable">
-																<thead>
-																	<tr>
-																		<th title="Field #1">Reference</th>
-																		<th title="Field #2">Date</th>
-																		<th title="Field #3">Previous Balance</th>
-																		<th title="Field #4">Amount</th>
-																		<th title="Field #5">New Balance</th>
-																		<th title="Field #6">Type</th>
-																		<th title="Field #7">Status</th>
-																	</tr>
-																</thead>
-																<tbody>
-																	<?php if($walletHistory !== false){
-																		
-																	 	foreach ($walletHistory as $history) {?>
-																			<tr>
-																				<td><?php echo $history['reference']?></td>
-																				<td><?php echo $history['date']?></td>
-																				<td><?php echo $appInfo->currency_code?><?php echo $history['old_balance']?></td>
-																				<td><?php echo $appInfo->currency_code?><?php echo $history['amount']?></td>
-																				<td><?php echo $appInfo->currency_code.$history['balance_after']?></td>
-																				<td class="text-center"><?php echo $history['type']?></td>
-																				<td class="text-center"><?php echo $history['status']?></td>
-																			</tr>
-																		<?php } ?>
-																	<?php } ?>
-																</tbody>
-															</table>
-															<!--end: Datatable-->
+															<?php include_once './components/walletInTable.php'?>
 														</div>
                                                     </div>
                                                 </div>

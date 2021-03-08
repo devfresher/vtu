@@ -69,10 +69,10 @@ if (isset($_POST['fund_wallet'])) {
         }
 
         $walletRequestData = array(
-            'user_id' => $user->loggedInUser()->id,
-            'old_balance' => $user->walletBalance,
+            'user_id' => $user->currentUser->id,
+            'old_balance' => $user->currentUser->walletBalance,
             'amount' => $amount,
-            'balance_after' => $user->walletBalance,
+            'balance_after' => $user->currentUser->walletBalance,
             'reference' => $reference,
             'method' => $method,
             'type' => 1,
@@ -80,12 +80,12 @@ if (isset($_POST['fund_wallet'])) {
             'date' => date('Y-m-d H:i:s'),
         );
 
-        print_r($walletRequestData);
+        // print_r($walletRequestData);
         // print_r($wallet->fundWalletRequest($walletRequestData));
         if($wallet->fundWalletRequest($walletRequestData)){
-            if ($method = 'auto_fund') {
+            if ($method == 'auto_fund') {
                 $_SESSION["successWalletMessage"] = 'auto_fund_request_sent';
-            } elseif ($method = 'manual') {
+            } elseif ($method == 'manual') {
                 $_SESSION["successWalletMessage"] = 'manual_request_sent';
             }
             header("Location: ".$_POST['form_url']);

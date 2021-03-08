@@ -25,6 +25,8 @@ class User extends Utility {
             $this->currentUser->walletBalance = $wallet->getWalletBalance($currentUser->id);
             $this->currentUser->role = $this->arrayToObject($role->getrole($currentUser->role));
             $this->currentUser->plan = $this->arrayToObject($plan->getPlan($currentUser->plan));
+
+            unset($this->currentUser->role->permission);
         }
     }
 

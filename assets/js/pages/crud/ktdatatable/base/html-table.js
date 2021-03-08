@@ -21,25 +21,33 @@ var KTDatatableHtmlTableDemo = function() {
       },
       columns: [
         {
-          field: 'Amount',
-          type: 'number',
-        },
-        {
-          field: 'Previous Balance',
-          type: 'number',
-        },
-        {
-          field: 'New Balance',
-          type: 'number',
+          field: 'Date / Reference',
+          autoHide: false,
+          sortable: true,
+          textAlign: 'left'
         },
         {
           field: 'Date',
-          type: 'date',
-          format: 'YYYY-MM-DD HH:ii:ss',
-        }, {
+          autoHide: false,
+          sortable: true,
+        },
+        {
+          field: 'Amount',
+          sortable: false
+        },
+        {
+          field: 'Previous Balance',
+          sortable: false
+        },
+        {
+          field: 'New Balance',
+          sortable: false,
+        }, 
+        {
           field: 'Status',
           title: 'Status',
           autoHide: false,
+          sortable: false,
           // callback function support for column rendering
           template: function(row) {
             var status = {
@@ -66,29 +74,18 @@ var KTDatatableHtmlTableDemo = function() {
           field: 'Type',
           title: 'Type',
           autoHide: false,
+          sortable: false,
           // callback function support for column rendering
           template: function(row) {
             var status = {
-              1: {
-                'title': 'Fund Wallet',
-                'state': 'success',
+              'auto_fund': {
+                'title': 'Auto Funding',
+                'state': 'primary',
               },
-              2: {
-                'title': 'Recieve Share',
-                'state': 'success',
-              },
-              3: {
-                'title': 'Share Out',
-                'state': 'danger',
-              },
-              4: {
-                'title': 'Purchase',
-                'state': 'danger',
-              },
-              5: {
-                'title': 'Withdrawal',
-                'state': 'danger',
-              },
+              'manual': {
+                'title': 'Manual Funding',
+                'state': 'info',
+              }
             };
             return '<span class="label label-' + status[row.Type].state + ' label-dot mr-2"></span><span class="font-weight-bold text-' + status[row.Type].state + '">' + status[row.Type].title + '</span>';
           },
