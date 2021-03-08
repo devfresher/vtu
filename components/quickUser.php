@@ -1,5 +1,4 @@
         <!-- begin::User Panel-->
-        <?php $user = new User($db);?>
 		<div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
 			<!--begin::Header-->
 			<div class="offcanvas-header d-flex align-items-center justify-content-between pb-5">
@@ -15,13 +14,13 @@
 				<div class="d-flex align-items-center mt-5">
 					<div class="symbol symbol-100 mr-5">
 						<div class="symbol-label text-dark-50" style="font-size: 35px;">
-							<?php echo $user->firstLetter?>
+							<?php echo $user->currentUser->firstLetter?>
 						</div>
 						<i class="symbol-badge bg-success"></i>
 					</div>
 					<div class="d-flex flex-column">
-						<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"><?php echo $user->firstname.' '.$user->lastname?></a>
-						<div class="text-muted mt-1"><?php echo $user->plan->plan_name?></div>
+						<a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"><?php echo $user->currentUser->fullName?></a>
+						<div class="text-muted mt-1"><?php echo $user->currentUser->plan->plan_name?></div>
 						<div class="navi mt-2">
                             <a href="#" class="navi-item">
 								<span class="navi-link p-0 pb-2">
@@ -38,7 +37,7 @@
 											<!--end::Svg Icon-->
 										</span>
 									</span>
-									<span class="navi-text text-muted text-hover-primary"><?php echo $user->phoneNumber?></span>
+									<span class="navi-text text-muted text-hover-primary"><?php echo $user->currentUser->phone_number?></span>
 								</span>
 							</a>
 							<a href="#" class="navi-item">
@@ -56,7 +55,7 @@
 											<!--end::Svg Icon-->
 										</span>
 									</span>
-									<span class="navi-text text-muted text-hover-primary"><?php echo $user->email?></span>
+									<span class="navi-text text-muted text-hover-primary"><?php echo $user->currentUser->email?></span>
 								</span>
 							</a>
 							<a href="<?php echo BASE_URL.USER_ROOT?>logout.php" class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5">Sign Out</a>

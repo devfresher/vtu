@@ -1,9 +1,8 @@
 <?php
 require_once './components/head.php';
 
-$loggedInUser = $user->loggedInUser();
 $wallet = new Wallet($db);
-$shareHistory = $wallet->walletReadItem($loggedInUser->id, 'wallet_out', 3);
+$shareHistory = $wallet->walletReadItem($user->currentUser->id, 'wallet_out', 3);
 ?>
 		<!--begin::Page Vendors Styles(used by this page)-->
 		<link href="<?php echo BASE_URL.USER_ROOT?>assets/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
@@ -155,7 +154,7 @@ $shareHistory = $wallet->walletReadItem($loggedInUser->id, 'wallet_out', 3);
 											<!--begin::Body-->
 											<div class="card-body">
 												<i class="fas fa-wallet icon-3x text-primary"></i>
-												<span class="card-title font-weight-bolder text-dark-75 font-size-h2 mb-0 mt-6 d-block"><?php echo $appInfo->currency_code.number_format($user->walletBalance,2)?></span>
+												<span class="card-title font-weight-bolder text-dark-75 font-size-h2 mb-0 mt-6 d-block"><?php echo $appInfo->currency_code.number_format($user->currentUser->walletBalance,2)?></span>
 												<span class="font-weight-bold text-muted font-size-sm">Wallet Balance</span>
 											</div>
 											<!--end::Body-->
@@ -230,15 +229,17 @@ $shareHistory = $wallet->walletReadItem($loggedInUser->id, 'wallet_out', 3);
 	
 																<div class="form-group">
 																	<label>Reciever's Phone Number</label>
-																	<input type="text" name="phone_number" id="phone_number" class="form-control" max="11"/>
+																	<input type="text" name="phone_number" id="phone_number" class="form-control" maxlength="11"/>
+																	<a class="text-danger" href="javascript:;" id="verify_phone" style="float: right;">Verify Phone Number</a>
 																</div>
+
 
 																<div class="form-group" style="display: none;">
 																	<label>Password</label>
-																	<input class="form-control" name="password" id="password">
+																	<input type="password" class="form-control" name="password" id="password">
 																</div>
 
-																<input type="submit" name="share_money" class="btn btn-primary mr-2" value="Share">
+																<input type="submit" name="share_money" class="btn btn-primary mr-2" value="Share" id="shareBtn" disabled>
 															</form>
 														</div>
                                                     </div>
@@ -398,129 +399,144 @@ $shareHistory = $wallet->walletReadItem($loggedInUser->id, 'wallet_out', 3);
 		<script src="assets/js/pages/crud/ktdatatable/base/html-table.js"></script>
 		<script src="assets/js/pages/features/miscellaneous/sweetalert2.js"></script>
 		<script>
-			function selectOption(selectElementId, selectValue) {
-				$("#"+selectElementId+" option:selected").prop("selected", false);
-				$("#"+selectElementId+" option[value='"+selectValue+"']").prop('selected', true);
-			}
+			var ajaxProcessUrl = "<?php echo BASE_URL.'controller/auth.php'?>";
+			var currentUser = JSON.parse('<?php echo json_encode($user->loggedInUser())?>');
 
-			$('#amount_requested').on('keypress', function () {
-				selectOption('pay_method', '');
-			})
-
-			$('#pay_method').on('change', function () {
-				var method = $('#pay_method').val();
-				var amountRequested = $('#amount_requested').val();
-				var minFundRequest = <?php echo $appInfo->min_fund_request;?>;
-
-				if (amountRequested == '' || amountRequested == undefined) {
-					if (method != '' && method != undefined) {
-						selectOption('pay_method', '');
-						Swal.fire({
-							title: "Error",
-							text: "Enter a valid amount",
-							icon: "error",
-						});
-					}
-				} else if (amountRequested < minFundRequest){
-					selectOption('pay_method', '');
+			function validate(amount, receiverPhone) {
+				console.log(currentUser);
+				if (amount == '' || amount == undefined) {
+					$('#amount').focus()
 					Swal.fire({
 						title: "Error",
-						text: "Your Requested amount must be <?php echo $appInfo->currency.$appInfo->min_fund_request?> and above.",
+						text: "Enter an amount",
 						icon: "error",
 					});
-				} else {
-					switch (method) {
-						case 'manual':
+				} else if (receiverPhone == '' || receiverPhone == undefined) {
+					$('#phone_number').focus()
+					Swal.fire({
+						title: "Error",
+						text: "Enter receiver's phone number",
+						icon: "error",
+					});	
+				} else if (receiverPhone == currentUser.phone_number) {
+					$('#phone_number').focus()
+					Swal.fire({
+						title: "Error",
+						text: "The sender can not be the receipient.",
+						icon: "error",
+					});
+				} else if (amount > currentUser.walletBalance) {
+					$('#amount').focus()
+					Swal.fire({
+						title: "Error",
+						text: "Insufficient wallet balance",
+						icon: "error",
+					});
+				} else{
+					data = {
+						'verify_user': 1,
+						'user_id': receiverPhone,
+					}
+					fetch(ajaxProcessUrl, data);
+				}
+			}
+
+			function fetch(processUrl, proccesdata) {
+				$.ajax({
+					type:'POST',
+					url: ajaxProcessUrl,
+					timeout: 50000,
+					data: proccesdata,
+					beforeSend: function () {
+						Swal.fire({
+							title: "Fetching users info",
+							text: "Please wait",
+							didOpen: function() {
+								Swal.showLoading()
+							}
+						})
+					},
+					success: function(data){
+						var receiverPhone = $('#phone_number').val();
+						var amount = $('#amount').val();
+
+						if (data != 'false' && data != '') {
+							var user = JSON.parse(data)
+
+							var userName = user.firstname+' '+user.lastname;
 							Swal.fire({
-								title: "Bank Deposit",
-								text: "Funding via Bank Deposit or Transfer attracts <?php echo $appInfo->currency.$appInfo->bank_stampduty ?> stamp duty on every payment of <?php echo $appInfo->currency.$appInfo->min_stampduty ?> and above. You need to contact the admin for manual crediting",
-								icon: "info",
+								title: "User Found",
+								text: 'You want to share <?php echo $appInfo->currency?>'+amount+' to '+userName,
+								icon: "success",
 								showCancelButton: true,
-								confirmButtonText: "Ok",
+								confirmButtonText: "Confirm",
 								cancelButtonText: "Cancel!",
 							}).then(function(result) {
 								if (result.value) {
-									var bank_stampduty = <?php echo $appInfo->bank_stampduty;?>;
-									var min_stampduty = <?php echo $appInfo->min_stampduty;?>;
-									
-									if (amountRequested >= min_stampduty) {
-										var walletCredit = amountRequested - bank_stampduty;
-									} else {
-										var walletCredit = amountRequested;
-									}
-
-									$('#wallet_credit').val(walletCredit);
-									$('#wallet_credit').parents().show();
-
-									$('#amount_requested').on('keyup', function () {
-										amountRequested = $('#amount_requested').val();
-										if (amountRequested >= min_stampduty){
-											var walletCredit = amountRequested - bank_stampduty;
-										} else {
-											var walletCredit = amountRequested;
-										}
-
-										$('#wallet_credit').val(walletCredit);
-									})
-								}
-							})
-
-							break;
-							
-						case 'auto_fund':
-							Swal.fire({
-								title: "Auto Funding (<?php echo $appInfo->auto_funding_bank?>)",
-								text: "Funding via <?php echo $appInfo->auto_funding_bank?> attracts <?php echo $appInfo->currency.$appInfo->auto_funding_charge ?> charge on every payment. Wallet will be credited instantly after successful payment.",
-								icon: "info",
-								showCancelButton: true,
-								confirmButtonText: "Ok",
-								cancelButtonText: "Cancel!",
-							}).then(function(result) {
-								if (result.value) {
-									var autoFundingCharge = <?php echo $appInfo->auto_funding_charge;?>;
-	
-									if (amountRequested < autoFundingCharge) {
-										Swal.fire({
-											title: "Error",
-											text: "Your Requested amount must be greater than <?php echo $appInfo->currency.$appInfo->auto_funding_charge?>.",
-											icon: "error",
-										});
-									} else{
-										var walletCredit = amountRequested - autoFundingCharge;
-										$('#wallet_credit').val(walletCredit);
-	
-										$('#wallet_credit').parent().show();
-									}
-
-									$('#amount_requested').on('keyup', function () {
-										amountRequested = $('#amount_requested').val();
-
-										if (amountRequested < autoFundingCharge) {
-											Swal.fire({
-												title: "Error",
-												text: "Your Requested amount must be greater than <?php echo $appInfo->currency.$appInfo->auto_funding_charge?>.",
-												icon: "error",
-											});
-										} else {
-											var walletCredit = amountRequested - autoFundingCharge;
-											$('#wallet_credit').val(walletCredit);
-										}
-									})
+									$('#password').parent().show();
+									$('#shareBtn').removeAttr('disabled');
 								}
 							});
-							break;
-	
-						default:
-							$('#wallet_credit').val(0);
-	
-							$('#wallet_credit').parent().hide();
-							break;
+						} else {
+							$('#phone_number').focus()
+							Swal.fire({
+								title: "Error",
+								text: "User does not exit, check the phone number and try again",
+								icon: "error",
+							})
+						}
+					},
+					error: function(XMLHttpRequest, textStatus, errorThrown) {
+						var errorMsg = "";
+						if (XMLHttpRequest.readyState == 4) {
+							errorMsg = "Server error. Contact us for quick fix.";
+						}
+						else if (XMLHttpRequest.readyState === 0) {
+							errorMsg = "Connection refused. Check your internet connection";
+						}
+						else {
+							errorMsg = "Something weird is happening.";
+						}
+						Swal.fire({
+							title: "Error",
+							text: errorMsg,
+							icon: "error",
+						})
 					}
+				});
+			}
 
+			$('#phone_number, #amount').on('keydown', function () {
+				$('#password').val('');
+				$('#password').parent().hide();
+				$('#shareBtn').attr('disabled');
+
+			})
+			
+			$('#phone_number').on('keyup', function () {
+				var receiverPhone = $('#phone_number').val();
+				var amount = $('#amount').val();
+
+				var data = {
+					"user_id" : receiverPhone,
+					"verify_user" : 1,
 				}
+				
+				if (receiverPhone.length == 11) {
+					validate(amount, receiverPhone);
+				}
+			})
 
+			$('#verify_phone').on('click', function () {
+				var receiverPhone = $('#phone_number').val();
+				var amount = $('#amount').val();
 
-			});
+				var data = {
+					"user_id" : receiverPhone,
+					"verify_user" : 1,
+				}
+				validate(amount, receiverPhone);
+			})
 		</script>
 		<!--end::Page Scripts-->
 	</body>

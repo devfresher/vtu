@@ -6,35 +6,25 @@ require_once MODEL_DIR.'Role.php';
 
 class User extends Utility {
     protected $db;
-    public $userId;
-    public $firstname;
-    public $plan;
-    public $role;
-    public $walletBalance;
+    public $currentUser;
     protected $responseBody;
 
     function __construct($db) {
         $this->db = $db;
-
         
-        if ($currentUser = $this->loggedInUser()) {
-            $this->userId = $currentUser->id;
-            $this->firstname = $currentUser->firstname;
-            $this->firstLetter = $this->firstname[0];
-            $this->lastname = $currentUser->lastname;
-            $this->email = $currentUser->email;
-            $this->phoneNumber = $currentUser->phone_number;
-            $this->planId = $currentUser->plan;
-            $this->roleId = $currentUser->role;
+        if ($this->loggedInUser() !== false) {
+            $currentUser = $this->loggedInUser();
 
             $plan = new Plan($db);
-            $this->plan = $this->arrayToObject($plan->getPlan($this->planId));
-    
             $role = new Role($db);
-            $this->role = $this->arrayToObject($role->getrole($this->roleId));
-
             $wallet = new Wallet($db);
-            $this->walletBalance = $wallet->getWalletBalance($this->userId);
+            
+            $this->currentUser = $currentUser;
+            $this->currentUser->firstLetter = $this->currentUser->firstname[0];
+            $this->currentUser->fullName = $this->currentUser->firstname.' '.$this->currentUser->lastname;
+            $this->currentUser->walletBalance = $wallet->getWalletBalance($currentUser->id);
+            $this->currentUser->role = $this->arrayToObject($role->getrole($currentUser->role));
+            $this->currentUser->plan = $this->arrayToObject($plan->getPlan($currentUser->plan));
         }
     }
 
@@ -92,7 +82,9 @@ class User extends Utility {
             $userId = $_SESSION['userId'];
             $result = $this->getUserById($userId);
 
-            if ($result !== false){
+            if ($result !== false) {
+                unset($result->password);
+                unset($result->token);
                 $this->responseBody = $result;
             }else {
                 $this->responseBody = false;

@@ -25,7 +25,7 @@
 									<input class="form-control h-auto text-white placeholder-white opacity-70 bg-dark-o-70 rounded-pill border-0 py-4 px-8" type="email" placeholder="Email" name="email" autocomplete="off" />
 								</div>
 								<div class="form-group">
-									<input class="form-control h-auto text-white placeholder-white opacity-70 bg-dark-o-70 rounded-pill border-0 py-4 px-8" type="text" placeholder="Phone Number" name="phoneNumber" autocomplete="off" maxlength="11"/>
+									<input class="form-control h-auto text-white placeholder-white opacity-70 bg-dark-o-70 rounded-pill border-0 py-4 px-8" type="text" placeholder="Phone Number" name="phoneNumber" autocomplete="off" maxLength="11"/>
 								</div>
 								<div class="form-group">
 									<input class="form-control h-auto text-white placeholder-white opacity-70 bg-dark-o-70 rounded-pill border-0 py-4 px-8" type="password" placeholder="Password" name="password" />

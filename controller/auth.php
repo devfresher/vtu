@@ -147,3 +147,13 @@ elseif (isset($_POST["register"])) {
 
     }
 }
+
+elseif (isset($_POST['verify_user']) AND isset($_POST['user_id'])) {
+    extract($_POST);
+        
+    $userId = filter_var($_POST["user_id"], FILTER_SANITIZE_STRING);
+    $result = $user->getUser($userId);
+
+    echo json_encode($result);
+    exit();
+}
