@@ -11,14 +11,14 @@ class User extends Utility {
 
     function __construct($db) {
         $this->db = $db;
+
+        $plan = new Plan($db);
+        $role = new Role($db);
+        $wallet = new Wallet($db);
         
         if ($this->loggedInUser() !== false) {
             $currentUser = $this->loggedInUser();
 
-            $plan = new Plan($db);
-            $role = new Role($db);
-            $wallet = new Wallet($db);
-            
             $this->currentUser = $currentUser;
             $this->currentUser->firstLetter = $this->currentUser->firstname[0];
             $this->currentUser->fullName = $this->currentUser->firstname.' '.$this->currentUser->lastname;

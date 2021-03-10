@@ -22,6 +22,10 @@ require_once './model/App.php';
 		<link href="<?php echo BASE_URL.USER_ROOT?>assets/css/style.bundle.css" rel="stylesheet" type="text/css" />
 		<!--end::Global Theme Styles-->
 
+		<!--begin::Custom Styles(used by all pages)-->
+		<link href="<?php echo BASE_URL.USER_ROOT?>assets/css/custom/style.css" rel="stylesheet" type="text/css" />
+		<!--end::Global Theme Styles-->
+
 		<!--begin::Layout Themes(used by all pages)-->
 		<!--end::Layout Themes-->
 

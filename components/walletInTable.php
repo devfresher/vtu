@@ -6,7 +6,7 @@
 																		<th title="Field #2">Previous Balance</th>
 																		<th title="Field #3">Amount</th>
 																		<th title="Field #4">New Balance</th>
-																		<th title="Field #5">Type</th>
+																		<th title="Field #5">Method</th>
 																		<th title="Field #6">Status</th>
 																	</tr>
 																</thead>

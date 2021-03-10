@@ -18,6 +18,8 @@ $authentication_pages = array(
 $authenticated_pages = array(
     BASE_PATH.USER_ROOT.'dashboard.php',
     BASE_PATH.USER_ROOT.'wallet.php',
+    BASE_PATH.USER_ROOT.'share-money.php',
+    BASE_PATH.USER_ROOT.'airtime-topup.php',
 );
 
 if ($user->isLoggedIn()) {

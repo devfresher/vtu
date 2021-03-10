@@ -3,7 +3,7 @@ require_once './components/head.php';
 
 $loggedInUser = $user->loggedInUser();
 $wallet = new Wallet($db);
-$histories = $wallet->walletReadItem($user->currentUser->id, 'wallet_in', 1);;
+$histories = $wallet->getWalletFundingHistories($user->currentUser->id);
 ?>
 		<!--begin::Page Vendors Styles(used by this page)-->
 		<link href="<?php echo BASE_URL.USER_ROOT?>assets/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
@@ -151,15 +151,7 @@ $histories = $wallet->walletReadItem($user->currentUser->id, 'wallet_in', 1);;
 								<!--begin::Row-->
 								<div class="row">
 									<div class="col-xl-3">
-										<div class="card card-custom bgi-no-repeat gutter-b mh-50" style="background-position: right top; background-size: 30% auto; background-image: url(assets/media/svg/shapes/abstract-1.svg)">
-											<!--begin::Body-->
-											<div class="card-body">
-												<i class="fas fa-wallet icon-3x text-primary"></i>
-												<span class="card-title font-weight-bolder text-dark-75 font-size-h2 mb-0 mt-6 d-block"><?php echo $appInfo->currency_code.number_format($user->currentUser->walletBalance,2)?></span>
-												<span class="font-weight-bold text-muted font-size-sm">Wallet Balance</span>
-											</div>
-											<!--end::Body-->
-										</div>
+										<?php include_once './components/walletBallance.php'?>
 									</div>
 									<div class="col-xl-9">
                                         <div class="card card-custom card-stretch">

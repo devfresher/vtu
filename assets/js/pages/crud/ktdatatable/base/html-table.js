@@ -70,9 +70,10 @@ var KTDatatableHtmlTableDemo = function() {
             };
             return '<span class="label font-weight-bold label-lg' + status[row.Status].class + ' label-inline">' + status[row.Status].title + '</span>';
           },
-        }, {
-          field: 'Type',
-          title: 'Type',
+        }, 
+        {
+          field: 'Method',
+          title: 'Method',
           autoHide: false,
           sortable: false,
           // callback function support for column rendering
@@ -86,6 +87,38 @@ var KTDatatableHtmlTableDemo = function() {
                 'title': 'Manual Funding',
                 'state': 'info',
               }
+            };
+            return '<span class="label label-' + status[row.Method].state + ' label-dot mr-2"></span><span class="font-weight-bold text-' + status[row.Method].state + '">' + status[row.Method].title + '</span>';
+          },
+        },
+        {
+          field: 'Type',
+          title: 'Type',
+          autoHide: false,
+          sortable: false,
+          // callback function support for column rendering
+          template: function(row) {
+            var status = {
+              1: {
+                'title': 'Fund Wallet',
+                'state': 'primary',
+              },
+              2: {
+                'title': 'Recieve Money',
+                'state': 'info',
+              },
+              3: {
+                'title': 'Send Money',
+                'state': 'info',
+              },
+              4: {
+                'title': 'Purchase',
+                'state': 'warning',
+              },
+              5: {
+                'title': 'Withdrawal',
+                'state': 'danger',
+              },
             };
             return '<span class="label label-' + status[row.Type].state + ' label-dot mr-2"></span><span class="font-weight-bold text-' + status[row.Type].state + '">' + status[row.Type].title + '</span>';
           },

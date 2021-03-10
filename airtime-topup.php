@@ -2,7 +2,7 @@
 require_once './components/head.php';
 
 $wallet = new Wallet($db);
-$histories = $wallet->getMoneyShareHistories($user->currentUser->id);
+$histories = '';
 ?>
 		<!--begin::Page Vendors Styles(used by this page)-->
 		<link href="<?php echo BASE_URL.USER_ROOT?>assets/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
@@ -36,7 +36,7 @@ $histories = $wallet->getMoneyShareHistories($user->currentUser->id);
 									<!--begin::Heading-->
 									<div class="d-flex flex-column">
 										<!--begin::Title-->
-										<h2 class="text-white font-weight-bold my-2 mr-5">My Wallet</h2>
+										<h2 class="text-white font-weight-bold my-2 mr-5">Airtime Topup</h2>
 										<!--end::Title-->
 										<!--begin::Breadcrumb-->
 										<div class="d-flex align-items-center font-weight-bold my-2">
@@ -47,7 +47,7 @@ $histories = $wallet->getMoneyShareHistories($user->currentUser->id);
 											<!--end::Item-->
 											<!--begin::Item-->
 											<span class="label label-dot label-sm bg-white opacity-75 mx-3"></span>
-											<a href="" class="text-white text-hover-white opacity-75 hover-opacity-100">Wallet</a>
+											<a href="" class="text-white text-hover-white opacity-75 hover-opacity-100">Airtime</a>
 											<!--end::Item-->
 										</div>
 										<!--end::Breadcrumb-->
@@ -159,14 +159,14 @@ $histories = $wallet->getMoneyShareHistories($user->currentUser->id);
                                                     <ul class="nav nav-tabs nav-bold nav-tabs-line" role="tablist">
                                                         <li class="nav-item">
                                                             <a class="nav-link active" data-toggle="tab" href="#fund_wallet">
-                                                                <span class="nav-icon"><i class="fas fa-share-square"></i></span>
-                                                                <span class="nav-text">Share</span>
+                                                                <span class="nav-icon"><i class="fas fa-upload"></i></span>
+                                                                <span class="nav-text">Topup</span>
                                                             </a>
                                                         </li>
                                                         <li class="nav-item">
                                                             <a class="nav-link" data-toggle="tab" href="#wallet_history">
                                                                 <span class="nav-icon"><i class="fas fa-history"></i></span>
-                                                                <span class="nav-text">Share History</span>
+                                                                <span class="nav-text">Airtime Purchase History</span>
                                                             </a>
                                                         </li>
                                                     </ul>
@@ -176,24 +176,123 @@ $histories = $wallet->getMoneyShareHistories($user->currentUser->id);
                                                 <div class="tab-content">
                                                     <div class="tab-pane fade show active" id="fund_wallet" role="tabpanel" aria-labelledby="kt_tab_pane_1_4">
 														<div class="container">
-															<?php if (isset($_SESSION['errorWalletMessage'])) { ?>
+															<?php if (isset($_SESSION['errorMessage'])) { ?>
 																<div class="alert alert-danger alert-dismissible fade show" role="alert">
-																	<strong>Error:</strong> <?php echo $_SESSION['errorWalletMessage'];?>
+																	<strong>Error:</strong> <?php echo $_SESSION['errorMessage'];?>
 																	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 																		<span aria-hidden="true">&times;</span>
 																	</button>
 																</div>
-															<?php unset($_SESSION['errorWalletMessage']); }?>
+															<?php unset($_SESSION['errorMessage']); }?>
 
-															<?php if (isset($_SESSION['successWalletMessage'])) { ?>
+															<?php if (isset($_SESSION['successMessage'])) { ?>
 																<div class="alert alert-custom alert-success fade show text-center" role="alert">
 																	Money Sent.
 																</div>
-															<?php } unset($_SESSION['successWalletMessage']) ?>
+															<?php } unset($_SESSION['successMessage']) ?>
 
-															<form class="form" method="POST" action="<?php echo BASE_URL?>controller/wallet.php">
-																<input type="hidden" name="form_url" value="<?php echo BASE_URL.USER_ROOT?>share-money.php">
-																<div class="form-group">
+															<form class="form" method="POST" action="<?php echo BASE_URL?>controller/product.php">
+																<input type="hidden" name="form_url" value="<?php echo BASE_URL.USER_ROOT?>aitime-topup.php">
+
+                                                                <div class="form-group">
+                                                                    <label class="col-form-label">Network:</label>
+                                                                    <div class="row">
+                                                                        <div class="col-md-3 col-sm-3 col-6">
+                                                                            <label class="option">
+                                                                                <span class="option-control">
+                                                                                    <span class="radio radio-bold radio-brand"/>
+                                                                                        <input type="radio" name="networkType" value="mtn"/>
+                                                                                        <span></span>
+                                                                                    </span>
+                                                                                </span>
+                                                                                <span class="option-label">
+                                                                                    <span class="option-head">
+                                                                                        <!-- <span class="option-title">
+                                                                                            MTN NG
+                                                                                        </span> -->
+                                                                                        <span class="option-focus">
+                                                                                            1.00%
+                                                                                        </span>
+                                                                                    </span>
+                                                                                    <span class="option-body">
+                                                                                        <img class="img-fluid" src="<?php echo BASE_URL?>uploads/mtn1.png" alt="">
+                                                                                    </span>
+                                                                                </span>
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="col-md-3 col-sm-3 col-6">
+                                                                            <label class="option">
+                                                                                <span class="option-control">
+                                                                                    <span class="radio radio-bold radio-brand"/>
+                                                                                        <input type="radio" name="networkType" value="glo"/>
+                                                                                        <span></span>
+                                                                                    </span>
+                                                                                </span>
+                                                                                <span class="option-label">
+																				<span class="option-head">
+                                                                                        <!-- <span class="option-title">
+                                                                                            MTN NG
+                                                                                        </span> -->
+                                                                                        <span class="option-focus">
+                                                                                            1.00%
+                                                                                        </span>
+                                                                                    </span>
+                                                                                    <span class="option-body">
+                                                                                        <img class="img-fluid" src="<?php echo BASE_URL?>uploads/glo1.png" alt="">
+                                                                                    </span>
+                                                                                </span>
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="col-md-3 col-sm-3 col-6">
+                                                                            <label class="option">
+                                                                                <span class="option-control">
+                                                                                    <span class="radio radio-bold radio-brand"/>
+                                                                                        <input type="radio" name="networkType" value="airtel"/>
+                                                                                        <span></span>
+                                                                                    </span>
+                                                                                </span>
+                                                                                <span class="option-label">
+																					<span class="option-head">
+                                                                                        <!-- <span class="option-title">
+                                                                                            MTN NG
+                                                                                        </span> -->
+                                                                                        <span class="option-focus">
+                                                                                            1.00%
+                                                                                        </span>
+                                                                                    </span>
+                                                                                    <span class="option-body">
+                                                                                        <img class="img-fluid" src="<?php echo BASE_URL?>uploads/airtel1.png" alt="">
+                                                                                    </span>
+                                                                                </span>
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="col-md-3 col-sm-3 col-6">
+                                                                            <label class="option">
+                                                                                <span class="option-control">
+                                                                                    <span class="radio radio-bold radio-brand"/>
+                                                                                        <input type="radio" name="networkType" value="9mobile"/>
+                                                                                        <span></span>
+                                                                                    </span>
+                                                                                </span>
+                                                                                <span class="option-label">
+																					<span class="option-head">
+                                                                                        <!-- <span class="option-title">
+                                                                                            MTN NG
+                                                                                        </span> -->
+                                                                                        <span class="option-focus">
+                                                                                            1.00%
+                                                                                        </span>
+                                                                                    </span>
+                                                                                    <span class="option-body">
+                                                                                        <img class="img-fluid" src="<?php echo BASE_URL?>uploads/9mobile.jpg" alt="">
+                                                                                    </span>
+                                                                                </span>
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+																<div class="form-group" >
 																	<label>Amount</label>
 																	<div class="">
 																		<input type="number" name="amount" id="amount" class="form-control" />
@@ -203,16 +302,15 @@ $histories = $wallet->getMoneyShareHistories($user->currentUser->id);
 																<div class="form-group">
 																	<label>Reciever's Phone Number</label>
 																	<input type="text" name="phone_number" id="phone_number" class="form-control" maxlength="11"/>
-																	<a class="text-danger" href="javascript:;" id="verify_phone" style="float: right;">Verify Phone Number</a>
+																	<span class="text-danger" id="networkMsg"></span>
 																</div>
-
 
 																<div class="form-group" style="display: none;">
 																	<label>Password</label>
 																	<input type="password" class="form-control" name="password" id="password">
 																</div>
 
-																<input type="submit" name="share_money" class="btn btn-primary mr-2" value="Share" id="shareBtn" disabled>
+																<input type="submit" name="buy_airtime" class="btn btn-primary mr-2" value="Buy Airtime" id="buyBtn" disabled>
 															</form>
 														</div>
                                                     </div>
@@ -342,145 +440,100 @@ $histories = $wallet->getMoneyShareHistories($user->currentUser->id);
 		<script src="assets/js/pages/crud/ktdatatable/base/html-table.js"></script>
 		<script src="assets/js/pages/features/miscellaneous/sweetalert2.js"></script>
 		<script>
-			var ajaxProcessUrl = "<?php echo BASE_URL.'controller/auth.php'?>";
+			var ajaxProcessUrl = "<?php echo BASE_URL.'controller/product.php'?>";
 			var currentUser = <?php echo "'".json_encode($user->currentUser)."'"?>;
 			currentUser = JSON.parse(currentUser);
 
-			function validate(amount, receiverPhone) {
-				console.log(currentUser);
-				if (amount == '' || amount == undefined) {
-					$('#amount').focus()
+
+			function getNetwork(phone, output) {
+
+				$.ajax({
+					url: ajaxProcessUrl,
+					type: "post",
+					data: {
+						"phone" : phone,
+						"get_network_code" : 1
+					},
+					beforeSend: function(){
+						output.html("Getting network...");
+					},
+					success: function(result) {
+						output.html(result);
+					}
+				}) 
+        	}
+
+			function showPassword(amount, phone, networkType) {
+				if (amount != '' && amount != undefined && phone.length == 11 && networkType != '' && networkType != undefined) {
+					$('#password').parent().show();
+				} else {
+					$('#password').val('');
+					$('#password').parent().hide();
+					$('#buyBtn').prop('disabled', true);
+				} 
+			}
+
+			function showBtn() {
+				var password = $('#password').val();
+				if (password != '' && password != undefined) {
+					$('#buyBtn').removeAttr('disabled');
+				} else {
+					$('#buyBtn').prop('disabled', true);
+				} 
+			}
+
+			$('#phone_number').on('keyup', function () {
+				var amount = $('#amount').val()
+				var phone = $(this).val();
+				var networkMsg = $("#networkMsg");
+				var networkType = $("input[name='networkType']:checked").val();
+
+				if(phone != '' && phone.length >= 4){
+					getNetwork(phone, networkMsg);
+				}else{
+					networkMsg.html("");
+				}
+
+				showPassword(amount, phone, networkType);
+			})
+
+			$('#amount').on('keyup', function () {
+				var amount = $('#amount').val()
+				var phone = $("#phone_number").val();
+				var networkType = $("input[name='networkType']:checked").val();
+
+				if (networkType == '' || networkType == undefined) {
+					$('#amount').val('');
 					Swal.fire({
 						title: "Error",
-						text: "Enter an amount",
-						icon: "error",
+						text: "Select a network",
+						icon: "error"
 					});
-				} else if (receiverPhone == '' || receiverPhone == undefined) {
-					$('#phone_number').focus()
-					Swal.fire({
-						title: "Error",
-						text: "Enter receiver's phone number",
-						icon: "error",
-					});	
-				} else if (receiverPhone == currentUser.phone_number) {
-					$('#phone_number').focus()
-					Swal.fire({
-						title: "Error",
-						text: "The sender can not be the receipient.",
-						icon: "error",
-					});
-				} else if (amount > currentUser.walletBalance) {
-					$('#amount').focus()
+				}
+				if (amount > currentUser.walletBalance) {
+					$('#amount').val('');
 					Swal.fire({
 						title: "Error",
 						text: "Insufficient wallet balance",
-						icon: "error",
+						icon: "error"
 					});
-				} else{
-					data = {
-						'verify_user': 1,
-						'user_id': receiverPhone,
-					}
-					fetch(ajaxProcessUrl, data);
 				}
-			}
-
-			function fetch(processUrl, proccesdata) {
-				$.ajax({
-					type:'POST',
-					url: ajaxProcessUrl,
-					timeout: 50000,
-					data: proccesdata,
-					beforeSend: function () {
-						Swal.fire({
-							title: "Fetching users info",
-							text: "Please wait",
-							didOpen: function() {
-								Swal.showLoading()
-							}
-						})
-					},
-					success: function(data){
-						var receiverPhone = $('#phone_number').val();
-						var amount = $('#amount').val();
-
-						if (data != 'false' && data != '') {
-							var user = JSON.parse(data)
-
-							var userName = user.firstname+' '+user.lastname;
-							Swal.fire({
-								title: "User Found",
-								text: 'You want to share <?php echo $appInfo->currency?>'+amount+' to '+userName,
-								icon: "success",
-								showCancelButton: true,
-								confirmButtonText: "Confirm",
-								cancelButtonText: "Cancel!",
-							}).then(function(result) {
-								if (result.value) {
-									$('#password').parent().show();
-									$('#shareBtn').removeAttr('disabled');
-								}
-							});
-						} else {
-							$('#phone_number').focus()
-							Swal.fire({
-								title: "Error",
-								text: "User does not exit, check the phone number and try again",
-								icon: "error",
-							})
-						}
-					},
-					error: function(XMLHttpRequest, textStatus, errorThrown) {
-						var errorMsg = "";
-						if (XMLHttpRequest.readyState == 4) {
-							errorMsg = "Server error. Contact us for quick fix.";
-						}
-						else if (XMLHttpRequest.readyState === 0) {
-							errorMsg = "Connection refused. Check your internet connection";
-						}
-						else {
-							errorMsg = "Something weird is happening.";
-						}
-						Swal.fire({
-							title: "Error",
-							text: errorMsg,
-							icon: "error",
-						})
-					}
-				});
-			}
-
-			$('#phone_number, #amount').on('keydown', function () {
-				$('#password').val('');
-				$('#password').parent().hide();
-				$('#shareBtn').prop('disabled', true);
-
-			})
-			
-			$('#phone_number').on('keyup', function () {
-				var receiverPhone = $('#phone_number').val();
-				var amount = $('#amount').val();
-
-				var data = {
-					"user_id" : receiverPhone,
-					"verify_user" : 1,
-				}
-				
-				if (receiverPhone.length == 11) {
-					validate(amount, receiverPhone);
-				}
+				showPassword(amount, phone, networkType);
 			})
 
-			$('#verify_phone').on('click', function () {
-				var receiverPhone = $('#phone_number').val();
-				var amount = $('#amount').val();
+			$("input[name='networkType']").on('change', function () {
+				var amount = $('#amount').val()
+				var phone = $("#phone_number").val();
+				var networkType = $("input[name='networkType']:checked").val();
 
-				var data = {
-					"user_id" : receiverPhone,
-					"verify_user" : 1,
-				}
-				validate(amount, receiverPhone);
+				showPassword(amount, phone, networkType);
 			})
+
+			$('#password').on('keyup', function () {
+				showBtn();
+			})
+
+
 		</script>
 		<!--end::Page Scripts-->
 	</body>

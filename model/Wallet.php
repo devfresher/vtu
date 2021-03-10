@@ -49,12 +49,64 @@ class Wallet Extends Utility
         return $this->responseBody;
     }
 
-    public function walletReadItem($userId, $table, $type)
+    public function walletReadItem($userId, $table, $type='')
     {
-        $walletOut = $this->db->getAllRecords($table, "*", "AND user_id = '$userId' AND type = '$type'", "ORDER BY date ASC");
+        $walletResult = $this->db->getAllRecords($table, "*", "AND user_id = '$userId' AND type = '$type'", "ORDER BY date DESC");
 
-        if ($walletOut) {
-            $feedback = $walletOut;
+        if ($walletResult) {
+            $feedback = $walletResult;
+            $this->responseBody = $this->arrayToObject($feedback);
+        } else {
+            $this->responseBody = false;
+        }
+
+        return $this->responseBody;
+    }
+
+    public function getWalletInHistories($userId)
+    {
+        $walletResult = $this->db->getAllRecords('wallet_in', "*", "AND user_id = '$userId'", "ORDER BY date DESC");
+
+        if ($walletResult) {
+            $feedback = $walletResult;
+            $this->responseBody = $this->arrayToObject($feedback);
+        } else {
+            $this->responseBody = false;
+        }
+
+        return $this->responseBody;
+    }
+
+    public function getWalletFundingHistories($userId)
+    {
+        $walletResult = $this->db->getAllRecords('wallet_in', "*", "AND user_id = '$userId' AND type = 1", "ORDER BY date DESC");
+
+        if ($walletResult) {
+            $feedback = $walletResult;
+            $this->responseBody = $this->arrayToObject($feedback);
+        } else {
+            $this->responseBody = false;
+        }
+
+        return $this->responseBody;
+    }
+
+    public function getMoneyShareHistories($userId)
+    {
+        $walletResult = $this->db->getRecFrmQry("
+        SELECT  `id`,`user_id`,`old_balance`,`amount`,`balance_after`,`reference`,`type`,`status`,`date`
+            FROM wallet_out 
+            WHERE `user_id` = $userId AND `type` = '3' 
+            UNION ALL
+        SELECT  `id`,`user_id`,`old_balance`,`amount`,`balance_after`,`reference`,`type`,`status`,`date`
+            FROM wallet_in
+            WHERE `user_id` = $userId AND type = '2' 
+            ORDER BY `date` DESC
+        ");
+        
+
+        if ($walletResult) {
+            $feedback = $walletResult;
             $this->responseBody = $this->arrayToObject($feedback);
         } else {
             $this->responseBody = false;
@@ -68,6 +120,19 @@ class Wallet Extends Utility
         $topUp = $this->db->insert('wallet_in', $walletRequestData);
 
         if ($topUp > 0) {
+            $this->responseBody =  true;
+        } else {
+            $this->responseBody =  false;
+        }
+
+        return $this->responseBody;
+    }
+
+    public function spendFromWallet($walletRequestData)
+    {
+        $spend = $this->db->insert('wallet_out', $walletRequestData);
+
+        if ($spend > 0) {
             $this->responseBody =  true;
         } else {
             $this->responseBody =  false;

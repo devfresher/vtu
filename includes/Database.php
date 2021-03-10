@@ -180,7 +180,7 @@ class Database
 	
 	public function getRecFrmQry($query)
 	{
-		//echo $query;
+		// echo $query;
 		$stmt = $this->pdo->prepare($query);
 		$stmt->execute();
 		$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
