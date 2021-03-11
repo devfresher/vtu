@@ -28,7 +28,6 @@ class Product Extends Utility
         );
 
         if (count($result) > 0){
-
             $feedback = $result;
             $this->responseBody =  $this->arrayToObject($feedback);
         } else {
@@ -46,7 +45,7 @@ class Product Extends Utility
 
         if (count($result) > 0){
 
-            $feedback = $result;
+            $feedback = $result[0];
             $this->responseBody =  $this->arrayToObject($feedback);
         } else {
             $this->responseBody =  false;

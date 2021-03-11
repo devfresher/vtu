@@ -1,7 +1,6 @@
 <?php
 require_once '../includes/config.php';
-require_once '../model/Wallet.php';
-require_once '../model/User.php';
+require_once '../model/Product.php';
 
 if (isset($_POST['get_network_code'])) {
     extract($_POST);
@@ -28,9 +27,22 @@ if (isset($_POST['get_network_code'])) {
 
 } 
 
+elseif (isset($_POST['get_product'])) {
+    $productCode = filter_var($_POST["product_code"], FILTER_SANITIZE_STRING);
+    $planId = filter_var($_POST["plan_id"], FILTER_SANITIZE_NUMBER_FLOAT);
+    
+    $product = new Product($db);
+    $result = $product->getProductWithCode($productCode, $planId);
+
+    echo json_encode($result);
+    exit();
+}
+
 elseif (isset($_POST['buy_airtime'])) {
     extract($_POST);
 
+    print_r($_POST);
+    
     $required_fields = array('amount', 'network_type', 'transaction_pin');
     foreach ($required_fields as $field) {
         if (in_array($field, array_keys($_POST)) AND $_POST[$field] != '') {

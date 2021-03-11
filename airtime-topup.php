@@ -204,7 +204,7 @@ $airtime_products = $product->getProductsWithCat(1, $user->currentUser->plan->id
 																				<label class="option">
 																					<span class="option-control">
 																						<span class="radio radio-bold radio-brand"/>
-																							<input type="radio" name="networkType" value="<?php echo $value['product_code']?>"/>
+																							<input type="radio" name="networkType" value="<?php echo $value['product_code']?>" data-discount = "<?php echo $value['percentage_discount']?>"/>
 																							<span></span>
 																						</span>
 																					</span>
@@ -404,30 +404,13 @@ $airtime_products = $product->getProductsWithCat(1, $user->currentUser->plan->id
 				}) 
         	}
 
-			function getProductDetail(product_code, plan_id) {
-				$.ajax({
-					url: ajaxProcessUrl,
-					type: "post",
-					data: {
-						"product_code" : phone,
-						"plan_id" : plan_id,
-						"get_product" : 1
-					},
-					beforeSend: function(){
-					},
-					success: function(result) {
-						return result;
-					}
-				}) 
-				}
-
 			function showTxnPin(amount, phone, networkType) {
 				if (amount != '' && amount != undefined && phone.length == 11 && networkType != '' && networkType != undefined) {
 					$('#pin').parent().show();
 				} else {
 					$('#pin').val('');
 					$('#pin').parent().hide();
-					$('#buyBtn').prop('disabled', true);
+					showBtn();
 				} 
 			}
 
@@ -466,7 +449,9 @@ $airtime_products = $product->getProductsWithCat(1, $user->currentUser->plan->id
 					var maxAirtime = <?php echo $appInfo->max_airtime_vending;?>;
 	
 					var amount = $('#amount').val()
-					var to_pay = amount -(amount*1/100);
+					var percentageDiscount = $("input[name='networkType']:checked").attr('data-discount');
+
+					var to_pay = amount -(amount*percentageDiscount/100);
 	
 					$('#to_pay').val(to_pay);
 	
