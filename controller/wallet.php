@@ -19,7 +19,7 @@ if (isset($_POST['fund_wallet'])) {
         }
     }
 
-    if(!filter_var($amount_requested,FILTER_VALIDATE_INT)){
+    if(!filter_var($amount_requested, FILTER_VALIDATE_INT)){
         $_SESSION["errorWalletMessage"] = $clientLang['invalid_amount'];
         header("Location: ".$_POST['form_url']);
         exit();
@@ -118,7 +118,7 @@ elseif (isset($_POST['share_money'])) {
         $_SESSION["errorWalletMessage"] = $clientLang['invalid_amount'];
         header("Location: ".$_POST['form_url']);
         exit();
-    } elseif (strlen($phone_number) != 11){
+    } elseif (!is_numeric($phone_number) OR strlen($phone_number) != 11){
         $_SESSION["errorWalletMessage"] = $clientLang['invalid_phone_number'];
         header("Location: ".$_POST['form_url']);
         exit();

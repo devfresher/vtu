@@ -76,7 +76,7 @@ elseif (isset($_POST["register"])) {
         exit();
     }
 
-    elseif(!filter_var($phoneNumber,FILTER_VALIDATE_INT) OR strlen($phoneNumber) != 11){
+    elseif(!is_numeric($phoneNumber) OR strlen($phoneNumber) != 11){
         $_SESSION["errorRegisterMessage"] = $clientLang['invalid_phone_number'];
         header("Location: ".$_POST['form_url']);
         exit();

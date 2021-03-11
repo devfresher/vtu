@@ -26,5 +26,20 @@ if (isset($_POST['get_network_code'])) {
     }
     exit();
 
+} 
+
+elseif (isset($_POST['buy_airtime'])) {
+    extract($_POST);
+
+    $required_fields = array('amount', 'network_type', 'transaction_pin');
+    foreach ($required_fields as $field) {
+        if (in_array($field, array_keys($_POST)) AND $_POST[$field] != '') {
+            continue;
+        }else {
+            $_SESSION['errorWalletMessage'] = $clientLang['required_fields'];
+            header("Location: ".$_POST['form_url']);
+            exit();
+        }
+    }
 }
 ?>

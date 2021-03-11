@@ -1,8 +1,10 @@
 <?php
 require_once './components/head.php';
+require_once './model/Product.php';
 
 $wallet = new Wallet($db);
-$histories = '';
+$product = new Product($db);
+$airtime_products = $product->getProductsWithCat(1, $user->currentUser->plan->id);
 ?>
 		<!--begin::Page Vendors Styles(used by this page)-->
 		<link href="<?php echo BASE_URL.USER_ROOT?>assets/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
@@ -195,108 +197,46 @@ $histories = '';
 																<input type="hidden" name="form_url" value="<?php echo BASE_URL.USER_ROOT?>aitime-topup.php">
 
                                                                 <div class="form-group">
-                                                                    <label class="col-form-label">Network:</label>
+                                                                    <label class="col-form-label">Select a Network</label>
                                                                     <div class="row">
-                                                                        <div class="col-md-3 col-sm-3 col-6">
-                                                                            <label class="option">
-                                                                                <span class="option-control">
-                                                                                    <span class="radio radio-bold radio-brand"/>
-                                                                                        <input type="radio" name="networkType" value="mtn"/>
-                                                                                        <span></span>
-                                                                                    </span>
-                                                                                </span>
-                                                                                <span class="option-label">
-                                                                                    <span class="option-head">
-                                                                                        <!-- <span class="option-title">
-                                                                                            MTN NG
-                                                                                        </span> -->
-                                                                                        <span class="option-focus">
-                                                                                            1.00%
-                                                                                        </span>
-                                                                                    </span>
-                                                                                    <span class="option-body">
-                                                                                        <img class="img-fluid" src="<?php echo BASE_URL?>uploads/mtn1.png" alt="">
-                                                                                    </span>
-                                                                                </span>
-                                                                            </label>
-                                                                        </div>
-                                                                        <div class="col-md-3 col-sm-3 col-6">
-                                                                            <label class="option">
-                                                                                <span class="option-control">
-                                                                                    <span class="radio radio-bold radio-brand"/>
-                                                                                        <input type="radio" name="networkType" value="glo"/>
-                                                                                        <span></span>
-                                                                                    </span>
-                                                                                </span>
-                                                                                <span class="option-label">
-																				<span class="option-head">
-                                                                                        <!-- <span class="option-title">
-                                                                                            MTN NG
-                                                                                        </span> -->
-                                                                                        <span class="option-focus">
-                                                                                            1.00%
-                                                                                        </span>
-                                                                                    </span>
-                                                                                    <span class="option-body">
-                                                                                        <img class="img-fluid" src="<?php echo BASE_URL?>uploads/glo1.png" alt="">
-                                                                                    </span>
-                                                                                </span>
-                                                                            </label>
-                                                                        </div>
-                                                                        <div class="col-md-3 col-sm-3 col-6">
-                                                                            <label class="option">
-                                                                                <span class="option-control">
-                                                                                    <span class="radio radio-bold radio-brand"/>
-                                                                                        <input type="radio" name="networkType" value="airtel"/>
-                                                                                        <span></span>
-                                                                                    </span>
-                                                                                </span>
-                                                                                <span class="option-label">
-																					<span class="option-head">
-                                                                                        <!-- <span class="option-title">
-                                                                                            MTN NG
-                                                                                        </span> -->
-                                                                                        <span class="option-focus">
-                                                                                            1.00%
-                                                                                        </span>
-                                                                                    </span>
-                                                                                    <span class="option-body">
-                                                                                        <img class="img-fluid" src="<?php echo BASE_URL?>uploads/airtel1.png" alt="">
-                                                                                    </span>
-                                                                                </span>
-                                                                            </label>
-                                                                        </div>
-                                                                        <div class="col-md-3 col-sm-3 col-6">
-                                                                            <label class="option">
-                                                                                <span class="option-control">
-                                                                                    <span class="radio radio-bold radio-brand"/>
-                                                                                        <input type="radio" name="networkType" value="9mobile"/>
-                                                                                        <span></span>
-                                                                                    </span>
-                                                                                </span>
-                                                                                <span class="option-label">
-																					<span class="option-head">
-                                                                                        <!-- <span class="option-title">
-                                                                                            MTN NG
-                                                                                        </span> -->
-                                                                                        <span class="option-focus">
-                                                                                            1.00%
-                                                                                        </span>
-                                                                                    </span>
-                                                                                    <span class="option-body">
-                                                                                        <img class="img-fluid" src="<?php echo BASE_URL?>uploads/9mobile.jpg" alt="">
-                                                                                    </span>
-                                                                                </span>
-                                                                            </label>
-                                                                        </div>
+																		<?php foreach ($airtime_products as $product => $value) {?>
+																			<div class="col-md-3 col-sm-3 col-6">
+																				<label class="option">
+																					<span class="option-control">
+																						<span class="radio radio-bold radio-brand"/>
+																							<input type="radio" name="networkType" value="<?php echo $value['product_code']?>"/>
+																							<span></span>
+																						</span>
+																					</span>
+																					<span class="option-label">
+																						<span class="option-head">
+																							<span class="option-focus">
+																								<?php echo $value['percentage_discount']?>%
+																							</span>
+																						</span>
+																						<span class="option-body">
+																							<img class="img-fluid" src="<?php echo BASE_URL.$value['product_icon']?>" alt="">
+																						</span>
+																					</span>
+																				</label>
+																			</div>
+																		<?php } ?>
                                                                     </div>
                                                                 </div>
 
 																<div class="form-group" >
 																	<label>Amount</label>
 																	<div class="">
-																		<input type="number" name="amount" id="amount" class="form-control" />
+																		<input type="number" name="" id="amount" class="form-control" />
 																	</div>
+																	<span class="text-danger" id="notice">
+																		<strong>NOTICE:</strong> Minimum airtime vending is <?php echo $appInfo->currency_code.number_format($appInfo->min_airtime_vending, 2)?> and maximum airtime vending is <?php echo $appInfo->currency_code.number_format($appInfo->max_airtime_vending, 2)?> 
+																	</span>
+																</div>
+
+																<div class="form-group" style="display: none;">
+																	<label>Amount to pay</label>
+																	<input type="text" class="form-control" name="amount" id="to_pay" disabled>
 																</div>
 	
 																<div class="form-group">
@@ -305,9 +245,10 @@ $histories = '';
 																	<span class="text-danger" id="networkMsg"></span>
 																</div>
 
+
 																<div class="form-group" style="display: none;">
-																	<label>Password</label>
-																	<input type="password" class="form-control" name="password" id="password">
+																	<label>Transaction Pin</label>
+																	<input type="password" class="form-control" name="pin" id="pin">
 																</div>
 
 																<input type="submit" name="buy_airtime" class="btn btn-primary mr-2" value="Buy Airtime" id="buyBtn" disabled>
@@ -463,75 +404,112 @@ $histories = '';
 				}) 
         	}
 
-			function showPassword(amount, phone, networkType) {
+			function getProductDetail(product_code, plan_id) {
+				$.ajax({
+					url: ajaxProcessUrl,
+					type: "post",
+					data: {
+						"product_code" : phone,
+						"plan_id" : plan_id,
+						"get_product" : 1
+					},
+					beforeSend: function(){
+					},
+					success: function(result) {
+						return result;
+					}
+				}) 
+				}
+
+			function showTxnPin(amount, phone, networkType) {
 				if (amount != '' && amount != undefined && phone.length == 11 && networkType != '' && networkType != undefined) {
-					$('#password').parent().show();
+					$('#pin').parent().show();
 				} else {
-					$('#password').val('');
-					$('#password').parent().hide();
+					$('#pin').val('');
+					$('#pin').parent().hide();
 					$('#buyBtn').prop('disabled', true);
 				} 
 			}
 
 			function showBtn() {
-				var password = $('#password').val();
+				var password = $('#pin').val();
 				if (password != '' && password != undefined) {
 					$('#buyBtn').removeAttr('disabled');
 				} else {
 					$('#buyBtn').prop('disabled', true);
 				} 
 			}
-
-			$('#phone_number').on('keyup', function () {
-				var amount = $('#amount').val()
-				var phone = $(this).val();
-				var networkMsg = $("#networkMsg");
-				var networkType = $("input[name='networkType']:checked").val();
-
-				if(phone != '' && phone.length >= 4){
-					getNetwork(phone, networkMsg);
-				}else{
-					networkMsg.html("");
-				}
-
-				showPassword(amount, phone, networkType);
-			})
-
-			$('#amount').on('keyup', function () {
-				var amount = $('#amount').val()
-				var phone = $("#phone_number").val();
-				var networkType = $("input[name='networkType']:checked").val();
-
-				if (networkType == '' || networkType == undefined) {
-					$('#amount').val('');
-					Swal.fire({
-						title: "Error",
-						text: "Select a network",
-						icon: "error"
-					});
-				}
-				if (amount > currentUser.walletBalance) {
-					$('#amount').val('');
-					Swal.fire({
-						title: "Error",
-						text: "Insufficient wallet balance",
-						icon: "error"
-					});
-				}
-				showPassword(amount, phone, networkType);
-			})
-
-			$("input[name='networkType']").on('change', function () {
-				var amount = $('#amount').val()
-				var phone = $("#phone_number").val();
-				var networkType = $("input[name='networkType']:checked").val();
-
-				showPassword(amount, phone, networkType);
-			})
-
-			$('#password').on('keyup', function () {
-				showBtn();
-			})
+			
+			// $(document).ready(function() {
+				$('#phone_number').on('keyup', function () {
+					var amount = $('#amount').val()
+					var to_pay = $('#to_pay').val()
+	
+					var phone = $(this).val();
+					var networkMsg = $("#networkMsg");
+					var networkType = $("input[name='networkType']:checked").val();
+	
+					if(phone != '' && phone.length >= 4){
+						getNetwork(phone, networkMsg);
+					}else{
+						networkMsg.html("");
+					}
+	
+					showTxnPin(amount, phone, networkType);
+				})
+	
+				$('#amount').on('keyup', function () {
+					
+					var phone = $("#phone_number").val();
+					var networkType = $("input[name='networkType']:checked").val();
+					var minAirtime = <?php echo $appInfo->min_airtime_vending;?>;
+					var maxAirtime = <?php echo $appInfo->max_airtime_vending;?>;
+	
+					var amount = $('#amount').val()
+					var to_pay = amount -(amount*1/100);
+	
+					$('#to_pay').val(to_pay);
+	
+	
+					if (networkType == '' || networkType == undefined) {
+						$('#amount').val('');
+						$('#to_pay').parent().hide();
+						Swal.fire({
+							title: "Error",
+							text: "Select a network",
+							icon: "error"
+						});
+					} else if (to_pay > currentUser.walletBalance) {
+						$('#amount').val('');
+						$('#to_pay').parent().hide();
+						Swal.fire({
+							title: "Error",
+							text: "Insufficient wallet balance",
+							icon: "error"
+						});
+					} else if (amount == '' || amount == undefined) {
+						$('#to_pay').parent().hide();
+					} else {
+						showTxnPin(amount, phone, networkType);
+						$('#to_pay').parent().show();
+					}
+				})
+	
+				$("input[name='networkType']").on('change', function () {
+					var amount = $('#amount').val()
+					var phone = $("#phone_number").val();
+					var networkType = $("input[name='networkType']:checked").val();
+	
+					$("input[name='networkType']").parents('label.option').removeClass('selected');
+					$("input[name='networkType']:checked").parents('label.option').addClass('selected');
+	
+					showTxnPin(amount, phone, networkType);
+				})
+	
+				$('#pin').on('keyup', function () {
+					showBtn();
+				})
+			// })
 
 
 		</script>

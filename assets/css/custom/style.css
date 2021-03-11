@@ -1,3 +1,6 @@
 .option .option-label .option-body {
     max-width: 80px;
 }
+.option.selected{
+    border: 5px solid #6a92fc;
+}

@@ -1,5 +1,4 @@
 <?php
-require_once MODEL_DIR.'/Utility.php';
 class Role Extends Utility
 {
     public function getRole($roleId)
