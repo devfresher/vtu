@@ -43,15 +43,62 @@ elseif (isset($_POST['buy_airtime'])) {
 
     print_r($_POST);
     
-    $required_fields = array('amount', 'network_type', 'transaction_pin');
+    $required_fields = array('amount', 'network_type', 'pin', 'phone_number', );
     foreach ($required_fields as $field) {
         if (in_array($field, array_keys($_POST)) AND $_POST[$field] != '') {
             continue;
         }else {
-            $_SESSION['errorWalletMessage'] = $clientLang['required_fields'];
+            $_SESSION['errorMessage'] = $clientLang['required_fields'];
             header("Location: ".$_POST['form_url']);
             exit();
         }
+    }
+
+    if(!filter_var($amount, FILTER_VALIDATE_INT)){
+        $_SESSION["errorMessage"] = $clientLang['invalid_amount'];
+        header("Location: ".$_POST['form_url']);
+        exit();
+    } elseif ($appInfo->min_airtime_vending > $amount) {
+        $_SESSION["errorMessage"] = "You can not purchase airtime lesser than ".$appInfo->currency.$appInfo->min_airtime_vending;
+        header("Location: ".$_POST['form_url']);
+        exit();
+    } elseif ($appInfo->max_airtime_vending < $amount) {
+        $_SESSION["errorMessage"] = "You can not purchase airtime greater than ".$appInfo->currency.$appInfo->min_airtime_vending;
+        header("Location: ".$_POST['form_url']);
+        exit();
+    } elseif(!is_numeric($phone_number) OR strlen($phone_number) != 11){
+        $_SESSION["errorMessage"] = $clientLang['invalid_phone_number'];
+        header("Location: ".$_POST['form_url']);
+        exit();
+    } else {
+        
+        $product = new Product($db);
+
+        $amount = filter_var($_POST["amount"], FILTER_SANITIZE_NUMBER_INT);
+        $productCode = filter_var($_POST['network_type'], FILTER_SANITIZE_STRING);
+
+        $productDetail = $product->getProductWithCode($productCode, $user->currentUser->plan->id);
+        $percentageDiscount = $productDetail->percentage_discount;
+
+        if ($percentageDiscount > 0) {
+            $toPay = $amount - ($amount* ($percentageDiscount/100));
+        } else {
+            $toPay = $amount;
+        }
+
+        $url = APIURL.'airtime?username='.APIUSER.'&pasword='.APIPASS.'&network='.$productCode.'&amount='.$amount.'&phone='.$phone_number;
+
+        
+        $walletOutData = array(
+            'user_id' => $user->currentUser->id,
+            'old_balance' => $user->currentUser->walletBalance,
+            'amount' => $amount,
+            'balance_after' => $user->currentUser->walletBalance - $toPay,
+            'reference' => $reference,
+            'type' => 4,
+            'status' => 6,
+            'date' => date('Y-m-d H:i:s'),
+        );
     }
 }
 ?>

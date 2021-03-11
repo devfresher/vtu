@@ -194,7 +194,7 @@ $airtime_products = $product->getProductsWithCat(1, $user->currentUser->plan->id
 															<?php } unset($_SESSION['successMessage']) ?>
 
 															<form class="form" method="POST" action="<?php echo BASE_URL?>controller/product.php">
-																<input type="hidden" name="form_url" value="<?php echo BASE_URL.USER_ROOT?>aitime-topup.php">
+																<input type="hidden" name="form_url" value="<?php echo BASE_URL.USER_ROOT?>airtime-topup.php">
 
                                                                 <div class="form-group">
                                                                     <label class="col-form-label">Select a Network</label>
@@ -204,7 +204,7 @@ $airtime_products = $product->getProductsWithCat(1, $user->currentUser->plan->id
 																				<label class="option">
 																					<span class="option-control">
 																						<span class="radio radio-bold radio-brand"/>
-																							<input type="radio" name="networkType" value="<?php echo $value['product_code']?>" data-discount = "<?php echo $value['percentage_discount']?>"/>
+																							<input type="radio" name="network_type" value="<?php echo $value['product_code']?>" data-discount = "<?php echo $value['percentage_discount']?>"/>
 																							<span></span>
 																						</span>
 																					</span>
@@ -227,7 +227,7 @@ $airtime_products = $product->getProductsWithCat(1, $user->currentUser->plan->id
 																<div class="form-group" >
 																	<label>Amount</label>
 																	<div class="">
-																		<input type="number" name="" id="amount" class="form-control" />
+																		<input type="number" id="amount" name="amount" class="form-control" />
 																	</div>
 																	<span class="text-danger" id="notice">
 																		<strong>NOTICE:</strong> Minimum airtime vending is <?php echo $appInfo->currency_code.number_format($appInfo->min_airtime_vending, 2)?> and maximum airtime vending is <?php echo $appInfo->currency_code.number_format($appInfo->max_airtime_vending, 2)?> 
@@ -236,7 +236,7 @@ $airtime_products = $product->getProductsWithCat(1, $user->currentUser->plan->id
 
 																<div class="form-group" style="display: none;">
 																	<label>Amount to pay</label>
-																	<input type="text" class="form-control" name="amount" id="to_pay" disabled>
+																	<input type="text" class="form-control" name="to_pay" id="to_pay" disabled>
 																</div>
 	
 																<div class="form-group">
@@ -430,7 +430,7 @@ $airtime_products = $product->getProductsWithCat(1, $user->currentUser->plan->id
 	
 					var phone = $(this).val();
 					var networkMsg = $("#networkMsg");
-					var networkType = $("input[name='networkType']:checked").val();
+					var networkType = $("input[name='network_type']:checked").val();
 	
 					if(phone != '' && phone.length >= 4){
 						getNetwork(phone, networkMsg);
@@ -444,12 +444,12 @@ $airtime_products = $product->getProductsWithCat(1, $user->currentUser->plan->id
 				$('#amount').on('keyup', function () {
 					
 					var phone = $("#phone_number").val();
-					var networkType = $("input[name='networkType']:checked").val();
+					var networkType = $("input[name='network_type']:checked").val();
 					var minAirtime = <?php echo $appInfo->min_airtime_vending;?>;
 					var maxAirtime = <?php echo $appInfo->max_airtime_vending;?>;
 	
 					var amount = $('#amount').val()
-					var percentageDiscount = $("input[name='networkType']:checked").attr('data-discount');
+					var percentageDiscount = $("input[name='network_type']:checked").attr('data-discount');
 
 					var to_pay = amount -(amount*percentageDiscount/100);
 	
@@ -475,18 +475,18 @@ $airtime_products = $product->getProductsWithCat(1, $user->currentUser->plan->id
 					} else if (amount == '' || amount == undefined) {
 						$('#to_pay').parent().hide();
 					} else {
-						showTxnPin(amount, phone, networkType);
 						$('#to_pay').parent().show();
 					}
+					showTxnPin(amount, phone, networkType);
 				})
 	
-				$("input[name='networkType']").on('change', function () {
+				$("input[name='network_type']").on('change', function () {
 					var amount = $('#amount').val()
 					var phone = $("#phone_number").val();
-					var networkType = $("input[name='networkType']:checked").val();
+					var networkType = $("input[name='network_type']:checked").val();
 	
-					$("input[name='networkType']").parents('label.option').removeClass('selected');
-					$("input[name='networkType']:checked").parents('label.option').addClass('selected');
+					$("input[name='network_type']").parents('label.option').removeClass('selected');
+					$("input[name='network_type']:checked").parents('label.option').addClass('selected');
 	
 					showTxnPin(amount, phone, networkType);
 				})

@@ -1,5 +1,5 @@
 <?php
-error_reporting();
+error_reporting(E_ALL ^ E_WARNING);
 session_start();
 ob_start();
 
@@ -41,6 +41,11 @@ define('UPLOADS_DIR', 'uploads/');
 define('PROFILE_UPLOADS_DIR', 'uploads/profile/');
 define('LOGO_UPLOADS_DIR', 'uploads/logo/');
 define('COMPONENT_DIR', 'components/');
+
+define('APIURL', 'https://vtutopup.com/b2bhub/api/');
+define('APIUSER', '09036830349');
+define('APIPASS', 'D3vfr3$#3r');
+
 
 
 $page = explode('.', PAGE);
