@@ -88,17 +88,35 @@ elseif (isset($_POST['buy_airtime'])) {
 
         $url = APIURL.'airtime?username='.APIUSER.'&pasword='.APIPASS.'&network='.$productCode.'&amount='.$amount.'&phone='.$phone_number;
 
-        
-        $walletOutData = array(
-            'user_id' => $user->currentUser->id,
-            'old_balance' => $user->currentUser->walletBalance,
-            'amount' => $amount,
-            'balance_after' => $user->currentUser->walletBalance - $toPay,
-            'reference' => $reference,
-            'type' => 4,
-            'status' => 6,
-            'date' => date('Y-m-d H:i:s'),
-        );
+        $handle = curl_init();
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        $response = json_encode(curl_exec($handle));
+        curl_close($handle);
+
+        if ($response->status == 1) {
+
+            $reference = $utility->genUniqueRef('airtime_purchase');
+
+            $walletOutData = array(
+                'user_id' => $user->currentUser->id,
+                'old_balance' => $user->currentUser->walletBalance,
+                'amount' => $topay,
+                'balance_after' => $user->currentUser->walletBalance - $toPay,
+                'reference' => $reference,
+                'type' => 4,
+                'status' => 6,
+                'order_id' => $response->orderid,
+                'date' => date('Y-m-d H:i:s'),
+            );
+            $transactionData = array(
+                '' => , 
+            );
+            $spend = $wallet->spendFromWallet($walletOutData);
+            $tran = $transaction->create($transactionData);            
+        }
+
+
     }
 }
 ?>
