@@ -1,6 +1,7 @@
 <?php
 require_once MODEL_DIR.'Utility.php';
 require_once MODEL_DIR.'Categories.php';
+
 class Product Extends Utility
 {
     public function getAllProducts()

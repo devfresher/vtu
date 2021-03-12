@@ -1,6 +1,6 @@
 <?php
 require_once MODEL_DIR.'Utility.php';
-class Product Extends Utility
+class Transaction Extends Utility
 {
     public function getAll()
     {

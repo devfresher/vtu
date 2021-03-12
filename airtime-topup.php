@@ -178,20 +178,7 @@ $airtime_products = $product->getProductsWithCat(1, $user->currentUser->plan->id
                                                 <div class="tab-content">
                                                     <div class="tab-pane fade show active" id="fund_wallet" role="tabpanel" aria-labelledby="kt_tab_pane_1_4">
 														<div class="container">
-															<?php if (isset($_SESSION['errorMessage'])) { ?>
-																<div class="alert alert-danger alert-dismissible fade show" role="alert">
-																	<strong>Error:</strong> <?php echo $_SESSION['errorMessage'];?>
-																	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-																		<span aria-hidden="true">&times;</span>
-																	</button>
-																</div>
-															<?php unset($_SESSION['errorMessage']); }?>
-
-															<?php if (isset($_SESSION['successMessage'])) { ?>
-																<div class="alert alert-custom alert-success fade show text-center" role="alert">
-																	Money Sent.
-																</div>
-															<?php } unset($_SESSION['successMessage']) ?>
+											
 
 															<form class="form" method="POST" action="<?php echo BASE_URL?>controller/product.php">
 																<input type="hidden" name="form_url" value="<?php echo BASE_URL.USER_ROOT?>airtime-topup.php">
@@ -380,6 +367,35 @@ $airtime_products = $product->getProductsWithCat(1, $user->currentUser->plan->id
 		<!--begin::Page Scripts(used by this page)-->
 		<script src="assets/js/pages/crud/ktdatatable/base/html-table.js"></script>
 		<script src="assets/js/pages/features/miscellaneous/sweetalert2.js"></script>
+		<?php if (isset($_SESSION['errorMessage'])) {?>
+			<script>
+				Swal.fire({
+					title: "Airtime Topup Failed",
+					text: "<?php echo $_SESSION['errorMessage']?>",
+					icon: "error"
+				});
+			</script>
+		<?php unset($_SESSION['errorMessage']); }?>
+
+		<?php if (isset($_SESSION['successMessage'])) { ?>
+			<script>
+				Swal.fire({
+					title: "Airtime Topup Completed",
+					text: "<?php echo $_SESSION['successMessage']?>",
+					icon: "success"
+				});
+			</script>
+		<?php } unset($_SESSION['successMessage']) ?>
+
+		<?php if (isset($_SESSION['infoMessage'])) { ?>
+			<script>
+				Swal.fire({
+					title: "Processing Airtime Purchase",
+					text: "<?php echo $_SESSION['infoMessage']?>",
+					icon: "info"
+				});
+			</script>
+		<?php } unset($_SESSION['infoMessage']) ?>
 		<script>
 			var ajaxProcessUrl = "<?php echo BASE_URL.'controller/product.php'?>";
 			var currentUser = <?php echo "'".json_encode($user->currentUser)."'"?>;
