@@ -181,4 +181,14 @@ class Utility extends Database {
 
         return $niceFormat;
     }
+
+    public function sendRequest($endpoint, $data='')
+    {
+        $ch = curl_init($endpoint);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        
+        $response = curl_exec($ch);
+        return $response;
+    }
 }

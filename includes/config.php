@@ -1,5 +1,5 @@
 <?php
-error_reporting();
+error_reporting(E_ALL ^ E_WARNING);
 session_start();
 ob_start();
 

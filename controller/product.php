@@ -41,8 +41,6 @@ elseif (isset($_POST['get_product'])) {
 elseif (isset($_POST['buy_airtime'])) {
     extract($_POST);
 
-    print_r($_POST);
-    
     $required_fields = array('amount', 'network_type', 'pin', 'phone_number', );
     foreach ($required_fields as $field) {
         if (in_array($field, array_keys($_POST)) AND $_POST[$field] != '') {
@@ -90,24 +88,35 @@ elseif (isset($_POST['buy_airtime'])) {
             $toPay = $amount;
         }
 
-        $url = APIURL."airtime?username=".APIUSER."&pasword=".APIPASS."&network=$productCode&amount=$amount&phone=$phone_number";
-
-        $handle = curl_init();
-        curl_setopt($handle, CURLOPT_URL, $url);
-
-        $response = json_encode(curl_exec($handle));
-        curl_close($handle);
-
-        print_r($response);
+        $url = APIURL."airtime";
+        $data = array(
+            'username' => APIUSER,
+            'password' => APIPASS,
+            'network' => $productCode,
+            'amount' => $amount,
+            'phone' => $phone_number 
+        );
+        // $response = $utility->sendRequest($url, $data);
+        $response = (object) array(
+            "msg"=>"Order successful",
+            "status"=>"1",
+            "amount_charge"=>98,
+            "orderid"=>"380768988207"
+        );
 
         if ($response->status == 1 AND $response->$response == "Completed") {
-            $url = APIURL.'verifyorder?orderid='.$response->orderid;
+            $url = APIURL."verifyorder";
+            $data = array(
+                'orderid' => $orderid,
+            );
 
-            $handle = curl_init();
-            curl_setopt($handle, CURLOPT_URL, $url);
-
-            $response = json_encode(curl_exec($handle));
-            curl_close($handle);
+            // $response = $utility->sendRequest($url, $data);
+            $response = (object) array(
+                "msg"=>"Order successful",
+                "status"=>"1",
+                "amount_charge"=>98,
+                "orderid"=>"380768988207"
+            );
 
             if ($response->status == 1 AND $response->response == "Completed") {
                 $reference = $utility->genUniqueRef('airtime_purchase');
