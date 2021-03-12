@@ -23,7 +23,7 @@ if (isset($_POST['get_network_code'])) {
     }else {
         echo "Mobile number's network is ".$networkName;
     }
-    exit();
+    //exit();
 
 } 
 
@@ -35,7 +35,7 @@ elseif (isset($_POST['get_product'])) {
     $result = $product->getProductWithCode($productCode, $planId);
 
     echo json_encode($result);
-    exit();
+    //exit();
 }
 
 elseif (isset($_POST['buy_airtime'])) {
@@ -49,28 +49,32 @@ elseif (isset($_POST['buy_airtime'])) {
             continue;
         }else {
             $_SESSION['errorMessage'] = $clientLang['required_fields'];
-            header("Location: ".$_POST['form_url']);
-            exit();
+            //header("Location: ".$_POST['form_url']);
+            //exit();
         }
     }
 
     if(!filter_var($amount, FILTER_VALIDATE_INT)){
         $_SESSION["errorMessage"] = $clientLang['invalid_amount'];
-        header("Location: ".$_POST['form_url']);
-        exit();
+        //header("Location: ".$_POST['form_url']);
+        //exit();
     } elseif ($appInfo->min_airtime_vending > $amount) {
         $_SESSION["errorMessage"] = "You can not purchase airtime lesser than ".$appInfo->currency.$appInfo->min_airtime_vending;
-        header("Location: ".$_POST['form_url']);
-        exit();
+        //header("Location: ".$_POST['form_url']);
+        //exit();
     } elseif ($appInfo->max_airtime_vending < $amount) {
         $_SESSION["errorMessage"] = "You can not purchase airtime greater than ".$appInfo->currency.$appInfo->min_airtime_vending;
-        header("Location: ".$_POST['form_url']);
-        exit();
+        //header("Location: ".$_POST['form_url']);
+        //exit();
     } elseif(!is_numeric($phone_number) OR strlen($phone_number) != 11){
         $_SESSION["errorMessage"] = $clientLang['invalid_phone_number'];
-        header("Location: ".$_POST['form_url']);
-        exit();
-    } else {
+        //header("Location: ".$_POST['form_url']);
+        //exit();
+    } elseif (!password_verify($pin, $user->currentUser->transaction_pin)) {
+        $_SESSION["errorMessage"] = $clientLang['incorrect_pin'];
+        //header("Location: ".$_POST['form_url']);
+        //exit();
+    }  else {
         
         $product = new Product($db);
 
@@ -86,7 +90,7 @@ elseif (isset($_POST['buy_airtime'])) {
             $toPay = $amount;
         }
 
-        $url = APIURL.'airtime?username='.APIUSER.'&pasword='.APIPASS.'&network='.$productCode.'&amount='.$amount.'&phone='.$phone_number;
+        $url = APIURL."airtime?username=".APIUSER."&pasword=".APIPASS."&network=$productCode&amount=$amount&phone=$phone_number";
 
         $handle = curl_init();
         curl_setopt($handle, CURLOPT_URL, $url);
@@ -94,26 +98,61 @@ elseif (isset($_POST['buy_airtime'])) {
         $response = json_encode(curl_exec($handle));
         curl_close($handle);
 
-        if ($response->status == 1) {
+        print_r($response);
 
-            $reference = $utility->genUniqueRef('airtime_purchase');
+        if ($response->status == 1 AND $response->$response == "Completed") {
+            $url = APIURL.'verifyorder?orderid='.$response->orderid;
 
-            $walletOutData = array(
-                'user_id' => $user->currentUser->id,
-                'old_balance' => $user->currentUser->walletBalance,
-                'amount' => $topay,
-                'balance_after' => $user->currentUser->walletBalance - $toPay,
-                'reference' => $reference,
-                'type' => 4,
-                'status' => 6,
-                'order_id' => $response->orderid,
-                'date' => date('Y-m-d H:i:s'),
-            );
-            $transactionData = array(
-                '' => , 
-            );
-            $spend = $wallet->spendFromWallet($walletOutData);
-            $tran = $transaction->create($transactionData);            
+            $handle = curl_init();
+            curl_setopt($handle, CURLOPT_URL, $url);
+
+            $response = json_encode(curl_exec($handle));
+            curl_close($handle);
+
+            if ($response->status == 1 AND $response->response == "Completed") {
+                $reference = $utility->genUniqueRef('airtime_purchase');
+                $date = date('Y-m-d H:i:s');
+    
+                $walletOutData = array(
+                    'user_id' => $user->currentUser->id,
+                    'old_balance' => $user->currentUser->walletBalance,
+                    'amount' => $topay,
+                    'balance_after' => $user->currentUser->walletBalance - $toPay,
+                    'reference' => $reference,
+                    'type' => 4,
+                    'status' => 6,
+                    'date' => $date,
+                );
+                $transactionData = array(
+                    'product_plan_id' => $productDetail->id, 
+                    'order_id' => $response->orderid,
+                    'date' => $date,
+                    'status' => 4,
+                    'amount_charged' => $toPay,
+                    'old_balance' => $user->currentUser->walletBalance,
+                    'balance_after' => $user->currentUser->walletBalance - $toPay,
+                    'received_by' => $phone,
+                    'message' => $response->msg,
+                    'user_id' => $user->currentUser->id,
+                );  
+                
+                $db->beginTransaction();
+                $spend = $wallet->spendFromWallet($walletOutData);
+                $tran = $transaction->create($transactionData);   
+    
+                if ($spend !== false AND $tran !== false){
+                    $db->commit();
+                    $_SESSION["successMessage"] = $response->msg;
+                    //header("Location: ".$_POST['form_url']);
+                    //exit();
+                } else {
+                    $db->rollBack();
+                    $_SESSION["errorMessage"] = 'Airtime Purchase not completed';
+                    //header("Location: ".$_POST['form_url']);
+                    //exit();
+                }
+            }
+
         }
 
 

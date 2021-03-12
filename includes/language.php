@@ -25,6 +25,8 @@
 	$clientLang['account_not_active']='Account not active';
 
 	$clientLang['unexpected_error']='Unexpected error occured';
+
+	$clientLang['incorrect_pin']='Incorrect transaction pin';
 	
 	// for user account vefified
 	$clientLang['account_not_verified']='Account not verified. Check email to verify';

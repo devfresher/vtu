@@ -122,7 +122,7 @@ elseif (isset($_POST['share_money'])) {
         $_SESSION["errorWalletMessage"] = $clientLang['invalid_phone_number'];
         header("Location: ".$_POST['form_url']);
         exit();
-    } elseif (!password_verify($password, $currentUser->password)) {
+    } elseif (!password_verify($password, $currentUser->pin)) {
         $_SESSION["errorWalletMessage"] = $clientLang['invalid_password'];
         header("Location: ".$_POST['form_url']);
         exit();

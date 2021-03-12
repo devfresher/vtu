@@ -58,7 +58,7 @@
 									<span class="navi-text text-muted text-hover-primary"><?php echo $user->currentUser->email?></span>
 								</span>
 							</a>
-							<a href="<?php echo BASE_URL.USER_ROOT?>logout.php" class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5">Sign Out</a>
+							<a href="<?php echo BASE_URL.USER_ROOT?>logout.php" class="btn btn-sm btn-light-danger font-weight-bolder py-2 px-5">Sign Out</a>
 						</div>
 					</div>
 				</div>

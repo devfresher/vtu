@@ -20,7 +20,7 @@ class User extends Utility {
             $currentUser = $this->loggedInUser();
 
             $this->currentUser = $currentUser;
-            $this->currentUser->firstLetter = $this->currentUser->firstname[0];
+            $this->currentUser->firstLetter = $this->currentUser->firstname[0].$this->currentUser->lastname[0];
             $this->currentUser->fullName = $this->currentUser->firstname.' '.$this->currentUser->lastname;
             $this->currentUser->walletBalance = $wallet->getWalletBalance($currentUser->id);
             $this->currentUser->role = $this->arrayToObject($role->getrole($currentUser->role));
