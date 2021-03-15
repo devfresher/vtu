@@ -232,38 +232,25 @@ $airtimePurchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 1)
 															<table class="datatable datatable-bordered datatable-head-custom" id="kt_datatable">
 																<thead>
 																	<tr>
-																		<th title="Field #1" class="custom-th">
-																			Icon
-																		</th>
-																		<th title="Field #2" class="custom-th">Date / Reference</th>
-																		<th title="Field #3" class="custom-th">Cost Price</th>
-																		<th title="Field #4" class="custom-th">Network / Receipient</th>
-																		<th title="Field #5" class="custom-th">Amount & Balances</th>
-																		<th title="Field #6" class="custom-th">Status</th>
-																		<th title="Field #7" class="custom-th">Message</th>
+																		<th title="Field #1" class="custom-th">Date / Reference</th>
+																		<th title="Field #2" class="custom-th">Network / Receipient</th>
+																		<th title="Field #3" class="custom-th">Amount & Balances</th>
+																		<th title="Field #4" class="custom-th">Status</th>
+																		<th title="Field #5" class="custom-th">Message</th>
 																	</tr>
 																</thead>
 																<tbody>
 																	<?php if($airtimePurchaseHistory !== false){
 																	 	foreach ($airtimePurchaseHistory as $history) {?>
 																			<tr>
-																				<td class="">
-																					<div class="symbol symbol-30 symbol-light">
-																						<span class="symbol-label">
-																							<img src="<?php echo BASE_URL.$history['product_icon']?>" class="h-50 align-self-center" alt="">
-																						</span>
-																					</div>
-																				</td>
 																				<td><?php echo $utility->niceDateFormat($history['date']).'<br><br><strong>'.$history['reference']?></strong></td>
-																				<td><?php echo $appInfo->currency_code.number_format($history['amount'],2)?></td>
 																				<td>
-																					<?php echo $history['product_name']?> / 
-																					<strong><?php echo $history['received_by']?></strong>
+																					<?php echo $history['product_name'].' '.$history['amount'].' - '.'<strong>'.$history['received_by'].'</strong>'?>
 																				</td>
 																				<td>
-																					<strong>Old: </strong> <?php echo $appInfo->currency_code.number_format($history['old_balance'],2)?><br><br>
+																					<label class="label font-weight-bold label-lg label-light-info label-inline">Old: <?php echo $appInfo->currency_code.number_format($history['old_balance'],2)?></label><br><br>
 																					<strong>Amount Charged: </strong> <?php echo $appInfo->currency_code.number_format($history['amount_charged'], 2)?><br><br>
-																					<strong>New: </strong> <?php echo $appInfo->currency_code.number_format($history['balance_after'],2)?>
+																					<label class="label font-weight-bold label-lg label-light-success label-inline">New: <?php echo $appInfo->currency_code.number_format($history['balance_after'],2)?></label>
 																				</td>
 																				<td><?php echo $history['status']?></td>
 																				<td><?php echo $history['message']?></td>
