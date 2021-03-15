@@ -92,8 +92,8 @@ elseif ($event->status == "1") {
     $transaction->updateTxn($updateData, $orderId);
 }
 
-if (isset($_SERVER['HTTP_REFFERER'])) {
-    header('Location: '.$_SERVER['HTTP_REFFERER']);
+if (isset($_SERVER['HTTP_REFERER'])) {
+    header('Location: '.$_SERVER['HTTP_REFERER']);
 }
 
 ?>
