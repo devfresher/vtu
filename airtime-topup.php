@@ -74,7 +74,7 @@ $airtimePurchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 1)
 														<div class="container">
 											
 
-															<form class="form" method="POST" action="<?php echo BASE_URL?>controller/product.php">
+															<form class="form" method="POST" id="buy-airtime-form" action="<?php echo BASE_URL?>controller/product.php">
 																<input type="hidden" name="form_url" value="<?php echo BASE_URL.USER_ROOT?>airtime-topup.php">
 
                                                                 <div class="form-group">
@@ -407,6 +407,24 @@ $airtimePurchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 1)
 	
 				$('#pin').on('keyup', function () {
 					showBtn();
+				})
+
+				$('#buyBtn').on("click",function(e) {
+					// e.preventDefault();
+
+					Swal.fire({
+						title: 'Airtime Purchase',
+						text: 'Are you sure you want to do this?',
+						icon: 'question',
+						showCancelButton: true,
+						confirmButtonText: "Yes",
+						cancelButtonText: "No, Cancel",
+					}).then(function(result) {
+						if (result.value) {
+							$('#buy-airtime-form').submit();
+						}
+					});
+					
 				})
 			// })
 
