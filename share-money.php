@@ -28,117 +28,7 @@ $histories = $wallet->getMoneyShareHistories($user->currentUser->id);
 					<!--begin::Content-->
 					<div class="content d-flex flex-column flex-column-fluid" id="kt_content">
 
-						<!--begin::Subheader-->
-						<div class="subheader py-2 py-lg-12 subheader-transparent" id="kt_subheader">
-							<div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
-								<!--begin::Info-->
-								<div class="d-flex align-items-center flex-wrap mr-1">
-									<!--begin::Heading-->
-									<div class="d-flex flex-column">
-										<!--begin::Title-->
-										<h2 class="text-white font-weight-bold my-2 mr-5">My Wallet</h2>
-										<!--end::Title-->
-										<!--begin::Breadcrumb-->
-										<div class="d-flex align-items-center font-weight-bold my-2">
-											<!--begin::Item-->
-											<a href="#" class="opacity-75 hover-opacity-100">
-												<i class="flaticon2-shelter text-white icon-1x"></i>
-											</a>
-											<!--end::Item-->
-											<!--begin::Item-->
-											<span class="label label-dot label-sm bg-white opacity-75 mx-3"></span>
-											<a href="" class="text-white text-hover-white opacity-75 hover-opacity-100">Wallet</a>
-											<!--end::Item-->
-										</div>
-										<!--end::Breadcrumb-->
-									</div>
-									<!--end::Heading-->
-								</div>
-								<!--end::Info-->
-								<!--begin::Toolbar-->
-								<div class="d-flex align-items-center">
-									<!--begin::Button-->
-									<a href="#" class="btn btn-transparent-white font-weight-bold py-3 px-6 mr-2">Reports</a>
-									<!--end::Button-->
-									<!--begin::Dropdown-->
-									<div class="dropdown dropdown-inline ml-2" data-toggle="tooltip" title="Quick actions" data-placement="top">
-										<a href="#" class="btn btn-white font-weight-bold py-3 px-6" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions</a>
-										<div class="dropdown-menu p-0 m-0 dropdown-menu-md dropdown-menu-right">
-											<!--begin::Navigation-->
-											<ul class="navi navi-hover py-5">
-												<li class="navi-item">
-													<a href="#" class="navi-link">
-														<span class="navi-icon">
-															<i class="flaticon2-drop"></i>
-														</span>
-														<span class="navi-text">New Group</span>
-													</a>
-												</li>
-												<li class="navi-item">
-													<a href="#" class="navi-link">
-														<span class="navi-icon">
-															<i class="flaticon2-list-3"></i>
-														</span>
-														<span class="navi-text">Contacts</span>
-													</a>
-												</li>
-												<li class="navi-item">
-													<a href="#" class="navi-link">
-														<span class="navi-icon">
-															<i class="flaticon2-rocket-1"></i>
-														</span>
-														<span class="navi-text">Groups</span>
-														<span class="navi-link-badge">
-															<span class="label label-light-primary label-inline font-weight-bold">new</span>
-														</span>
-													</a>
-												</li>
-												<li class="navi-item">
-													<a href="#" class="navi-link">
-														<span class="navi-icon">
-															<i class="flaticon2-bell-2"></i>
-														</span>
-														<span class="navi-text">Calls</span>
-													</a>
-												</li>
-												<li class="navi-item">
-													<a href="#" class="navi-link">
-														<span class="navi-icon">
-															<i class="flaticon2-gear"></i>
-														</span>
-														<span class="navi-text">Settings</span>
-													</a>
-												</li>
-												<li class="navi-separator my-3"></li>
-												<li class="navi-item">
-													<a href="#" class="navi-link">
-														<span class="navi-icon">
-															<i class="flaticon2-magnifier-tool"></i>
-														</span>
-														<span class="navi-text">Help</span>
-													</a>
-												</li>
-												<li class="navi-item">
-													<a href="#" class="navi-link">
-														<span class="navi-icon">
-															<i class="flaticon2-bell-2"></i>
-														</span>
-														<span class="navi-text">Privacy</span>
-														<span class="navi-link-badge">
-															<span class="label label-light-danger label-rounded font-weight-bold">5</span>
-														</span>
-													</a>
-												</li>
-											</ul>
-											<!--end::Navigation-->
-										</div>
-									</div>
-									<!--end::Dropdown-->
-								</div>
-								<!--end::Toolbar-->
-							</div>
-						</div>
-						<!--end::Subheader-->
+						<?php include_once './components/subToolBar.php'?>
 
 						<!--begin::Entry-->
 						<div class="d-flex flex-column-fluid">
@@ -176,21 +66,6 @@ $histories = $wallet->getMoneyShareHistories($user->currentUser->id);
                                                 <div class="tab-content">
                                                     <div class="tab-pane fade show active" id="fund_wallet" role="tabpanel" aria-labelledby="kt_tab_pane_1_4">
 														<div class="container">
-															<?php if (isset($_SESSION['errorWalletMessage'])) { ?>
-																<div class="alert alert-danger alert-dismissible fade show" role="alert">
-																	<strong>Error:</strong> <?php echo $_SESSION['errorWalletMessage'];?>
-																	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-																		<span aria-hidden="true">&times;</span>
-																	</button>
-																</div>
-															<?php unset($_SESSION['errorWalletMessage']); }?>
-
-															<?php if (isset($_SESSION['successWalletMessage'])) { ?>
-																<div class="alert alert-custom alert-success fade show text-center" role="alert">
-																	Money Sent.
-																</div>
-															<?php } unset($_SESSION['successWalletMessage']) ?>
-
 															<form class="form" method="POST" action="<?php echo BASE_URL?>controller/wallet.php">
 																<input type="hidden" name="form_url" value="<?php echo BASE_URL.USER_ROOT?>share-money.php">
 																<div class="form-group">
@@ -253,6 +128,7 @@ $histories = $wallet->getMoneyShareHistories($user->currentUser->id);
 																						<option value="3">Share Out</option>
 																						<option value="4">Purchase</option>
 																						<option value="5">Withdrawal</option>
+																						<option value="6">Refund</option>
 																					</select>
 																				</div>
 																			</div>
@@ -308,7 +184,39 @@ $histories = $wallet->getMoneyShareHistories($user->currentUser->id);
 															</div>
 															<!--end: Search Form-->
 
-															<?php include_once './components/walletOutTable.php'?>
+															<!--begin: Datatable-->
+															<table class="datatable datatable-bordered datatable-head-custom" id="kt_datatable">
+																<thead>
+																	<tr>
+																		<th title="Field #1">Date / Reference</th>
+																		<th title="Field #2">Amount</th>
+																		<th title="Field #3">Balances</th>
+																		<th title="Field #4">Type</th>
+																		<th title="Field #5">Status</th>
+																	</tr>
+																</thead>
+																<tbody>
+																	<?php if($histories !== false){
+																		// echo '<pre>';
+																		// print_r($histories);
+																	 	foreach ($histories as $history) {?>
+																			<tr>
+																				<td><?php echo $utility->niceDateFormat($history['date']).'<br><br><strong>'.$history['reference']?></strong></td>
+																				<td>
+																					<?php echo $appInfo->currency_code.number_format($history['amount'], 2)?>
+																				</td>
+																				<td>
+																					<strong>Old: </strong> <?php echo $appInfo->currency_code.number_format($history['old_balance'],2)?><br><br>
+																					<strong>New: </strong> <?php echo $appInfo->currency_code.number_format($history['balance_after'],2)?>
+																				</td>
+																				<td><?php echo $history['type']?></td>
+																				<td class="text-center"><?php echo $history['status']?></td>
+																			</tr>
+																		<?php } ?>
+																	<?php } ?>
+																</tbody>
+															</table>
+															<!--end: Datatable-->
 														</div>
                                                     </div>
                                                 </div>
@@ -339,8 +247,10 @@ $histories = $wallet->getMoneyShareHistories($user->currentUser->id);
 		<?php include_once './components/js.php';?>
 		
 		<!--begin::Page Scripts(used by this page)-->
-		<script src="assets/js/pages/crud/ktdatatable/base/html-table.js"></script>
+		<script src="assets/js/pages/crud/ktdatatable/base/share_money-table.js"></script>
 		<script src="assets/js/pages/features/miscellaneous/sweetalert2.js"></script>
+		<?php include_once './components/message.php'?>
+
 		<script>
 			var ajaxProcessUrl = "<?php echo BASE_URL.'controller/auth.php'?>";
 			var currentUser = <?php echo "'".json_encode($user->currentUser)."'"?>;

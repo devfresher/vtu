@@ -1,10 +1,14 @@
 <?php
 require_once './components/head.php';
 require_once './model/Product.php';
+require_once './model/Transaction.php';
 
 $wallet = new Wallet($db);
 $product = new Product($db);
-$airtime_products = $product->getProductsWithCat(1, $user->currentUser->plan->id);
+$transaction = new Transaction($db);
+
+$airtimeProducts = $product->getProductsWithCat(1, $user->currentUser->plan->id);
+$airtimePurchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 1);
 ?>
 		<!--begin::Page Vendors Styles(used by this page)-->
 		<link href="<?php echo BASE_URL.USER_ROOT?>assets/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
@@ -30,117 +34,7 @@ $airtime_products = $product->getProductsWithCat(1, $user->currentUser->plan->id
 					<!--begin::Content-->
 					<div class="content d-flex flex-column flex-column-fluid" id="kt_content">
 
-						<!--begin::Subheader-->
-						<div class="subheader py-2 py-lg-12 subheader-transparent" id="kt_subheader">
-							<div class="container d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
-								<!--begin::Info-->
-								<div class="d-flex align-items-center flex-wrap mr-1">
-									<!--begin::Heading-->
-									<div class="d-flex flex-column">
-										<!--begin::Title-->
-										<h2 class="text-white font-weight-bold my-2 mr-5">Airtime Topup</h2>
-										<!--end::Title-->
-										<!--begin::Breadcrumb-->
-										<div class="d-flex align-items-center font-weight-bold my-2">
-											<!--begin::Item-->
-											<a href="#" class="opacity-75 hover-opacity-100">
-												<i class="flaticon2-shelter text-white icon-1x"></i>
-											</a>
-											<!--end::Item-->
-											<!--begin::Item-->
-											<span class="label label-dot label-sm bg-white opacity-75 mx-3"></span>
-											<a href="" class="text-white text-hover-white opacity-75 hover-opacity-100">Airtime</a>
-											<!--end::Item-->
-										</div>
-										<!--end::Breadcrumb-->
-									</div>
-									<!--end::Heading-->
-								</div>
-								<!--end::Info-->
-								<!--begin::Toolbar-->
-								<div class="d-flex align-items-center">
-									<!--begin::Button-->
-									<a href="#" class="btn btn-transparent-white font-weight-bold py-3 px-6 mr-2">Reports</a>
-									<!--end::Button-->
-									<!--begin::Dropdown-->
-									<div class="dropdown dropdown-inline ml-2" data-toggle="tooltip" title="Quick actions" data-placement="top">
-										<a href="#" class="btn btn-white font-weight-bold py-3 px-6" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Actions</a>
-										<div class="dropdown-menu p-0 m-0 dropdown-menu-md dropdown-menu-right">
-											<!--begin::Navigation-->
-											<ul class="navi navi-hover py-5">
-												<li class="navi-item">
-													<a href="#" class="navi-link">
-														<span class="navi-icon">
-															<i class="flaticon2-drop"></i>
-														</span>
-														<span class="navi-text">New Group</span>
-													</a>
-												</li>
-												<li class="navi-item">
-													<a href="#" class="navi-link">
-														<span class="navi-icon">
-															<i class="flaticon2-list-3"></i>
-														</span>
-														<span class="navi-text">Contacts</span>
-													</a>
-												</li>
-												<li class="navi-item">
-													<a href="#" class="navi-link">
-														<span class="navi-icon">
-															<i class="flaticon2-rocket-1"></i>
-														</span>
-														<span class="navi-text">Groups</span>
-														<span class="navi-link-badge">
-															<span class="label label-light-primary label-inline font-weight-bold">new</span>
-														</span>
-													</a>
-												</li>
-												<li class="navi-item">
-													<a href="#" class="navi-link">
-														<span class="navi-icon">
-															<i class="flaticon2-bell-2"></i>
-														</span>
-														<span class="navi-text">Calls</span>
-													</a>
-												</li>
-												<li class="navi-item">
-													<a href="#" class="navi-link">
-														<span class="navi-icon">
-															<i class="flaticon2-gear"></i>
-														</span>
-														<span class="navi-text">Settings</span>
-													</a>
-												</li>
-												<li class="navi-separator my-3"></li>
-												<li class="navi-item">
-													<a href="#" class="navi-link">
-														<span class="navi-icon">
-															<i class="flaticon2-magnifier-tool"></i>
-														</span>
-														<span class="navi-text">Help</span>
-													</a>
-												</li>
-												<li class="navi-item">
-													<a href="#" class="navi-link">
-														<span class="navi-icon">
-															<i class="flaticon2-bell-2"></i>
-														</span>
-														<span class="navi-text">Privacy</span>
-														<span class="navi-link-badge">
-															<span class="label label-light-danger label-rounded font-weight-bold">5</span>
-														</span>
-													</a>
-												</li>
-											</ul>
-											<!--end::Navigation-->
-										</div>
-									</div>
-									<!--end::Dropdown-->
-								</div>
-								<!--end::Toolbar-->
-							</div>
-						</div>
-						<!--end::Subheader-->
+						<?php include_once './components/subToolBar.php'?>
 
 						<!--begin::Entry-->
 						<div class="d-flex flex-column-fluid">
@@ -186,7 +80,7 @@ $airtime_products = $product->getProductsWithCat(1, $user->currentUser->plan->id
                                                                 <div class="form-group">
                                                                     <label class="col-form-label">Select a Network</label>
                                                                     <div class="row">
-																		<?php foreach ($airtime_products as $product => $value) {?>
+																		<?php foreach ($airtimeProducts as $productName => $value) {?>
 																			<div class="col-md-3 col-sm-3 col-6">
 																				<label class="option">
 																					<span class="option-control">
@@ -334,7 +228,51 @@ $airtime_products = $product->getProductsWithCat(1, $user->currentUser->plan->id
 															</div>
 															<!--end: Search Form-->
 
-															<?php include_once './components/walletOutTable.php'?>
+															<!--begin: Datatable-->
+															<table class="datatable datatable-bordered datatable-head-custom" id="kt_datatable">
+																<thead>
+																	<tr>
+																		<th title="Field #1" class="custom-th">
+																			Icon
+																		</th>
+																		<th title="Field #2" class="custom-th">Date / Reference</th>
+																		<th title="Field #3" class="custom-th">Cost Price</th>
+																		<th title="Field #4" class="custom-th">Network / Receipient</th>
+																		<th title="Field #5" class="custom-th">Amount & Balances</th>
+																		<th title="Field #6" class="custom-th">Status</th>
+																		<th title="Field #7" class="custom-th">Message</th>
+																	</tr>
+																</thead>
+																<tbody>
+																	<?php if($airtimePurchaseHistory !== false){
+																	 	foreach ($airtimePurchaseHistory as $history) {?>
+																			<tr>
+																				<td class="">
+																					<div class="symbol symbol-30 symbol-light">
+																						<span class="symbol-label">
+																							<img src="<?php echo BASE_URL.$history['product_icon']?>" class="h-50 align-self-center" alt="">
+																						</span>
+																					</div>
+																				</td>
+																				<td><?php echo $utility->niceDateFormat($history['date']).'<br><br><strong>'.$history['reference']?></strong></td>
+																				<td><?php echo $appInfo->currency_code.number_format($history['amount'],2)?></td>
+																				<td>
+																					<?php echo $history['product_name']?> / 
+																					<strong><?php echo $history['received_by']?></strong>
+																				</td>
+																				<td>
+																					<strong>Old: </strong> <?php echo $appInfo->currency_code.number_format($history['old_balance'],2)?><br><br>
+																					<strong>Amount Charged: </strong> <?php echo $appInfo->currency_code.number_format($history['amount_charged'], 2)?><br><br>
+																					<strong>New: </strong> <?php echo $appInfo->currency_code.number_format($history['balance_after'],2)?>
+																				</td>
+																				<td><?php echo $history['status']?></td>
+																				<td><?php echo $history['message']?></td>
+																			</tr>
+																		<?php } ?>
+																	<?php } ?>
+																</tbody>
+															</table>
+															<!--end: Datatable-->
 														</div>
                                                     </div>
                                                 </div>
@@ -365,37 +303,10 @@ $airtime_products = $product->getProductsWithCat(1, $user->currentUser->plan->id
 		<?php include_once './components/js.php';?>
 		
 		<!--begin::Page Scripts(used by this page)-->
-		<script src="assets/js/pages/crud/ktdatatable/base/html-table.js"></script>
+		<script src="assets/js/pages/crud/ktdatatable/base/txn-table.js"></script>
 		<script src="assets/js/pages/features/miscellaneous/sweetalert2.js"></script>
-		<?php if (isset($_SESSION['errorMessage'])) {?>
-			<script>
-				Swal.fire({
-					title: "Airtime Topup Failed",
-					text: "<?php echo $_SESSION['errorMessage']?>",
-					icon: "error"
-				});
-			</script>
-		<?php unset($_SESSION['errorMessage']); }?>
+		<?php include_once './components/message.php'?>
 
-		<?php if (isset($_SESSION['successMessage'])) { ?>
-			<script>
-				Swal.fire({
-					title: "Airtime Topup Completed",
-					text: "<?php echo $_SESSION['successMessage']?>",
-					icon: "success"
-				});
-			</script>
-		<?php } unset($_SESSION['successMessage']) ?>
-
-		<?php if (isset($_SESSION['infoMessage'])) { ?>
-			<script>
-				Swal.fire({
-					title: "Processing Airtime Purchase",
-					text: "<?php echo $_SESSION['infoMessage']?>",
-					icon: "info"
-				});
-			</script>
-		<?php } unset($_SESSION['infoMessage']) ?>
 		<script>
 			var ajaxProcessUrl = "<?php echo BASE_URL.'controller/product.php'?>";
 			var currentUser = <?php echo "'".json_encode($user->currentUser)."'"?>;

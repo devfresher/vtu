@@ -4,11 +4,10 @@ class Api Extends Utility
 {
     public function __construct($db) {
         $this->db = $db;
+        
         $this->apiurl = APIURL;
         $this->apiuser = APIUSER;
         $this->apipassword = APIPASS;
-
-
     }
 
     public function sendGetRequest($api_endpoint, $data)

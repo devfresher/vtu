@@ -1,11 +1,15 @@
 <?php
 class Wallet Extends Utility
 {
-    protected $responseBody;
+    public function __construct($db) {
+        $this->db = $db;
+        $this->table1 = 'wallet_in';
+        $this->table2 = 'wallet_out';
+    }
 
     public function walletReadAll() {
-        $walletIn = $this->db->getAllRecords("wallet_in", "*");
-        $walletOut = $this->db->getAllRecords("wallet_out", "*");
+        $walletIn = $this->db->getAllRecords($this->table1, "*");
+        $walletOut = $this->db->getAllRecords($this->table2, "*");
 
         if ($walletIn) {
             $feedback = $walletIn;
@@ -31,12 +35,12 @@ class Wallet Extends Utility
             SELECT 
             user_id,old_balance,amount,
             balance_after,reference,type,status,date 
-            FROM `wallet_out` 
+            FROM $this->table2 
             UNION ALL 
             SELECT 
             user_id,old_balance,amount,
             balance_after,reference,type,status,date 
-            FROM wallet_in ORDER BY date DESC
+            FROM $this->table1 ORDER BY date DESC
         ");
 
         if ($walletResult) {
@@ -63,9 +67,23 @@ class Wallet Extends Utility
         return $this->responseBody;
     }
 
+    public function walletReadItemWithOrderId($table, $orderId)
+    {
+        $walletResult = $this->db->getAllRecords($table, "*", "AND order_id = '$orderId'");
+
+        if (count($walletResult) > 0) {
+            $feedback = $walletResult[0];
+            $this->responseBody = $this->arrayToObject($feedback);
+        } else {
+            $this->responseBody = false;
+        }
+
+        return $this->responseBody;
+    }
+
     public function getWalletInHistories($userId)
     {
-        $walletResult = $this->db->getAllRecords('wallet_in', "*", "AND user_id = '$userId'", "ORDER BY date DESC");
+        $walletResult = $this->db->getAllRecords($this->table1, "*", "AND user_id = '$userId'", "ORDER BY date DESC");
 
         if ($walletResult) {
             $feedback = $walletResult;
@@ -79,7 +97,7 @@ class Wallet Extends Utility
 
     public function getWalletFundingHistories($userId)
     {
-        $walletResult = $this->db->getAllRecords('wallet_in', "*", "AND user_id = '$userId' AND type = 1", "ORDER BY date DESC");
+        $walletResult = $this->db->getAllRecords($this->table1, "*", "AND user_id = '$userId' AND type = 1", "ORDER BY date DESC");
 
         if ($walletResult) {
             $feedback = $walletResult;
@@ -95,11 +113,11 @@ class Wallet Extends Utility
     {
         $walletResult = $this->db->getRecFrmQry("
         SELECT  `id`,`user_id`,`old_balance`,`amount`,`balance_after`,`reference`,`type`,`status`,`date`
-            FROM wallet_out 
+            FROM $this->table2 
             WHERE `user_id` = $userId AND `type` = '3' 
             UNION ALL
         SELECT  `id`,`user_id`,`old_balance`,`amount`,`balance_after`,`reference`,`type`,`status`,`date`
-            FROM wallet_in
+            FROM $this->table1
             WHERE `user_id` = $userId AND type = '2' 
             ORDER BY `date` DESC
         ");
@@ -117,7 +135,7 @@ class Wallet Extends Utility
 
     public function fundWalletRequest($walletRequestData)
     {
-        $topUp = $this->db->insert('wallet_in', $walletRequestData);
+        $topUp = $this->db->insert($this->table1, $walletRequestData);
 
         if ($topUp > 0) {
             $this->responseBody =  true;
@@ -128,9 +146,24 @@ class Wallet Extends Utility
         return $this->responseBody;
     }
 
+    public function approveWalletRequest($reference)
+    {
+        $update = $this->db->getRecFrmQry2(
+            "UPDATE $this->table SET `status` = 3, `balance_after` = SUM(old_balance + amount) WHERE reference = '$reference'"
+        );
+
+        if (count($update) > 0) {
+            $this->responseBody =  true;
+        } else {
+            $this->responseBody =  false;
+        }
+
+        return $this->responseBody;
+    }
+
     public function spendFromWallet($walletRequestData)
     {
-        $spend = $this->db->insert('wallet_out', $walletRequestData);
+        $spend = $this->db->insert($this->table2, $walletRequestData);
 
         if ($spend > 0) {
             $this->responseBody =  true;
@@ -159,7 +192,7 @@ class Wallet Extends Utility
 
     private function sumWalletIn($userId)
     {
-        $result = $this->db->getRecFrmQry("SELECT SUM(amount) AS total_sum FROM wallet_in WHERE user_id = '$userId' AND status = '3'");
+        $result = $this->db->getRecFrmQry("SELECT SUM(amount) AS total_sum FROM $this->table1 WHERE user_id = '$userId' AND status = '3'");
         
         if ($result > 0) {
             $sum = (double) $result[0]['total_sum'];
@@ -172,7 +205,7 @@ class Wallet Extends Utility
 
     private function sumWalletOut($userId)
     {
-        $result = $this->db->getRecFrmQry("SELECT SUM(amount) AS total_sum FROM wallet_out WHERE user_id = '$userId'");
+        $result = $this->db->getRecFrmQry("SELECT SUM(amount) AS total_sum FROM $this->table2 WHERE user_id = '$userId'");
         
         if ($result > 0) {
             $sum = (double) $result[0]['total_sum'];

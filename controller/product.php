@@ -57,24 +57,14 @@ elseif (isset($_POST['buy_airtime'])) {
 
     if(!filter_var($amount, FILTER_VALIDATE_INT)){
         $_SESSION["errorMessage"] = $clientLang['invalid_amount'];
-        header("Location: ".$_POST['form_url']);
-        exit();
     } elseif ($appInfo->min_airtime_vending > $amount) {
         $_SESSION["errorMessage"] = "You can not purchase airtime lesser than ".$appInfo->currency.$appInfo->min_airtime_vending;
-        header("Location: ".$_POST['form_url']);
-        exit();
     } elseif ($appInfo->max_airtime_vending < $amount) {
         $_SESSION["errorMessage"] = "You can not purchase airtime greater than ".$appInfo->currency.$appInfo->min_airtime_vending;
-        header("Location: ".$_POST['form_url']);
-        exit();
     } elseif(!is_numeric($phone_number) OR strlen($phone_number) != 11){
         $_SESSION["errorMessage"] = $clientLang['invalid_phone_number'];
-        header("Location: ".$_POST['form_url']);
-        exit();
     } elseif (!password_verify($pin, $user->currentUser->transaction_pin)) {
         $_SESSION["errorMessage"] = $clientLang['incorrect_pin'];
-        header("Location: ".$_POST['form_url']);
-        exit();
     }  else {
         
         $product = new Product($db);
@@ -116,6 +106,7 @@ elseif (isset($_POST['buy_airtime'])) {
                     'amount' => $toPay,
                     'balance_after' => $user->currentUser->walletBalance - $toPay,
                     'reference' => $reference,
+                    'order_id' => $verify->orderid,
                     'type' => 4,
                     'status' => 4,
                     'date' => $date,
@@ -127,6 +118,7 @@ elseif (isset($_POST['buy_airtime'])) {
                     'order_id' => $verify->orderid,
                     'date' => $date,
                     'status' => 4,
+                    'amount' => $amount,
                     'amount_charged' => $toPay,
                     'old_balance' => $user->currentUser->walletBalance,
                     'balance_after' => $user->currentUser->walletBalance - $toPay,
@@ -142,13 +134,9 @@ elseif (isset($_POST['buy_airtime'])) {
                 if ($spend !== false AND $tran !== false){
                     $db->commit();
                     $_SESSION["successMessage"] = $verify->msg;
-                    header("Location: ".$_POST['form_url']);
-                    exit();
                 } else {
                     $db->rollBack();
                     $_SESSION["errorMessage"] = $verify->msg;
-                    header("Location: ".$_POST['form_url']);
-                    exit();
                 }
             } elseif ($verify->status == "0"){
                 $walletOutData = array(
@@ -157,6 +145,7 @@ elseif (isset($_POST['buy_airtime'])) {
                     'amount' => $toPay,
                     'balance_after' => $user->currentUser->walletBalance - $toPay,
                     'reference' => $reference,
+                    'order_id' => $verify->orderid,
                     'type' => 4,
                     'status' => 4,
                     'date' => $date,
@@ -168,6 +157,7 @@ elseif (isset($_POST['buy_airtime'])) {
                     'order_id' => $response->orderid,
                     'date' => $date,
                     'status' => 1,
+                    'amount' => $amount,
                     'amount_charged' => $toPay,
                     'old_balance' => $user->currentUser->walletBalance,
                     'balance_after' => $user->currentUser->walletBalance - $toPay,
@@ -183,13 +173,9 @@ elseif (isset($_POST['buy_airtime'])) {
                 if ($spend !== false AND $tran !== false){
                     $db->commit();
                     $_SESSION["infoMessage"] = "Airtime purchase transaction pending, will be completed soon.";
-                    header("Location: ".$_POST['form_url']);
-                    exit();
                 } else {
                     $db->rollBack();
                     $_SESSION["errorMessage"] = "Unexpected error occured";
-                    header("Location: ".$_POST['form_url']);
-                    exit();
                 }
             } elseif ($verify->status == "2"){
                 $walletOutData = array(
@@ -198,6 +184,7 @@ elseif (isset($_POST['buy_airtime'])) {
                     'amount' => $toPay,
                     'balance_after' => $user->currentUser->walletBalance - $toPay,
                     'reference' => $reference,
+                    'order_id' => $verify->orderid,
                     'type' => 4,
                     'status' => 4,
                     'date' => $date,
@@ -209,6 +196,7 @@ elseif (isset($_POST['buy_airtime'])) {
                     'order_id' => $response->orderid,
                     'date' => $date,
                     'status' => 1,
+                    'amount' => $amount,
                     'amount_charged' => $toPay,
                     'old_balance' => $user->currentUser->walletBalance,
                     'balance_after' => $user->currentUser->walletBalance - $toPay,
@@ -224,25 +212,22 @@ elseif (isset($_POST['buy_airtime'])) {
                 if ($spend !== false AND $tran !== false){
                     $db->commit();
                     $_SESSION["infoMessage"] = "Airtime purchase transaction awaiting response from network provider, will be completed soon.";
-                    header("Location: ".$_POST['form_url']);
-                    exit();
                 } else {
                     $db->rollBack();
                     $_SESSION["errorMessage"] = "Unexpected error occured";
-                    header("Location: ".$_POST['form_url']);
-                    exit();
                 }
             } else {
                 if (isset($response->msg)) {
                     $transactionData = array(
                         'reference' => $reference,
-                        'product_plan_id' => '', 
-                        'order_id' => $response->orderid,
+                        'product_plan_id' => $productDetail->id, 
+                        'order_id' => NULL,
                         'date' => $date,
-                        'status' => 1,
-                        'amount_charged' => $toPay,
+                        'status' => 2,
+                        'amount' => $amount,
+                        'amount_charged' => 0,
                         'old_balance' => $user->currentUser->walletBalance,
-                        'balance_after' => $user->currentUser->walletBalance - $toPay,
+                        'balance_after' => $user->currentUser->walletBalance,
                         'received_by' => $phone_number,
                         'message' => $response->msg,
                         'user_id' => $user->currentUser->id,
@@ -260,13 +245,14 @@ elseif (isset($_POST['buy_airtime'])) {
                 } else {
                     $transactionData = array(
                         'reference' => $reference,
-                        'product_plan_id' => '', 
-                        'order_id' => $response->orderid,
+                        'product_plan_id' => $productDetail->id, 
+                        'order_id' => NULL,
                         'date' => $date,
-                        'status' => 1,
-                        'amount_charged' => $toPay,
+                        'status' => 2,
+                        'amount' => $amount,
+                        'amount_charged' => 0,
                         'old_balance' => $user->currentUser->walletBalance,
-                        'balance_after' => $user->currentUser->walletBalance - $toPay,
+                        'balance_after' => $user->currentUser->walletBalance,
                         'received_by' => $phone_number,
                         'message' => 'Airtime topup not completed',
                         'user_id' => $user->currentUser->id,
@@ -282,20 +268,19 @@ elseif (isset($_POST['buy_airtime'])) {
                         $_SESSION["errorMessage"] = "Unexpected error occured";
                     }
                 }
-                header("Location: ".$_POST['form_url']);
-                exit();
             } 
         } else {
             if (isset($response->msg)) {
                 $transactionData = array(
                     'reference' => $reference,
-                    'product_plan_id' => '', 
-                    'order_id' => $response->orderid,
+                    'product_plan_id' => $productDetail->id, 
+                    'order_id' => NULL,
                     'date' => $date,
-                    'status' => 1,
-                    'amount_charged' => $toPay,
+                    'status' => 2,
+                    'amount' => $amount,
+                    'amount_charged' => 0,
                     'old_balance' => $user->currentUser->walletBalance,
-                    'balance_after' => $user->currentUser->walletBalance - $toPay,
+                    'balance_after' => $user->currentUser->walletBalance,
                     'received_by' => $phone_number,
                     'message' => $response->msg,
                     'user_id' => $user->currentUser->id,
@@ -314,13 +299,14 @@ elseif (isset($_POST['buy_airtime'])) {
             } else {
                 $transactionData = array(
                     'reference' => $reference,
-                    'product_plan_id' => '', 
-                    'order_id' => $response->orderid,
+                    'product_plan_id' => $productDetail->id, 
+                    'order_id' => NULL,
                     'date' => $date,
-                    'status' => 1,
-                    'amount_charged' => $toPay,
+                    'status' => 2,
+                    'amount' => $amount,
+                    'amount_charged' => 0,
                     'old_balance' => $user->currentUser->walletBalance,
-                    'balance_after' => $user->currentUser->walletBalance - $toPay,
+                    'balance_after' => $user->currentUser->walletBalance,
                     'received_by' => $phone_number,
                     'message' => 'Airtime topup not completed',
                     'user_id' => $user->currentUser->id,
@@ -336,10 +322,12 @@ elseif (isset($_POST['buy_airtime'])) {
                     $_SESSION["errorMessage"] = "Unexpected error occured";
                 }
             }
-            header("Location: ".$_POST['form_url']);
-            exit();
     
         }
     }
+    // print_r($response);
+    // print_r($_SESSION);
+    header("Location: ".$_POST['form_url']);
+    exit();
 }
 ?>

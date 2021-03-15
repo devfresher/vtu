@@ -4,3 +4,10 @@
 .option.selected{
     border: 5px solid #6a92fc;
 }
+th[data-field=Icon] > span{
+    width: 30px !important;
+}
+
+td[data-field=Icon] > div{
+    width: 30px !important;
+}

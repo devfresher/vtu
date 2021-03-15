@@ -11,6 +11,7 @@ class User extends Utility {
 
     function __construct($db) {
         $this->db = $db;
+        $this->table = 'users';
 
         $plan = new Plan($db);
         $role = new Role($db);
@@ -31,7 +32,7 @@ class User extends Utility {
     }
 
     function getUserById($userId) {
-        $result = $this->db->getAllRecords("users", "*", "AND id = $userId");
+        $result = $this->db->getAllRecords($this->table, "*", "AND id = $userId");
 
         if (count($result) > 0) {
             $this->responseBody = $this->arrayToObject($result[0]);
@@ -43,7 +44,7 @@ class User extends Utility {
     }
 
     function getUser($key) {
-        $result = $this->db->getAllRecords("users", "*", "AND email = '$key' OR phone_number = '$key'");
+        $result = $this->db->getAllRecords($this->table, "*", "AND email = '$key' OR phone_number = '$key'");
 
         if (count($result) > 0) {
             $this->responseBody = $this->arrayToObject($result[0]);
@@ -55,7 +56,7 @@ class User extends Utility {
     }
 
     function getUserByEmail($email) {
-        $result = $this->db->getAllRecords("users", "*", "AND email = '$email'");
+        $result = $this->db->getAllRecords($this->table, "*", "AND email = '$email'");
         
         if (count($result) > 0) {
             $this->responseBody = $this->arrayToObject($result[0]);
@@ -67,7 +68,7 @@ class User extends Utility {
     }
 
     function getUserByPhone($phone) {
-        $result = $this->db->getAllRecords("users", "*", "AND phone_number = '$phone'");
+        $result = $this->db->getAllRecords($this->table, "*", "AND phone_number = '$phone'");
 
         if (count($result) > 0) {
             $this->responseBody = $this->arrayToObject($result[0]);
@@ -111,7 +112,7 @@ class User extends Utility {
     }
 
     public function processRegister($userData) {
-        $result = $this->db->insert("users", $userData);
+        $result = $this->db->insert($this->table, $userData);
 
         if ($result) {
             $this->responseBody = true;

@@ -13,20 +13,20 @@ if (isset($_POST['fund_wallet'])) {
         if (in_array($field, array_keys($_POST)) AND $_POST[$field] != '') {
             continue;
         }else {
-            $_SESSION['errorWalletMessage'] = $clientLang['required_fields'];
+            $_SESSION['errorMessage'] = $clientLang['required_fields'];
             header("Location: ".$_POST['form_url']);
             exit();
         }
     }
 
     if(!filter_var($amount_requested, FILTER_VALIDATE_INT)){
-        $_SESSION["errorWalletMessage"] = $clientLang['invalid_amount'];
+        $_SESSION["errorMessage"] = $clientLang['invalid_amount'];
         header("Location: ".$_POST['form_url']);
         exit();
     }
 
     elseif ($appInfo->min_fund_request > $amount_requested) {
-        $_SESSION["errorWalletMessage"] = "You can not fund with less than ".$appInfo->currency.$appInfo->min_fund_request;
+        $_SESSION["errorMessage"] = "You can not fund with less than ".$appInfo->currency.$appInfo->min_fund_request;
         header("Location: ".$_POST['form_url']);
         exit();
     }
@@ -43,7 +43,7 @@ if (isset($_POST['fund_wallet'])) {
             case 'manual':
                 if ($requestedAmount >= $appInfo->min_stampduty) {
                     if ($requestedAmount < $appInfo->bank_stampduty) {
-                        $_SESSION["errorWalletMessage"] = 'Requested amount is greater than '.$appInfo->currency.$appInfo->bank_stampduty.' bank stampduty';
+                        $_SESSION["errorMessage"] = 'Requested amount is greater than '.$appInfo->currency.$appInfo->bank_stampduty.' bank stampduty';
                         header("Location: ".$_POST['form_url']);
                         exit();
                     } else{
@@ -56,7 +56,7 @@ if (isset($_POST['fund_wallet'])) {
             
             case 'auto_fund':
                 if ($requestedAmount < $appInfo->auto_funding_charge) {
-                    $_SESSION["errorWalletMessage"] = 'Your Requested amount must be greater than '.$appInfo->currency.$appInfo->auto_funding_charge.' auto funding charge';
+                    $_SESSION["errorMessage"] = 'Your Requested amount must be greater than '.$appInfo->currency.$appInfo->auto_funding_charge.' auto funding charge';
                     header("Location: ".$_POST['form_url']);
                     exit();
                 } else {
@@ -83,14 +83,14 @@ if (isset($_POST['fund_wallet'])) {
         // print_r($walletRequestData);
         if($wallet->fundWalletRequest($walletRequestData)){
             if ($method == 'auto_fund') {
-                $_SESSION["successWalletMessage"] = 'auto_fund_request_sent';
+                $_SESSION["successMessage"] = 'auto_fund_request_sent';
             } elseif ($method == 'manual') {
-                $_SESSION["successWalletMessage"] = 'manual_request_sent';
+                $_SESSION["successMessage"] = 'manual_request_sent';
             }
             header("Location: ".$_POST['form_url']);
             exit();
         } else {
-            $_SESSION["errorWalletMessage"] = $clientLang['unexpected_error'];
+            $_SESSION["errorMessage"] = $clientLang['unexpected_error'];
             header("Location: ".$_POST['form_url']);
             exit();
         }
@@ -106,7 +106,7 @@ elseif (isset($_POST['share_money'])) {
         if (in_array($field, array_keys($_POST)) AND $_POST[$field] != '') {
             continue;
         }else {
-            $_SESSION['errorWalletMessage'] = $clientLang['required_fields'];
+            $_SESSION['errorMessage'] = $clientLang['required_fields'];
             header("Location: ".$_POST['form_url']);
             exit();
         }
@@ -114,21 +114,15 @@ elseif (isset($_POST['share_money'])) {
 
     $currentUser = $user->getUserById($user->currentUser->id);
 
-    if (!filter_var($amount, FILTER_VALIDATE_INT)){
-        $_SESSION["errorWalletMessage"] = $clientLang['invalid_amount'];
-        header("Location: ".$_POST['form_url']);
-        exit();
+    if (!filter_var($amount, FILTER_VALIDATE_FLOAT)){
+        $_SESSION["errorMessage"] = $clientLang['invalid_amount'];
     } elseif (!is_numeric($phone_number) OR strlen($phone_number) != 11){
-        $_SESSION["errorWalletMessage"] = $clientLang['invalid_phone_number'];
-        header("Location: ".$_POST['form_url']);
-        exit();
-    } elseif (!password_verify($password, $currentUser->pin)) {
-        $_SESSION["errorWalletMessage"] = $clientLang['invalid_password'];
-        header("Location: ".$_POST['form_url']);
-        exit();
+        $_SESSION["errorMessage"] = $clientLang['invalid_phone_number'];
+    } elseif (!password_verify($password, $currentUser->transaction_pin)) {
+        $_SESSION["errorMessage"] = $clientLang['incorrect_pin'];
     } else {
         $wallet = new Wallet($db);
-        $amount = filter_var($_POST["amount"], FILTER_SANITIZE_NUMBER_INT);
+        $amount = filter_var($_POST["amount"], FILTER_SANITIZE_NUMBER_FLOAT);
         $phone = filter_var($_POST["phone_number"], FILTER_SANITIZE_STRING);
 
         $reference = $utility->genUniqueRef('share_wallet');
@@ -164,14 +158,15 @@ elseif (isset($_POST['share_money'])) {
 
         if ($fund !== false AND $spend !== false){
             $db->commit();
-            $_SESSION["successWalletMessage"] = 'money_shared';
-            header("Location: ".$_POST['form_url']);
-            exit();
+            $_SESSION["successMessage"] = 'money_shared';
         } else {
             $db->rollBack();
-            $_SESSION["errorWalletMessage"] = 'Money can not be shared now';
-            header("Location: ".$_POST['form_url']);
-            exit();
+            $_SESSION["errorMessage"] = 'Money can not be shared now';
         }
     }
+
+    header("Location: ".$_POST['form_url']);
+    exit();
+
+    // print_r($_SESSION);
 }
