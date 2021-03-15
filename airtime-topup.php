@@ -253,7 +253,10 @@ $airtimePurchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 1)
 																					<label class="label font-weight-bold label-lg label-light-success label-inline">New: <?php echo $appInfo->currency_code.number_format($history['balance_after'],2)?></label>
 																				</td>
 																				<td><?php echo $history['status']?></td>
-																				<td><?php echo $history['message']?></td>
+																				<td>
+																					<?php echo $history['message']?>
+																					<?php echo ($history['status'] == 1) ? '<a href="'. BASE_URL.'webhook.php?requery&id='.$history['order_id'].'" class="btn btn-danger btn-sm requeryBtn" type="button" data-orderId="'.$history['order_id'].'">Requery</a>':''?>
+																				</td>
 																			</tr>
 																		<?php } ?>
 																	<?php } ?>
@@ -317,6 +320,23 @@ $airtimePurchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 1)
 					}
 				}) 
         	}
+
+			function requeryTxn(orderId, button) {
+				$.ajax({
+					url: ajaxProcessUrl,
+					type: "post",
+					data: {
+						"order_id" : orderId,
+						"requery" : 1
+					},
+					beforeSend: function(){
+						button.html("<i class='fas fa-stroopwafel fa-spin'></i>");
+					},
+					success: function(result) {
+						button.html(Requery);
+					}
+				}) 
+			}
 
 			function showTxnPin(amount, phone, networkType) {
 				if (amount != '' && amount != undefined && phone.length == 11 && networkType != '' && networkType != undefined) {
@@ -431,6 +451,28 @@ $airtimePurchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 1)
 						}
 					});
 					
+				})
+
+				$('.requeryBtn').each(function() {
+					var button = $(this);
+					var orderId = button.attr('data-orderId');
+
+					$('.requeryBtn').on('click', function() {
+						$.ajax({
+							url: "<?php echo BASE_URL.'/webhook.php'?>",
+							type: "post",
+							data: {
+								"order_id" : orderId,
+								"requery" : 1
+							},
+							beforeSend: function(){
+								button.html("<i class='fas fa-stroopwafel fa-spin'></i>");
+							},
+							success: function(result) {
+								button.html('Requery');
+							}
+						})
+					})
 				})
 			// })
 

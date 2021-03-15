@@ -4,12 +4,21 @@ require_once 'model/Product.php';
 require_once 'model/Transaction.php';
 require_once 'model/Api.php';
 
-$data = file_get_contents("php://input");
-$event = json_decode($data);
-
 $transaction = new Transaction($db);
 $wallet = new Wallet($db);
 $user = new User($db);
+$api = new  Api($db);
+
+if (isset($_GET['requery'])) {
+    extract($_GET);
+
+    $event = $api->verifyOrder($id);
+    $orderId = $event->orderid;
+}else {
+    $data = file_get_contents("php://input");
+    $event = json_decode($data);
+    $orderId = $event->dataId;
+}
 
 // Awaiting provider response event
 if ($event->status == "2") {
@@ -19,7 +28,7 @@ if ($event->status == "2") {
         'message' => $event->msg,
     );
 
-    $transaction->updateTxn($updateData, $event->dataid);
+    $transaction->updateTxn($updateData, $orderId);
 }
 
 // Refund event
@@ -30,14 +39,15 @@ elseif ($event->status == "4") {
         'message' => $event->msg,
     );
 
-    $walletItem = $wallet->walletReadItemWithOrderId('wallet_out', $event->dataid);
+    $walletItem = $wallet->walletReadItemWithOrderId('wallet_out', $orderId);
     $date = date('Y-m-d H:i:s');
+
     
     $walletItemUser = $user->getUserById($walletItem->user_id);
     $walletItemUserBal = $wallet->getWalletBalance($walletItem->user_id);
 
     $reference = $utility->genUniqueRef('refund');
-    $transactionItem = $transaction->getTxn($event->dataid);
+    $transactionItem = $transaction->getTxn($orderId);
 
     $walletRequestData = array(
         'user_id' => $walletItemUser->id,
@@ -54,7 +64,7 @@ elseif ($event->status == "4") {
     $transactionData = array(
         'reference' => $reference,
         'product_plan_id' => $transactionItem->product_plan_id, 
-        'order_id' => $event->dataid,
+        'order_id' => $orderId,
         'date' => $date,
         'status' => 5,
         'amount' => $transactionItem->amount,
@@ -67,7 +77,7 @@ elseif ($event->status == "4") {
     );
 
     $wallet->fundWalletRequest($walletRequestData);
-    $transaction->updateTxn($updateData, $event->dataid);
+    $transaction->updateTxn($updateData, $orderId);
     $transaction->create($transactionData);
 }
 
@@ -79,8 +89,11 @@ elseif ($event->status == "1") {
         'message' => $event->msg,
     );
 
-    $transaction->updateTxn($updateData, $event->dataid);
+    $transaction->updateTxn($updateData, $orderId);
 }
 
-mail('fresher.dev01@gmail.com', 'Called', $data);
+if (isset($_SERVER['HTTP_REFFERER'])) {
+    header('Location: '.$_SERVER['HTTP_REFFERER']);
+}
+
 ?>
