@@ -28,6 +28,7 @@ elseif ($event->status == "4") {
     $updateData  = array(
         'status' => 5,
         'message' => $event->msg,
+        'old'
     );
 
     $walletItem = $wallet->walletReadItemWithOrderId('wallet_out', $event->dataid);
@@ -36,7 +37,7 @@ elseif ($event->status == "4") {
     $walletItemUserBal = $wallet->getWalletBalance($walletItem->user_id);
 
     $walletRequestData = array(
-        'user_id' => $walletItem->user_id,
+        'user_id' => $walletItemUser->id,
         'old_balance' => $walletItemUserBal,
         'amount' => $walletItem->amount,
         'balance_after' => $walletItemUserBal + $walletItem->amount,
@@ -62,5 +63,5 @@ elseif ($event->status == "1") {
     $transaction->updateTxn($updateData, $event->dataid);
 }
 
-// mail('fresher.dev01@gmail.com', 'Called', 'Webhook called');
+mail('fresher.dev01@gmail.com', 'Called', $event);
 ?>

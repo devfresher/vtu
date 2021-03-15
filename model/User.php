@@ -32,7 +32,7 @@ class User extends Utility {
     }
 
     function getUserById($userId) {
-        $result = $this->db->getAllRecords($this->table, "*", "AND id = $userId");
+        $result = $this->db->getAllRecords($this->table, "*", "AND id = '$userId'");
 
         if (count($result) > 0) {
             $this->responseBody = $this->arrayToObject($result[0]);
