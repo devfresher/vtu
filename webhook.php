@@ -19,7 +19,7 @@ if ($event->status == "2") {
         'message' => $event->msg,
     );
 
-    $transaction->updateTxn($updateData, $event->orderid);
+    $transaction->updateTxn($updateData, $event->dataid);
 }
 
 // Refund event
@@ -30,7 +30,7 @@ elseif ($event->status == "4") {
         'message' => $event->msg,
     );
 
-    $walletItem = $wallet->walletReadItemWithOrderId('wallet_out', $event->orderid);
+    $walletItem = $wallet->walletReadItemWithOrderId('wallet_out', $event->dataid);
     
     $walletItemUser = $user->getUserById($walletItem->user_id);
     $walletItemUserBal = $wallet->getWalletBalance($walletItem->user_id);
@@ -48,7 +48,7 @@ elseif ($event->status == "4") {
     );
 
     $wallet->fundWalletRequest($walletRequestData);
-    $transaction->updateTxn($updateData, $event->orderid);
+    $transaction->updateTxn($updateData, $event->dataid);
 }
 
 // Successful event
@@ -59,8 +59,8 @@ elseif ($event->status == "1") {
         'message' => $event->msg,
     );
 
-    $transaction->updateTxn($updateData, $event->orderid);
+    $transaction->updateTxn($updateData, $event->dataid);
 }
 
-mail('fresher.dev01@gmail.com', 'Called', 'Webhook called');
+// mail('fresher.dev01@gmail.com', 'Called', 'Webhook called');
 ?>

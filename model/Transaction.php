@@ -113,7 +113,7 @@ class Transaction Extends Utility
         $whereData  = array('order_id' => $orderid);
 
         $update = $this->db->update($this->table, $updateData, $whereData);
-
+        
         if ($update > 0) {
             $this->responseBody =  true;
         } else {
