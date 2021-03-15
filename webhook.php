@@ -55,7 +55,6 @@ elseif ($event->status == "4") {
         'amount' => $walletItem->amount,
         'balance_after' => $walletItemUserBal + $walletItem->amount,
         'reference' => $walletItem->reference,
-        'method' => '',
         'type' => 6,
         'status' => 3,
         'date' => $date,
