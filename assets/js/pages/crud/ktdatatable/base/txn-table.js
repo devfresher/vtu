@@ -31,10 +31,6 @@ var KTDatatableHtmlTableDemo = function() {
           textAlign: 'left'
         },
         {
-          field: 'Cost Price',
-          sortable: false
-        },
-        {
           field: 'Amount & Balances',
           sortable: false,
           autoHide: false,
@@ -47,7 +43,7 @@ var KTDatatableHtmlTableDemo = function() {
         {
           field: 'Network / Receipient',
           sortable: false,
-          autoHide: true,
+          autoHide: false,
           textAlign: 'left'
         }, 
         {

@@ -28,13 +28,16 @@ elseif ($event->status == "4") {
     $updateData  = array(
         'status' => 5,
         'message' => $event->msg,
-        'old'
     );
 
     $walletItem = $wallet->walletReadItemWithOrderId('wallet_out', $event->dataid);
+    $date = date('Y-m-d H:i:s');
     
     $walletItemUser = $user->getUserById($walletItem->user_id);
     $walletItemUserBal = $wallet->getWalletBalance($walletItem->user_id);
+
+    $reference = $utility->genUniqueRef('refund');
+    $transactionItem = $transaction->getTxn($event->dataid);
 
     $walletRequestData = array(
         'user_id' => $walletItemUser->id,
@@ -45,11 +48,27 @@ elseif ($event->status == "4") {
         'method' => '',
         'type' => 6,
         'status' => 3,
-        'date' => date('Y-m-d H:i:s'),
+        'date' => $date,
+    );
+
+    $transactionData = array(
+        'reference' => $reference,
+        'product_plan_id' => $transactionItem->product_plan_id, 
+        'order_id' => $event->dataid,
+        'date' => $date,
+        'status' => 5,
+        'amount' => $transactionItem->amount,
+        'amount_charged' => $transactionItem->amount_charged,
+        'old_balance' => $walletItemUserBal,
+        'balance_after' => $user->currentUser->walletBalance + $transactionItem->amount_charged,
+        'received_by' => $transactionItem->received_by,
+        'message' => 'Wallet refunded',
+        'user_id' => $transactionItem->user_id,
     );
 
     $wallet->fundWalletRequest($walletRequestData);
     $transaction->updateTxn($updateData, $event->dataid);
+    $transaction->create($transactionData);
 }
 
 // Successful event
@@ -63,5 +82,5 @@ elseif ($event->status == "1") {
     $transaction->updateTxn($updateData, $event->dataid);
 }
 
-mail('fresher.dev01@gmail.com', 'Called', $event);
+mail('fresher.dev01@gmail.com', 'Called', $data);
 ?>
