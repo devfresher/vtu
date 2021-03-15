@@ -43,6 +43,8 @@ elseif (isset($_POST['get_product'])) {
 
 elseif (isset($_POST['buy_airtime'])) {
     extract($_POST);
+    print_r($_POST);    
+
 
     $required_fields = array('amount', 'network_type', 'pin', 'phone_number', );
     foreach ($required_fields as $field) {

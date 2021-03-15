@@ -409,19 +409,25 @@ $airtimePurchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 1)
 					showBtn();
 				})
 
-				$('#buyBtn').on("click",function(e) {
-					// e.preventDefault();
+				$("#buyBtn").closest('form').on('submit', function(e) {
+					var form = this;
+					e.preventDefault();
+
+					var amount = $('#amount').val()	
+					var phone = $("#phone_number").val();
+					var networkType = $("input[name='network_type']:checked").val();
 
 					Swal.fire({
 						title: 'Airtime Purchase',
-						text: 'Are you sure you want to do this?',
+						text: 'Are you sure you want to buy <?php echo $appInfo->currency?>'+amount+' '+networkType.toUpperCase()+' airtime to '+phone,
 						icon: 'question',
 						showCancelButton: true,
 						confirmButtonText: "Yes",
 						cancelButtonText: "No, Cancel",
 					}).then(function(result) {
 						if (result.value) {
-							$('#buy-airtime-form').submit();
+							$('form').append("<input type='hidden' name='buy_airtime'/>");
+							form.submit();
 						}
 					});
 					
