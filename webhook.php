@@ -29,6 +29,7 @@ if ($event->status == "2") {
     );
 
     $transaction->updateTxn($updateData, $orderId);
+    $_SESSION['infoMessage'] = $event->msg;
 }
 
 // Refund event
@@ -78,6 +79,8 @@ elseif ($event->status == "4") {
     $wallet->fundWalletRequest($walletRequestData);
     $transaction->updateTxn($updateData, $orderId);
     $transaction->create($transactionData);
+    $_SESSION['infoMessage'] = $event->msg;
+
 }
 
 // Successful event
@@ -89,6 +92,7 @@ elseif ($event->status == "1") {
     );
 
     $transaction->updateTxn($updateData, $orderId);
+    $_SESSION['infoMessage'] = $event->msg;
 }
 
 if (isset($_SERVER['HTTP_REFERER'])) {
