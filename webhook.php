@@ -1,12 +1,10 @@
 <?php
 require_once 'includes/config.php';
-require_once 'model/Product.php';
 require_once 'model/Transaction.php';
 require_once 'model/Api.php';
 
 $transaction = new Transaction($db);
 $wallet = new Wallet($db);
-$user = new User($db);
 $api = new  Api($db);
 
 if (isset($_GET['requery'])) {
@@ -15,6 +13,9 @@ if (isset($_GET['requery'])) {
     $event = $api->verifyOrder($id);
     $orderId = $event->orderid;
 }else {
+    if (!$appInfo->send_webhook_notification) {
+        die();
+    }
     $data = file_get_contents("php://input");
     $event = json_decode($data);
     $orderId = $event->dataId;

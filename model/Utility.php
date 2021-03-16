@@ -235,4 +235,9 @@ class Utility extends Database {
 
         return $niceFormat;
     }
+
+    public function is_cli()
+    {
+        return php_sapi_name() === 'cli';
+    }
 }
