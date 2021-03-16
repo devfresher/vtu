@@ -5,7 +5,6 @@ require_once MODEL_DIR.'Plan.php';
 require_once MODEL_DIR.'Role.php';
 
 class User extends Utility {
-    protected $db;
     public $currentUser;
     protected $responseBody;
 

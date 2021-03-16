@@ -162,7 +162,7 @@
 														</li>
 
 														<li class="menu-item menu-item-submenu" data-menu-toggle="hover" aria-haspopup="true">
-															<a href="<?php echo BASE_URL.USER_ROOT?>broadband-bundles" class="menu-link">
+															<a href="<?php echo BASE_URL.USER_ROOT?>databundles.php" class="menu-link">
 																<span class="svg-icon menu-icon">
 																	<!--begin::Svg Icon | path:assets/media/svg/icons/Shopping/Box2.svg-->
 																	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">

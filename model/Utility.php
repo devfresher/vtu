@@ -2,7 +2,6 @@
 
 class Utility extends Database {
 
-    protected $db;
     protected $responseBody;
 
     function __construct($db) {
