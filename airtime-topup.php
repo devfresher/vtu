@@ -255,7 +255,8 @@ $airtimePurchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 1)
 																				<td><?php echo $history['status']?></td>
 																				<td>
 																					<?php echo $history['message']?>
-																					<?php echo ($history['status'] == 1) ? '<a href="'. BASE_URL.'webhook.php?requery&id='.$history['order_id'].'" class="btn btn-danger btn-sm requeryBtn" type="button" data-orderId="'.$history['order_id'].'">Requery</a>':''?>
+																					<?php echo ($history['status'] == 1) ? '<a href="'. BASE_URL.'webhook?requery&id='.$history['order_id'].'" class="btn btn-danger btn-sm requeryBtn" data-orderId="'.$history['order_id'].'">Requery</a>':''?>
+																					<?php echo ($history['status'] != 1) ? '<a href="'. BASE_URL.'receipt?refId='.$history['reference'].'" data-orderId="'.$history['order_id'].'"><i class="text-success fas fa-print"></i></a>':''?>
 																				</td>
 																			</tr>
 																		<?php } ?>

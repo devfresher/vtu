@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 15, 2021 at 08:36 AM
+-- Generation Time: Mar 15, 2021 at 08:49 AM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.6
 
@@ -27,6 +27,7 @@ SET time_zone = "+00:00";
 -- Table structure for table `category`
 --
 
+DROP TABLE IF EXISTS `category`;
 CREATE TABLE `category` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
@@ -47,6 +48,7 @@ INSERT INTO `category` (`id`, `name`, `date`) VALUES
 -- Table structure for table `menu`
 --
 
+DROP TABLE IF EXISTS `menu`;
 CREATE TABLE `menu` (
   `id` int(11) NOT NULL,
   `name` varchar(50) NOT NULL,
@@ -85,6 +87,7 @@ INSERT INTO `menu` (`id`, `name`, `url`, `parent_id`, `role`, `location`) VALUES
 -- Table structure for table `plan`
 --
 
+DROP TABLE IF EXISTS `plan`;
 CREATE TABLE `plan` (
   `id` int(11) NOT NULL,
   `plan_name` varchar(50) NOT NULL,
@@ -113,6 +116,7 @@ INSERT INTO `plan` (`id`, `plan_name`, `migration_fee`, `referral_fee`, `allow_r
 -- Table structure for table `products`
 --
 
+DROP TABLE IF EXISTS `products`;
 CREATE TABLE `products` (
   `id` int(11) NOT NULL,
   `product_name` varchar(50) NOT NULL,
@@ -137,6 +141,7 @@ INSERT INTO `products` (`id`, `product_name`, `product_icon`, `date`) VALUES
 -- Table structure for table `product_plan`
 --
 
+DROP TABLE IF EXISTS `product_plan`;
 CREATE TABLE `product_plan` (
   `id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
@@ -168,6 +173,7 @@ INSERT INTO `product_plan` (`id`, `product_id`, `product_code`, `cat_id`, `produ
 -- Table structure for table `role`
 --
 
+DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role` (
   `id` int(11) NOT NULL,
   `role_name` varchar(50) NOT NULL,
@@ -189,6 +195,7 @@ INSERT INTO `role` (`id`, `role_name`, `created_by`, `created_date`, `permission
 -- Table structure for table `site_options`
 --
 
+DROP TABLE IF EXISTS `site_options`;
 CREATE TABLE `site_options` (
   `id` int(11) NOT NULL,
   `option_key` varchar(50) NOT NULL,
@@ -223,6 +230,7 @@ INSERT INTO `site_options` (`id`, `option_key`, `option_value`, `updated`) VALUE
 -- Table structure for table `transactions`
 --
 
+DROP TABLE IF EXISTS `transactions`;
 CREATE TABLE `transactions` (
   `id` int(11) NOT NULL,
   `reference` varchar(50) NOT NULL,
@@ -262,6 +270,7 @@ INSERT INTO `transactions` (`id`, `reference`, `order_id`, `product_plan_id`, `d
 -- Table structure for table `users`
 --
 
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `firstname` varchar(100) NOT NULL,
@@ -294,6 +303,7 @@ INSERT INTO `users` (`id`, `firstname`, `lastname`, `phone_number`, `email`, `pa
 -- Table structure for table `wallet_in`
 --
 
+DROP TABLE IF EXISTS `wallet_in`;
 CREATE TABLE `wallet_in` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -332,6 +342,7 @@ INSERT INTO `wallet_in` (`id`, `user_id`, `old_balance`, `amount`, `balance_afte
 -- Table structure for table `wallet_out`
 --
 
+DROP TABLE IF EXISTS `wallet_out`;
 CREATE TABLE `wallet_out` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
