@@ -440,7 +440,7 @@ $airtimePurchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 1)
 
 					Swal.fire({
 						title: 'Airtime Purchase',
-						text: 'Are you sure you want to buy <?php echo $appInfo->currency?>'+amount+' '+networkType.toUpperCase()+' airtime to '+phone,
+						text: 'Are you sure you want to buy <?php echo $appInfo->currency_text?> '+amount+' '+networkType.toUpperCase()+' airtime to '+phone,
 						icon: 'question',
 						showCancelButton: true,
 						confirmButtonText: "Yes",

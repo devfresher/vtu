@@ -79,7 +79,7 @@ elseif ($event->status == "4") {
     $wallet->fundWalletRequest($walletRequestData);
     $transaction->updateTxn($updateData, $orderId);
     $transaction->create($transactionData);
-    $_SESSION['infoMessage'] = $event->msg;
+    $_SESSION['success'] = $event->msg;
 
 }
 
@@ -92,7 +92,7 @@ elseif ($event->status == "1") {
     );
 
     $transaction->updateTxn($updateData, $orderId);
-    $_SESSION['infoMessage'] = $event->msg;
+    $_SESSION['successMessage'] = $event->msg;
 }
 
 if (isset($_SERVER['HTTP_REFERER'])) {

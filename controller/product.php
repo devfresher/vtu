@@ -60,7 +60,7 @@ elseif (isset($_POST['buy_airtime'])) {
     } elseif ($appInfo->min_airtime_vending > $amount) {
         $_SESSION["errorMessage"] = "You can not purchase airtime lesser than ".$appInfo->currency.$appInfo->min_airtime_vending;
     } elseif ($appInfo->max_airtime_vending < $amount) {
-        $_SESSION["errorMessage"] = "You can not purchase airtime greater than ".$appInfo->currency.$appInfo->min_airtime_vending;
+        $_SESSION["errorMessage"] = "You can not purchase airtime greater than ".$appInfo->currency.$appInfo->max_airtime_vending;
     } elseif(!is_numeric($phone_number) OR strlen($phone_number) != 11){
         $_SESSION["errorMessage"] = $clientLang['invalid_phone_number'];
     } elseif (!password_verify($pin, $user->currentUser->transaction_pin)) {
@@ -172,7 +172,7 @@ elseif (isset($_POST['buy_airtime'])) {
     
                 if ($spend !== false AND $tran !== false){
                     $db->commit();
-                    $_SESSION["infoMessage"] = "Airtime purchase transaction pending, will be completed soon.";
+                    $_SESSION["infoMessage"] = "Transaction sent. $phone_number has been recharged with ".strtoupper($network)." ".$appInfo->currency_text. $amount." airtime topup. Kindly check your account balance.";
                 } else {
                     $db->rollBack();
                     $_SESSION["errorMessage"] = "Unexpected error occured";

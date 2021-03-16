@@ -6,7 +6,7 @@
 							<div class="d-flex align-items-stretch mr-3">
 								<!--begin::Header Logo-->
 								<div class="header-logo">
-									<a href="<?php echo BASE_URL.USER_ROOT?>index.php">
+									<a href="<?php echo BASE_URL.USER_ROOT?>index">
 										<img alt="Logo" src="<?php echo BASE_URL.$appInfo->logo?>" class="logo-default max-h-40px" />
 										<img alt="Logo" src="<?php echo BASE_URL.$appInfo->logo?>" class="logo-sticky max-h-40px" />
 									</a>
@@ -19,7 +19,7 @@
 										<!--begin::Header Nav-->
 										<ul class="menu-nav">
 											<li class="menu-item menu-item-open menu-item-here menu-item-rel" data-menu-toggle="click" aria-haspopup="true">
-												<a href="<?php echo BASE_URL.USER_ROOT?>dashboard.php" class="menu-link">
+												<a href="<?php echo BASE_URL.USER_ROOT?>dashboard" class="menu-link">
 													<span class="menu-text">Dashboard</span>
 													<i class="menu-arrow"></i>
 												</a>
@@ -34,7 +34,7 @@
 												<div class="menu-submenu menu-submenu-classic menu-submenu-left">
 													<ul class="menu-subnav">
 														<li class="menu-item" aria-haspopup="true">
-															<a href="<?php echo BASE_URL.USER_ROOT?>wallet.php" class="menu-link">
+															<a href="<?php echo BASE_URL.USER_ROOT?>wallet" class="menu-link">
 																<span class="svg-icon menu-icon">
 																	<!--begin::Svg Icon-->
 																	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -52,7 +52,7 @@
 														</li>
 
 														<li class="menu-item menu-item-submenu" data-menu-toggle="hover" aria-haspopup="true">
-															<a href="<?php echo BASE_URL.USER_ROOT?>share-money.php" class="menu-link">
+															<a href="<?php echo BASE_URL.USER_ROOT?>share-money" class="menu-link">
 																<span class="svg-icon menu-icon">
 																	<!--begin::Svg Icon-->
 																		<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -69,7 +69,7 @@
 														</li>
 
 														<li class="menu-item menu-item-submenu" data-menu-toggle="hover" aria-haspopup="true">
-															<a href="<?php echo BASE_URL.USER_ROOT?>commission.php" class="menu-link">
+															<a href="<?php echo BASE_URL.USER_ROOT?>commission" class="menu-link">
 																<span class="svg-icon menu-icon">
 																	<!--begin::Svg Icon -->
 																	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -87,7 +87,7 @@
 														</li>
 
 														<li class="menu-item menu-item-submenu" data-menu-toggle="hover" aria-haspopup="true">
-															<a href="<?php echo BASE_URL.USER_ROOT?>pricing.php" class="menu-link">
+															<a href="<?php echo BASE_URL.USER_ROOT?>pricing" class="menu-link">
 																<span class="svg-icon menu-icon">
 																	<!--begin::Svg Icon-->
 																	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -113,7 +113,7 @@
 											</li>
 
 											<li class="menu-item menu-item-rel" data-menu-toggle="click" aria-haspopup="true">
-												<a href="<?php echo BASE_URL.USER_ROOT?>airtime-topup.php" class="menu-link">
+												<a href="<?php echo BASE_URL.USER_ROOT?>airtime-topup" class="menu-link">
 													<span class="menu-text">Airtime Topup</span>
 													<i class="menu-arrow"></i>
 												</a>
@@ -128,7 +128,7 @@
 												<div class="menu-submenu menu-submenu-classic menu-submenu-left">
 													<ul class="menu-subnav">
 														<li class="menu-item menu-item-submenu" data-menu-toggle="hover" aria-haspopup="true">
-															<a href="<?php echo BASE_URL.USER_ROOT?>mtn-data.php" class="menu-link">
+															<a href="<?php echo BASE_URL.USER_ROOT?>mtn-data" class="menu-link">
 																<span class="svg-icon menu-icon">
 																	<!--begin::Svg Icon-->
 																	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -145,7 +145,7 @@
 														</li>
 
 														<li class="menu-item menu-item-submenu" data-menu-toggle="hover" aria-haspopup="true">
-															<a href="<?php echo BASE_URL.USER_ROOT?>other-bundles.php" class="menu-link">
+															<a href="<?php echo BASE_URL.USER_ROOT?>other-bundles" class="menu-link">
 																<span class="svg-icon menu-icon">
 																	<!--begin::Svg Icon | path:assets/media/svg/icons/Shopping/Box2.svg-->
 																	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -162,7 +162,7 @@
 														</li>
 
 														<li class="menu-item menu-item-submenu" data-menu-toggle="hover" aria-haspopup="true">
-															<a href="<?php echo BASE_URL.USER_ROOT?>broadband-bundles.php" class="menu-link">
+															<a href="<?php echo BASE_URL.USER_ROOT?>broadband-bundles" class="menu-link">
 																<span class="svg-icon menu-icon">
 																	<!--begin::Svg Icon | path:assets/media/svg/icons/Shopping/Box2.svg-->
 																	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -190,7 +190,7 @@
 												<div class="menu-submenu menu-submenu-classic menu-submenu-left">
 													<ul class="menu-subnav">
 														<li class="menu-item menu-item-submenu" data-menu-toggle="hover" aria-haspopup="true">
-															<a href="<?php echo BASE_URL.USER_ROOT?>cable-tv.php" class="menu-link">
+															<a href="<?php echo BASE_URL.USER_ROOT?>cable-tv" class="menu-link">
 																<span class="svg-icon menu-icon">
 																	<!--begin::Svg Icon | path:assets/media/svg/icons/Shopping/Box2.svg-->
 																	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -207,7 +207,7 @@
 														</li>
 
 														<li class="menu-item menu-item-submenu" data-menu-toggle="hover" aria-haspopup="true">
-															<a href="<?php echo BASE_URL.USER_ROOT?>electricity.php" class="menu-link">
+															<a href="<?php echo BASE_URL.USER_ROOT?>electricity" class="menu-link">
 																<span class="svg-icon menu-icon">
 																	<!--begin::Svg Icon | path:assets/media/svg/icons/Shopping/Box2.svg-->
 																	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -235,7 +235,7 @@
 												<div class="menu-submenu menu-submenu-classic menu-submenu-left">
 													<ul class="menu-subnav">
 														<li class="menu-item menu-item-submenu" data-menu-toggle="hover" aria-haspopup="true">
-															<a href="<?php echo BASE_URL.USER_ROOT?>bulk-sms.php" class="menu-link">
+															<a href="<?php echo BASE_URL.USER_ROOT?>bulk-sms" class="menu-link">
 																<span class="svg-icon menu-icon">
 																	<!--begin::Svg Icon | path:assets/media/svg/icons/Shopping/Box2.svg-->
 																	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -252,7 +252,7 @@
 														</li>
 
 														<li class="menu-item menu-item-submenu" data-menu-toggle="hover" aria-haspopup="true">
-															<a href="<?php echo BASE_URL.USER_ROOT?>waec-result-checker.php" class="menu-link">
+															<a href="<?php echo BASE_URL.USER_ROOT?>waec-result-checker" class="menu-link">
 																<span class="svg-icon menu-icon">
 																	<!--begin::Svg Icon | path:assets/media/svg/icons/Shopping/Box2.svg-->
 																	<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">

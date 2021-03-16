@@ -75,15 +75,13 @@ class Transaction Extends Utility
 
     public function getTxn($orderId)
     {
-        $result = $this->db->getAllRecords($this->table, "*", "AND order_id = '$orderId'", "ORDER BY date DESC");
-
         $result = $this->db->getRecFrmQry(
-            "SELECT t.*, pp.product_code, pp.product_plan_name, pp.cost_price, p.product_name, p.product_icon, c.name AS category
+            "SELECT t.*, pp.product_code, t.user_id, pp.product_plan_name, pp.cost_price, p.product_name, p.product_icon, c.name AS category
             FROM $this->table t 
             LEFT JOIN product_plan pp ON t.product_plan_id = pp.id 
             LEFT JOIN products p ON pp.product_id = p.id 
             LEFT JOIN category c ON pp.cat_id = c.id
-            WHERE t.order_id = '$orderId'"
+            WHERE t.order_id = '$orderId' OR t.reference = '$orderId'"
         );
 
         if (count($result) > 0) {
@@ -113,7 +111,7 @@ class Transaction Extends Utility
         $whereData  = array('order_id' => $orderid);
 
         $update = $this->db->update($this->table, $updateData, $whereData);
-        
+
         if ($update > 0) {
             $this->responseBody =  true;
         } else {
