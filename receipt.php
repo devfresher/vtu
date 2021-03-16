@@ -72,15 +72,15 @@ if (!isset($_REQUEST['refId']) OR $_REQUEST['refId'] == '') {
 																		<th class="align-middle font-size-h4 pl-0 border-0 p-5">DESCRIPTION</th>
                                                                         <th class="align-middle font-size-h4 pl-0 border-0 p-5">RECEIPIENT</th>
                                                                         <th class="align-middle font-size-h4 pl-0 border-0 p-5">STATUS</th>
-																		<th class="align-middle font-size-h4 text-right pr-0 border-0 p-5 pb-12">AMOUNT PAID</th>
+																		<!-- <th class="align-middle font-size-h4 text-right pr-0 border-0 p-5 pb-12">AMOUNT PAID</th> -->
 																	</tr>
 																</thead>
 																<tbody>
 																	<tr class="font-size-h5 font-weight-bolder">
-																		<td class="align-middle pl-0 border-0 p-4"><?php echo $transactionItem->product_plan_name.' '.$transactionItem->category ?></td>
+																		<td class="align-middle pl-0 border-0 p-4"><?php echo $transactionItem->amount.'-'.$transactionItem->product_plan_name.' '.$transactionItem->category ?></td>
                                                                         <td class="align-middle pl-0 border-0 p-4"><?php echo $transactionItem->received_by ?></td>
                                                                         <td class="align-middle pl-0 border-0 p-4"><?php echo $transactionItem->status ?></td>
-																		<td class="align-middle text-right text-primary font-weight-boldest font-size-h5 pr-0 border-0 p-4"><?php echo $appInfo->currency_code.$transactionItem->amount_charged?></td>
+																		<!-- <td class="align-middle text-right text-primary font-weight-boldest font-size-h5 pr-0 border-0 p-4"><?php echo $appInfo->currency_code.$transactionItem->amount_charged?></td> -->
 																	</tr>
 																</tbody>
 															</table>

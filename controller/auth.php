@@ -38,7 +38,11 @@ if (isset($_POST["login"])) {
                     header("Location: ".$_POST['form_url']);
                     exit();
                 }else {
-                    header("Location: ".BASE_URL.USER_ROOT.'dashboard.php');
+                    if (isset($_SERVER['HTTP_REFRRER'])) {
+                        header("Location: ".$_SERVER['HTTP_REFRRER']);
+                    }else {
+                        header("Location: ".BASE_URL.USER_ROOT.'dashboard.php');
+                    }
                     exit();
                 } 
             }
