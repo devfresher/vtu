@@ -41,7 +41,7 @@ if (isset($_POST["login"])) {
                     if (isset($_SERVER['HTTP_REFRRER'])) {
                         header("Location: ".$_SERVER['HTTP_REFRRER']);
                     }else {
-                        header("Location: ".BASE_URL.USER_ROOT.'dashboard.php');
+                        header("Location: ".BASE_URL.USER_ROOT.'dashboard');
                     }
                     exit();
                 } 
@@ -144,7 +144,7 @@ elseif (isset($_POST["register"])) {
             $isRegitered = $user->processRegister($userData);
     
             if ($isRegitered) {
-                header("Location: ".BASE_URL.USER_ROOT.'login.php');
+                header("Location: ".BASE_URL.USER_ROOT.'login');
                 exit();
             }
         }

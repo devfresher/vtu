@@ -230,7 +230,7 @@ class Utility extends Database {
     public function niceDateFormat($date)
     {
         $timestamp = strtotime($date);
-        $niceFormat = date('D j, M Y G:ia', $timestamp);
+        $niceFormat = date('D j, M Y h:ia', $timestamp);
 
         return $niceFormat;
     }
