@@ -1,7 +1,7 @@
 		<!--begin::Header Mobile-->
 		<div id="kt_header_mobile" class="header-mobile">
 			<!--begin::Logo-->
-			<a href="index.html">
+			<a href="<?php echo BASE_URL.USER_ROOT?>">
 				<img alt="Logo" src="<?php echo BASE_URL.$appInfo->logo?>" class="logo-default max-h-30px" />
 			</a>
 			<!--end::Logo-->

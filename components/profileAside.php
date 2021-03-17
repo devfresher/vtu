@@ -16,7 +16,7 @@
 														<a href="#" class="font-weight-bolder font-size-h5 text-dark-75 text-hover-primary"><?php echo $user->currentUser->fullName?></a>
 														<div class="text-muted"><?php echo $user->currentUser->plan->plan_name?></div>
 														<div class="mt-2">
-                                                            <a href="<?php echo BASE_URL.USER_ROOT?>logout.php" class="btn btn-sm btn-light-danger font-weight-bolder py-2 px-5">Sign Out</a>
+                                                            <a href="<?php echo BASE_URL.USER_ROOT?>logout" class="btn btn-sm btn-light-danger font-weight-bolder py-2 px-5">Sign Out</a>
 														</div>
 													</div>
 												</div>
@@ -36,7 +36,7 @@
 												<!--begin::Nav-->
 												<div class="navi navi-bold navi-hover navi-active navi-link-rounded">
 													<div class="navi-item mb-2">
-														<a href="<?php echo BASE_URL?>my-profile.php" class="navi-link py-4">
+														<a href="<?php echo BASE_URL?>my-profile" class="navi-link py-4">
 															<span class="navi-icon mr-2">
 																<span class="svg-icon">
 																	<!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
@@ -54,7 +54,7 @@
 														</a>
 													</div>
 													<div class="navi-item mb-2">
-														<a href="<?php echo BASE_URL?>personal-information.php" class="navi-link py-4">
+														<a href="<?php echo BASE_URL?>personal-information" class="navi-link py-4">
 															<span class="navi-icon mr-2">
 																<span class="svg-icon">
 																	<!--begin::Svg Icon | path:assets/media/svg/icons/General/User.svg-->
@@ -72,7 +72,7 @@
 														</a>
 													</div>
 													<div class="navi-item mb-2">
-														<a href="<?php echo BASE_URL?>account-settings.php" class="navi-link py-4">
+														<a href="<?php echo BASE_URL?>account-settings" class="navi-link py-4">
 															<span class="navi-icon mr-2">
 																<span class="svg-icon">
 																	<!--begin::Svg Icon | path:assets/media/svg/icons/Code/Compiling.svg-->
@@ -90,7 +90,7 @@
 														</a>
 													</div>
 													<div class="navi-item mb-2">
-														<a href="<?php echo BASE_URL?>change-password.php" class="navi-link py-4 active">
+														<a href="<?php echo BASE_URL?>change-password" class="navi-link py-4 active">
 															<span class="navi-icon mr-2">
 																<span class="svg-icon">
 																	<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Shield-user.svg-->
@@ -109,7 +109,7 @@
 														</a>
 													</div>
 													<div class="navi-item mb-2">
-														<a href="<?php echo BASE_URL?>transaction-pin.php" class="navi-link py-4">
+														<a href="<?php echo BASE_URL?>transaction-pin" class="navi-link py-4">
 															<span class="navi-icon mr-2">
 																<span class="svg-icon">
 																	<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Mail-opened.svg-->

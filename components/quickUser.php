@@ -58,7 +58,7 @@
 									<span class="navi-text text-muted text-hover-primary"><?php echo $user->currentUser->email?></span>
 								</span>
 							</a>
-							<a href="<?php echo BASE_URL.USER_ROOT?>logout.php" class="btn btn-sm btn-light-danger font-weight-bolder py-2 px-5">Sign Out</a>
+							<a href="<?php echo BASE_URL.USER_ROOT?>logout" class="btn btn-sm btn-light-danger font-weight-bolder py-2 px-5">Sign Out</a>
 						</div>
 					</div>
 				</div>
@@ -69,7 +69,7 @@
 				<!--begin::Nav-->
 				<div class="navi navi-spacer-x-0 p-0">
 					<!--begin::Item-->
-					<a href="<?php echo BASE_URL.USER_ROOT?>my-profile.php" class="navi-item">
+					<a href="<?php echo BASE_URL.USER_ROOT?>my-profile" class="navi-item">
 						<div class="navi-link">
 							<div class="symbol symbol-40 bg-light mr-3">
 								<div class="symbol-label">
@@ -96,7 +96,7 @@
 					<!--end:Item-->
 
 					<!--begin::Item-->
-					<a href="<?php echo BASE_URL.USER_ROOT?>sales.php" class="navi-item">
+					<a href="<?php echo BASE_URL.USER_ROOT?>sales" class="navi-item">
 						<div class="navi-link">
 							<div class="symbol symbol-40 bg-light mr-3">
 								<div class="symbol-label">
@@ -122,7 +122,7 @@
 					<!--end:Item-->
 
 					<!--begin::Item-->
-					<a href="<?php echo BASE_URL.USER_ROOT?>sales-history.php" class="navi-item">
+					<a href="<?php echo BASE_URL.USER_ROOT?>sales-history" class="navi-item">
 						<div class="navi-link">
 							<div class="symbol symbol-40 bg-light mr-3">
 								<div class="symbol-label">
@@ -148,7 +148,7 @@
 					<!--end:Item-->
 
 					<!--begin::Item-->
-					<a href="<?php echo BASE_URL.USER_ROOT?>update-profile.php" class="navi-item">
+					<a href="<?php echo BASE_URL.USER_ROOT?>update-profile" class="navi-item">
 						<div class="navi-link">
 							<div class="symbol symbol-40 bg-light mr-3">
 								<div class="symbol-label">
@@ -174,7 +174,7 @@
 					<!--end:Item-->
 
 					<!--begin::Item-->
-					<a href="<?php echo BASE_URL.USER_ROOT?>change-plan.php" class="navi-item">
+					<a href="<?php echo BASE_URL.USER_ROOT?>change-plan" class="navi-item">
 						<div class="navi-link">
 							<div class="symbol symbol-40 bg-light mr-3">
 								<div class="symbol-label">

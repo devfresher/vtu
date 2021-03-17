@@ -3,7 +3,7 @@
 		<!--end::Global Config-->
 
 		<!--begin::Global Theme Bundle(used by all pages)-->
-		<script src="assets/plugins/global/plugins.bundle.js"></script>
-		<script src="assets/plugins/custom/prismjs/prismjs.bundle.js"></script>
-		<script src="assets/js/scripts.bundle.js"></script>
+		<script src="<?php echo BASE_URL?>assets/plugins/global/plugins.bundle.js"></script>
+		<script src="<?php echo BASE_URL?>assets/plugins/custom/prismjs/prismjs.bundle.js"></script>
+		<script src="<?php echo BASE_URL?>assets/js/scripts.bundle.js"></script>
 		<!--end::Global Theme Bundle-->

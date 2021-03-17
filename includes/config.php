@@ -1,5 +1,5 @@
 <?php
-// error_reporting(E_ALL ^ E_WARNING ^ E_DEPRECATED);
+error_reporting(E_ALL & ~E_WARNING);
 session_start();
 ob_start();
 
@@ -36,7 +36,7 @@ define('INCLUDES_DIR', ROOT.BASE_PATH.'includes/');
 define('VENDOR_DIR', ROOT.BASE_PATH.'vendor/');
 
 define('USER_ROOT', '');
-define('ADMIN_ROOT', 'admin/');
+define('ADMIN_ROOT', 'ownwer/');
 define('UPLOADS_DIR', 'uploads/');
 define('PROFILE_UPLOADS_DIR', 'uploads/profile/');
 define('LOGO_UPLOADS_DIR', 'uploads/logo/');

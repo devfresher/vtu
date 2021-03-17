@@ -12,8 +12,8 @@
                                     </button>
                                 </div>
                             <?php } unset($_SESSION['errorRegisterMessage']) ?>
-							<form class="form text-center" id="kt_login_signup_form" action="<?php echo BASE_URL?>controller/auth.php" method="post">
-								<input type="hidden" name="form_url" value="<?php echo BASE_URL.USER_ROOT?>login.php#kt_login_signup_form">
+							<form class="form text-center" id="kt_login_signup_form" action="<?php echo BASE_URL?>controller/auth" method="post">
+								<input type="hidden" name="form_url" value="<?php echo BASE_URL.USER_ROOT?>login#kt_login_signup_form">
 								
 								<div class="form-group">
 									<input class="form-control h-auto text-white placeholder-white opacity-70 bg-dark-o-70 rounded-pill border-0 py-4 px-8" type="text" placeholder="First Name" name="firstname" />

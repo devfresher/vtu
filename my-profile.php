@@ -1,4 +1,5 @@
 <?php
+require_once './includes/config.php';
 require_once './components/head.php';
 ?>
 		<!--begin::Page Vendors Styles(used by this page)-->
