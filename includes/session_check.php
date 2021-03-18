@@ -30,6 +30,7 @@ $authenticated_pages = array(
 );
 $admin_pages = array(
     BASE_PATH.ADMIN_ROOT.'dashboard.php',
+    BASE_PATH.ADMIN_ROOT.'products.php',
 );
 
 if ($user->isLoggedIn()) {

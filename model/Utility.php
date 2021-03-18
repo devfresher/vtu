@@ -1,5 +1,4 @@
 <?php
-
 class Utility extends Database {
 
     protected $responseBody;
@@ -238,5 +237,18 @@ class Utility extends Database {
     public function is_cli()
     {
         return php_sapi_name() === 'cli';
+    }
+
+    public function accessAdmin()
+    {
+        $admin_pages = array(
+            BASE_PATH.ADMIN_ROOT.'dashboard.php',
+            BASE_PATH.ADMIN_ROOT.'products.php',
+        );
+
+        if (in_array(SCRIPT_NAME, $admin_pages)) {
+            return true;
+        }
+        return false;
     }
 }

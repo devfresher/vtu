@@ -38,7 +38,7 @@ $appInfo = $app->getAppInfo();
 
 		<?php include_once './components/js.php';?>
 		<!--begin::Page Scripts(used by this page)-->
-		<script src="assets/js/pages/custom/login/login-general.js"></script>
+		<script src="<?php echo BASE_URL?>assets/js/pages/custom/login/login-general.js"></script>
 		<!--end::Page Scripts-->
 
 		<!--begin::Page Scripts(used by this page)-->

@@ -248,8 +248,8 @@ $histories = $wallet->getMoneyShareHistories($user->currentUser->id);
 		<?php include_once './components/js.php';?>
 		
 		<!--begin::Page Scripts(used by this page)-->
-		<script src="assets/js/pages/crud/ktdatatable/base/share_money-table.js"></script>
-		<script src="assets/js/pages/features/miscellaneous/sweetalert2.js"></script>
+		<script src="<?php echo BASE_URL?>assets/js/pages/crud/ktdatatable/base/share_money-table.js"></script>
+		<script src="<?php echo BASE_URL?>assets/js/pages/features/miscellaneous/sweetalert2.js"></script>
 		<?php include_once './components/message.php'?>
 
 		<script>

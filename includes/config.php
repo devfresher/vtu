@@ -69,7 +69,7 @@ $utility = new Utility($db);
 $app = new APP($db);
 $appInfo = $app->getAppInfo();
 
-include_once INCLUDES_DIR.'session_check.php';
 include_once INCLUDES_DIR.'language.php';
 include_once INCLUDES_DIR.'functions.php';
 include_once INCLUDES_DIR.'smtp_config.php';
+include_once INCLUDES_DIR.'session_check.php';

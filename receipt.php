@@ -139,8 +139,6 @@ if (!isset($_REQUEST['refId']) OR $_REQUEST['refId'] == '') {
 		<?php include_once './components/js.php';?>
 		
 		<!--begin::Page Scripts(used by this page)-->
-		<script src="assets/js/pages/crud/ktdatatable/base/txn-table.js"></script>
-		<script src="assets/js/pages/features/miscellaneous/sweetalert2.js"></script>
 		<!--end::Page Scripts-->
 	</body>
 	<!--end::Body-->

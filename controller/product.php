@@ -4,6 +4,10 @@ require_once '../model/Product.php';
 require_once '../model/Transaction.php';
 require_once '../model/Api.php';
 
+$product = new Product($db);
+$wallet = new Wallet($db);
+$transaction = new Transaction($db);
+$api = new Api($db);
 
 if (isset($_POST['get_network_code'])) {
     extract($_POST);
@@ -66,12 +70,6 @@ elseif (isset($_POST['buy_airtime'])) {
     } elseif (!password_verify($pin, $user->currentUser->transaction_pin)) {
         $_SESSION["errorMessage"] = $clientLang['incorrect_pin'];
     }  else {
-        
-        $product = new Product($db);
-        $wallet = new Wallet($db);
-        $transaction = new Transaction($db);
-        $api = new Api($db);
-
         $amount = filter_var($_POST["amount"], FILTER_SANITIZE_NUMBER_INT);
         $productCode = filter_var($_POST['network_type'], FILTER_SANITIZE_STRING);
 
@@ -329,5 +327,34 @@ elseif (isset($_POST['buy_airtime'])) {
     // print_r($_SESSION);
     header("Location: ".$_POST['form_url']);
     exit();
+}
+
+if (isset($_POST['fetch_products'])) {
+    $response = $api->sendGetRequest('products', $data);
+
+    $productData = array();
+
+    $i = 0;
+    foreach ($response as $product) {
+        $productItem = $utility->db->getAllRecords("products", "*", " AND name = '$product->product_name' AND category = '$product->category'");
+        if (count($productItem) > 0) {
+            continue;
+        }
+        else {
+            $productData[$i]['name'] = $product->product_name;
+            $productData[$i]['product_code'] = $product->product_id;
+            $productData[$i]['category'] = $product->category;
+            $productData[$i]['plan'] = $product->plan;
+        }
+        $i++;
+    }
+
+    if (isset($productData) && !empty($productData)) {
+        $insert = $utility->db->multiInsert("products", $productData);
+
+        echo json_encode($productData);
+        exit();
+    }
+
 }
 ?>

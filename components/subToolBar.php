@@ -44,10 +44,31 @@
 								<!--begin::Toolbar-->
 								<div class="d-flex align-items-center">
 									<!--begin::Button-->
-									<a href="<?php echo BASE_URL?>wallet" class="btn btn-transparent-white font-weight-bold py-3 px-6 mr-2">
-                                        <i class="fas fa-folder-plus"></i>
-                                        Fund Wallet
-                                    </a>
+									<?php if ($user->currentUser->role->id == 3 || $user->currentUser->role->id == 1) { ?>
+										<?php if ($user->currentUser->role->id == 3 AND $utility->accessAdmin()) {?>
+											<a href="<?php echo BASE_URL.ADMIN_ROOT?>super-dashboard" class="btn btn-light-success font-weight-bold py-3 px-6 mr-2">
+												<i class="fab fa-firstdraft"></i>
+												Super Dashboard
+											</a>
+										<?php } ?>
+
+										<?php if ($user->currentUser->role->id == 1) {?>
+											<a href="<?php echo BASE_URL.ADMIN_ROOT?>system-settings" class="btn btn-transparent-white font-weight-bold py-3 px-6 mr-2">
+												<i class="fas fa-folder-plus"></i>
+												Fund Wallet
+											</a>
+										<?php } ?>
+
+										<a href="<?php echo BASE_URL.ADMIN_ROOT?>system-settings" class="btn btn-light-danger font-weight-bold py-3 px-6 mr-2">
+											<i class="fas fa-cogs"></i>
+											System Settings
+										</a>
+									<?php } else { ?>
+										<a href="<?php echo BASE_URL.ADMIN_ROOT?>system-settings" class="btn btn-transparent-white font-weight-bold py-3 px-6 mr-2">
+											<i class="fas fa-folder-plus"></i>
+											Fund Wallet
+										</a>
+									<?php } ?>
 									<!--end::Button-->
 								</div>
 								<!--end::Toolbar-->

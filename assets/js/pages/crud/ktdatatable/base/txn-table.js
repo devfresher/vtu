@@ -85,20 +85,46 @@ var KTDatatableHtmlTableDemo = function() {
       ],
     });
 
-    $('#kt_datatable_search_status').on('change', function() {
-      datatable.search($(this).val().toLowerCase(), 'Status');
+    var product_list_datatable = $('#product_list_datatable').KTDatatable({
+      // data: {
+      //   saveState: {cookie: false},
+      // },
+      search: {
+        input: $('#kt_datatable_search_query'),
+        key: 'generalSearch',
+      },
+      layout: {
+        class: 'datatable-bordered',
+        scroll: 'true',
+      },
+      columns: [
+        {
+          field: 'S/N',
+          autoHide: false,
+        },
+        {
+          field: 'Product Name',
+          autoHide: false,
+          sortable: false,
+        },
+        {
+          field: 'Category',
+          sortable: false,
+          autoHide: false,
+        }, 
+        {
+          field: 'Company Price',
+          sortable: false,
+          autoHide: false,
+        }, 
+        {
+          field: 'Cost Price',
+          sortable: false,
+        }
+      ],
     });
 
-    $('#kt_datatable_search_type').on('change', function() {
-      datatable.search($(this).val().toLowerCase(), 'Type');
-    });
-
-    $('#kt_datatable_search_status, #kt_datatable_search_type').selectpicker();
-
-  };
-
-  var receipt_datatable = function() {
-    var datatable = $('#receipt_datatable').KTDatatable({
+    var receipt_datatable = $('#receipt_datatable').KTDatatable({
       // data: {
       //   saveState: {cookie: false},
       // },
@@ -164,6 +190,17 @@ var KTDatatableHtmlTableDemo = function() {
         }, 
       ],
     });
+
+    $('#kt_datatable_search_status').on('change', function() {
+      datatable.search($(this).val().toLowerCase(), 'Status');
+    });
+
+    $('#kt_datatable_search_type').on('change', function() {
+      datatable.search($(this).val().toLowerCase(), 'Type');
+    });
+
+    $('#kt_datatable_search_status, #kt_datatable_search_type').selectpicker();
+
   };
 
   return {
