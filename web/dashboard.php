@@ -21,7 +21,7 @@ require_once '../components/head.php';
 				<!--begin::Wrapper-->
 				<div class="d-flex flex-column flex-row-fluid wrapper" id="kt_wrapper">
 
-					<?php include_once '../components/toolbar.php';?>
+					<?php include_once 'special/toolbar.php';?>
 
 					<!--begin::Content-->
 					<div class="content d-flex flex-column flex-column-fluid" id="kt_content">

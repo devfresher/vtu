@@ -11,30 +11,31 @@ class User extends Utility {
     function __construct($db) {
         $this->db = $db;
         $this->table = 'users';
-
-        $plan = new Plan($db);
-        $role = new Role($db);
-        $wallet = new Wallet($db);
         
         if ($this->loggedInUser() !== false) {
             $currentUser = $this->loggedInUser();
 
             $this->currentUser = $currentUser;
-            $this->currentUser->firstLetter = $this->currentUser->firstname[0].$this->currentUser->lastname[0];
-            $this->currentUser->fullName = $this->currentUser->firstname.' '.$this->currentUser->lastname;
-            $this->currentUser->walletBalance = $wallet->getWalletBalance($currentUser->id);
-            $this->currentUser->role = $this->arrayToObject($role->getrole($currentUser->role));
-            $this->currentUser->plan = $this->arrayToObject($plan->getPlan($currentUser->plan));
-
-            unset($this->currentUser->role->permission);
         }
     }
 
     function getUserById($userId) {
+        
+        $plan = new Plan($this->db);
+        $role = new Role($this->db);
+        $wallet = new Wallet($this->db);
+
         $result = $this->db->getAllRecords($this->table, "*", "AND id = '$userId'");
 
         if (count($result) > 0) {
             $this->responseBody = $this->arrayToObject($result[0]);
+            
+            $this->responseBody->walletBalance = $wallet->getWalletBalance($this->responseBody->id);
+            $this->responseBody->role = $role->getrole($this->responseBody->role_id);
+            $this->responseBody->plan = $plan->getPlan($this->responseBody->plan_id);
+
+            $this->responseBody->firstLetter = $this->responseBody->firstname[0].$this->responseBody->lastname[0];
+            $this->responseBody->fullName = $this->responseBody->firstname.' '.$this->responseBody->lastname;
         }else {
             $this->responseBody = false;
         }
@@ -43,10 +44,21 @@ class User extends Utility {
     }
 
     function getUser($key) {
+        $plan = new Plan($this->db);
+        $role = new Role($this->db);
+        $wallet = new Wallet($this->db);
+
         $result = $this->db->getAllRecords($this->table, "*", "AND email = '$key' OR phone_number = '$key'");
 
         if (count($result) > 0) {
             $this->responseBody = $this->arrayToObject($result[0]);
+            
+            $this->responseBody->walletBalance = $wallet->getWalletBalance($this->responseBody->id);
+            $this->responseBody->role = $role->getrole($this->responseBody->role_id);
+            $this->responseBody->plan = $plan->getPlan($this->responseBody->plan_id);
+
+            $this->responseBody->firstLetter = $this->responseBody->firstname[0].$this->responseBody->lastname[0];
+            $this->responseBody->fullName = $this->responseBody->firstname.' '.$this->responseBody->lastname;
         }else {
             $this->responseBody = false;
         }
@@ -55,10 +67,21 @@ class User extends Utility {
     }
 
     function getUserByEmail($email) {
+        $plan = new Plan($this->db);
+        $role = new Role($this->db);
+        $wallet = new Wallet($this->db);
+
         $result = $this->db->getAllRecords($this->table, "*", "AND email = '$email'");
         
         if (count($result) > 0) {
             $this->responseBody = $this->arrayToObject($result[0]);
+            
+            $this->responseBody->walletBalance = $wallet->getWalletBalance($this->responseBody->id);
+            $this->responseBody->role = $role->getrole($this->responseBody->role_id);
+            $this->responseBody->plan = $plan->getPlan($this->responseBody->plan_id);
+
+            $this->responseBody->firstLetter = $this->responseBody->firstname[0].$this->responseBody->lastname[0];
+            $this->responseBody->fullName = $this->responseBody->firstname.' '.$this->responseBody->lastname;
         }else {
             $this->responseBody = false;
         }
@@ -67,10 +90,20 @@ class User extends Utility {
     }
 
     function getUserByPhone($phone) {
+        $plan = new Plan($this->db);
+        $role = new Role($this->db);
+        $wallet = new Wallet($this->db);
         $result = $this->db->getAllRecords($this->table, "*", "AND phone_number = '$phone'");
 
         if (count($result) > 0) {
             $this->responseBody = $this->arrayToObject($result[0]);
+            
+            $this->responseBody->walletBalance = $wallet->getWalletBalance($this->responseBody->id);
+            $this->responseBody->role = $role->getrole($this->responseBody->role_id);
+            $this->responseBody->plan = $plan->getPlan($this->responseBody->plan_id);
+
+            $this->responseBody->firstLetter = $this->responseBody->firstname[0].$this->responseBody->lastname[0];
+            $this->responseBody->fullName = $this->responseBody->firstname.' '.$this->responseBody->lastname;
         }else {
             $this->responseBody = false;
         }
@@ -137,5 +170,26 @@ class User extends Utility {
 
         $this->responseBody = $hash;
         return $this->responseBody;
+    }
+
+    public function isAdmin($userId)
+    {
+        $user = $this->getUserById($userId);
+
+        if ($user !== false AND $user->role->name == 'admin') {
+            $this->responseBody = true;
+        }else {
+            $this->responseBody = false;
+        }
+
+        return $this->responseBody;
+    }
+
+    public function countLoginAttempts()
+    {
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $result = $this->db->getAllRecords("login_attempts", "ip_address", "AND  ip_address = '$ip'  AND time BETWEEN DATE_SUB( NOW() , INTERVAL 10 MINUTES ) AND NOW()");
+        $row  = $result->fetch_assoc();
+        $failed_login_attempt = $row['failed_login_attempt'];
     }
 }

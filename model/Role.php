@@ -8,14 +8,14 @@ class Role Extends Utility
 
     public function getRole($roleId)
     {
-        if($result = $this->db->getAllRecords($this->table, "*", "AND id = $roleId")){
-
+        $result = $this->db->getAllRecords($this->table, "*", "AND id = $roleId");
+        
+        if(count($result) > 0){
             $feedback = $result[0];
-            $this->responseBody =  $feedback;
+            $this->responseBody = $this->arrayToObject($feedback);
         } else {
             $this->responseBody =  false;
         }
-
         return $this->responseBody;
     }
 }

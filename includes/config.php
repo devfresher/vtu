@@ -36,7 +36,7 @@ define('INCLUDES_DIR', ROOT.BASE_PATH.'includes/');
 define('VENDOR_DIR', ROOT.BASE_PATH.'vendor/');
 
 define('USER_ROOT', '');
-define('ADMIN_ROOT', 'ownwer/');
+define('ADMIN_ROOT', 'web/');
 define('UPLOADS_DIR', 'uploads/');
 define('PROFILE_UPLOADS_DIR', 'uploads/profile/');
 define('LOGO_UPLOADS_DIR', 'uploads/logo/');
