@@ -14,3 +14,6 @@ RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}\.php -f
 RewriteRule ^(.*)$ $1.php
+
+ErrorDocument 404 /2021vtu/error/404.php
+ErrorDocument 403 /2021vtu/error/404.php
