@@ -246,6 +246,37 @@ class Database
         }
     }
 
+    public function multiUpdate($tableName, array $sets, array $where)
+    {
+        $i = 0;
+        foreach ($sets as $set) {
+            $arrSet = array_map(
+            function($value) {
+                    return $value . '=:' . $value;
+            },
+            array_keys($set)
+            );
+            $stmt = $this->pdo->prepare(
+                "UPDATE $tableName SET ". implode(',', $arrSet).' WHERE '. key($where). '=:'. key($where) . 'Field'
+            );
+            
+            foreach ($set as $field => $value) {
+                $stmt->bindValue(':'.$field, $value);
+            }
+            $stmt->bindValue(':'.key($where[$i]) . 'Field', current($where[$i]));
+
+            $i++;
+
+            try {
+                $stmt->execute();
+
+                return $stmt->rowCount();
+            } catch (\PDOException $e) {
+                throw new \RuntimeException("[".$e->getCode()."] : ". $e->getMessage());
+            }
+        }
+    }
+
     /**
      * Delete Method
      *
@@ -288,6 +319,57 @@ class Database
         );
         try {
             $stmt->execute(array_values($data));
+
+            return $stmt->rowCount();
+        } catch (\PDOException $e) {
+            throw new \RuntimeException("[".$e->getCode()."] : ". $e->getMessage());
+        }
+    }
+
+     /**
+     * A custom function that automatically constructs a multi insert statement.
+     * 
+     * @param string $tableName Name of the table we are inserting into.
+     * @param array $data An "array of arrays" containing our row data.
+     * @param PDO $pdoObject Our PDO object.
+     * @return boolean TRUE on success. FALSE on failure.
+     */
+    function multiInsert($tableName, array $data){
+        
+        //Will contain SQL snippets.
+        $rowsSQL = array();
+
+        //Will contain the values that we need to bind.
+        $toBind = array();
+        
+        //Get a list of column names to use in the SQL statement.
+        $columnNames = array_keys($data[0]);
+
+        //Loop through our $data array.
+        foreach($data as $arrayIndex => $row){
+            $params = array();
+            foreach($row as $columnName => $columnValue){
+                $param = ":" . $columnName . $arrayIndex;
+                $params[] = $param;
+                $toBind[$param] = $columnValue; 
+            }
+            $rowsSQL[] = "(" . implode(", ", $params) . ")";
+        }
+
+        //Construct our SQL statement
+        $sql = "INSERT INTO `$tableName` (" . implode(", ", $columnNames) . ") VALUES " . implode(", ", $rowsSQL);
+
+        //Prepare our PDO statement.
+        $stmt = $this->pdo->prepare($sql);
+
+        //Bind our values.
+        foreach($toBind as $param => $val){
+            $stmt->bindValue($param, $val);
+        }
+        
+        //Execute our statement (i.e. insert the data).
+        try {
+            $stmt->execute();
 
             return $stmt->rowCount();
         } catch (\PDOException $e) {

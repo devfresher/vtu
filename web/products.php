@@ -1,9 +1,14 @@
 <?php
 require_once '../includes/config.php';
 require_once '../components/head.php';
+
+require_once '../model/Product.php';
+
+$product = new Product($db);
+
+$productList = $product->getAllProducts();
 ?>
 		<!--begin::Page Vendors Styles(used by this page)-->
-		<link href="<?php echo BASE_URL.USER_ROOT?>assets/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
 		<!--end::Page Vendors Styles-->
 	</head>
 	<!--end::Head-->
@@ -42,10 +47,10 @@ require_once '../components/head.php';
                                                         <button id="updateList" class="btn btn-success btn-sm">Update Product List</button>
                                                     </div>
                         
-                                                    <div>
+                                                    <!-- <div>
                                                         <button type="button" class="btn btn-danger btn-sm" id="edit_list">Edit</button>
                                                         <button type="button" class="btn btn-success btn-sm" id="submit_prices" disabled>Save</button>
-                                                    </div>
+                                                    </div> -->
                                                 </div>
                                             </div>
                                             <div class="card-body">                                            
@@ -155,10 +160,10 @@ require_once '../components/head.php';
                                                             foreach ($productList as $product) {?>
                                                                 <tr>
                                                                     <td><?php echo $i?></td>
-                                                                    <td><?php echo $product['product_plan_name']?></td>
+                                                                    <td><?php echo $product['product_name']?></td>
                                                                     <td><?php echo $product['category']?></td>
-                                                                    <td><?php echo $product['company_price']?></td>
-                                                                    <td><input type="text" data-category ="<?php echo $product['category']?>" data-name ="<?php echo $product['product_plan_name']?>" name="cost_price<?php echo $i?>" class="form-control list-input" disabled value=""></td>
+                                                                    <td><?php echo $appInfo->currency_code.number_format($product['company_price'], 2)?></td>
+                                                                    <td><?php echo $appInfo->currency_code.number_format($product['cost_price'], 2)?></td>
                                                                 </tr>
                                                             <?php $i++; } ?>
                                                         <?php } ?>
@@ -191,7 +196,7 @@ require_once '../components/head.php';
 		<?php include_once '../components/js.php';?>
 
 		<!--begin::Page Vendors(used by this page)-->
-        <script src="<?php echo BASE_URL?>assets/js/pages/crud/ktdatatable/base/txn-table.js"></script>
+        <script src="<?php echo BASE_URL?>assets/js/pages/crud/ktdatatable/base/productList-table.js"></script>
         <script>
             $('#updateList').on('click', function () {
                 var button = $(this);

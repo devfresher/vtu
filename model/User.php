@@ -36,6 +36,8 @@ class User extends Utility {
 
             $this->responseBody->firstLetter = $this->responseBody->firstname[0].$this->responseBody->lastname[0];
             $this->responseBody->fullName = $this->responseBody->firstname.' '.$this->responseBody->lastname;
+
+            unset($this->responseBody->role->permission);
         }else {
             $this->responseBody = false;
         }
@@ -59,6 +61,8 @@ class User extends Utility {
 
             $this->responseBody->firstLetter = $this->responseBody->firstname[0].$this->responseBody->lastname[0];
             $this->responseBody->fullName = $this->responseBody->firstname.' '.$this->responseBody->lastname;
+
+            unset($this->responseBody->role->permission);
         }else {
             $this->responseBody = false;
         }
@@ -82,6 +86,8 @@ class User extends Utility {
 
             $this->responseBody->firstLetter = $this->responseBody->firstname[0].$this->responseBody->lastname[0];
             $this->responseBody->fullName = $this->responseBody->firstname.' '.$this->responseBody->lastname;
+
+            unset($this->responseBody->role->permission);
         }else {
             $this->responseBody = false;
         }
@@ -104,6 +110,8 @@ class User extends Utility {
 
             $this->responseBody->firstLetter = $this->responseBody->firstname[0].$this->responseBody->lastname[0];
             $this->responseBody->fullName = $this->responseBody->firstname.' '.$this->responseBody->lastname;
+
+            unset($this->responseBody->role->permission);
         }else {
             $this->responseBody = false;
         }

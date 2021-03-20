@@ -139,6 +139,7 @@ if (!isset($_REQUEST['refId']) OR $_REQUEST['refId'] == '') {
 		<?php include_once './components/js.php';?>
 		
 		<!--begin::Page Scripts(used by this page)-->
+		<script src="<?php echo BASE_URL?>assets/js/pages/crud/ktdatatable/base/receipt-table.js"></script>
 		<!--end::Page Scripts-->
 	</body>
 	<!--end::Body-->

@@ -323,37 +323,50 @@ elseif (isset($_POST['buy_airtime'])) {
     
         }
     }
-    // print_r($response);
-    // print_r($_SESSION);
     header("Location: ".$_POST['form_url']);
     exit();
 }
 
-if (isset($_POST['fetch_products'])) {
-    $response = $api->sendGetRequest('products', $data);
+elseif (isset($_POST['fetch_products'])) {
+    $url = 'http://vtutopup/telco/controller.php';
+    $data['get_products'] = 1;
 
-    $productData = array();
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    
+    $output = curl_exec($ch);
+    $response = json_decode($output);
 
-    $i = 0;
-    foreach ($response as $product) {
-        $productItem = $utility->db->getAllRecords("products", "*", " AND name = '$product->product_name' AND category = '$product->category'");
-        if (count($productItem) > 0) {
-            continue;
+    $price_response = $api->sendGetRequest('products', $data);
+    
+    $productInsertData = array();
+
+    
+    try {
+        $utility->db->beginTransaction();
+        $utility->db->getRecFrmQry2("TRUNCATE `products`");
+
+        $i = 0;
+        foreach ($response as $product) {
+            print_r($price_response[$i]->vtutop_fee);
+            $productInsertData[$i]['product_name'] = $product->name;
+            $productInsertData[$i]['product_code'] = $product->product_code;
+            $productInsertData[$i]['category'] = $product->category;
+            $productInsertData[$i]['company_price'] = $product->company_price;
+            $productInsertData[$i]['status'] = 1;
+            $productInsertData[$i]['date'] = date('Y-m-d H:i:s');
+            $productInsertData[$i]['cost_price'] = $price_response[$i]->vtutop_fee;
+            $i++;
         }
-        else {
-            $productData[$i]['name'] = $product->product_name;
-            $productData[$i]['product_code'] = $product->product_id;
-            $productData[$i]['category'] = $product->category;
-            $productData[$i]['plan'] = $product->plan;
+    
+        if (isset($productInsertData) && !empty($productInsertData)) {
+            $insert = $utility->db->multiInsert("products", $productInsertData);
+            // $utility->db->commit();
         }
-        $i++;
-    }
 
-    if (isset($productData) && !empty($productData)) {
-        $insert = $utility->db->multiInsert("products", $productData);
-
-        echo json_encode($productData);
-        exit();
+    } catch (\Throwable $th) {
+        $utility->db->rollBack();
     }
 
 }
