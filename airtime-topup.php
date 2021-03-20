@@ -7,7 +7,7 @@ $wallet = new Wallet($db);
 $product = new Product($db);
 $transaction = new Transaction($db);
 
-$airtimeProducts = $product->getAllProducts($user->currentUser->plan->id, 1);
+$airtimeProducts = $product->getProductsWithPlan($user->currentUser->plan->id, 'Airtime Topup');
 $airtimePurchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 1);
 ?>
 		<!--begin::Page Vendors Styles(used by this page)-->

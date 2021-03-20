@@ -44,21 +44,19 @@ class Transaction Extends Utility
     {
         if ($catId != '') {
             $result = $this->db->getRecFrmQry(
-                "SELECT t.*, pp.product_code, pp.product_plan_name, pp.cost_price, p.product_name, p.product_icon, c.name AS category
-                FROM $this->table t 
+                "SELECT t.*, p.product_code,  pp.percentage_discount, p.product_name, p.product_icon, p.category
+                FROM $this->table t
                 LEFT JOIN product_plan pp ON t.product_plan_id = pp.id 
-                LEFT JOIN products p ON pp.product_id = p.id 
-                LEFT JOIN category c ON pp.cat_id = c.id
+                LEFT JOIN products p ON pp.product_code = p.product_code 
                 WHERE t.user_id = '$userId'
                 ORDER BY t.date DESC"
             );
         }else {
             $result = $this->db->getRecFrmQry(
-                "SELECT t.*, pp.product_code, pp.product_plan_name, pp.cost_price, p.product_name, p.product_icon, c.name AS category
-                FROM $this->table t 
+                "SELECT t.*, p.product_code,  pp.percentage_discount, p.product_name, p.product_icon, p.category
+                FROM $this->table t
                 LEFT JOIN product_plan pp ON t.product_plan_id = pp.id 
-                LEFT JOIN products p ON pp.product_id = p.id 
-                LEFT JOIN category c ON pp.cat_id = c.id
+                LEFT JOIN products p ON pp.product_code = p.product_code
                 WHERE t.user_id = '$userId' AND c.id = '$catId'
                 ORDER BY t.date DESC"
             );

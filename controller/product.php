@@ -328,7 +328,7 @@ elseif (isset($_POST['buy_airtime'])) {
 }
 
 elseif (isset($_POST['fetch_products'])) {
-    $url = 'http://vtutopup/telco/controller.php';
+    $url = 'http://vtutopup.com/telco/controller.php';
     $data['get_products'] = 1;
 
     $ch = curl_init($url);
@@ -349,7 +349,6 @@ elseif (isset($_POST['fetch_products'])) {
 
         $i = 0;
         foreach ($response as $product) {
-            print_r($price_response[$i]->vtutop_fee);
             $productInsertData[$i]['product_name'] = $product->name;
             $productInsertData[$i]['product_code'] = $product->product_code;
             $productInsertData[$i]['category'] = $product->category;

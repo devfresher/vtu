@@ -16,7 +16,7 @@ class Product Extends Utility
         if ($category == '') {
             $result = $this->db->getAllRecords($this->table1, "*");
         } else {
-            $result = $this->db->getAllRecords($this->table1, "*", "category = '$category'");
+            $result = $this->db->getAllRecords($this->table1, "*", "AND category = '$category'");
         }
 
         if (count($result) > 0){
@@ -34,11 +34,11 @@ class Product Extends Utility
     {
         if ($category == '') {
             $result = $this->db->getRecFrmQry(
-                "SELECT * FROM `product_plan` LEFT JOIN `products` ON products.product_code = product_plan.product_code WHERE plan_id = '$plan_id'"
+                "SELECT * FROM `$this->table1` LEFT JOIN `$this->table2` ON $this->table1.product_code = $this->table2.product_code WHERE $this->table2.plan_id = '$plan_id'"
             );
         } else {
             $result = $this->db->getRecFrmQry(
-                "SELECT * FROM `product_plan` LEFT JOIN `products` ON products.product_code = product_plan.product_code WHERE AND category = '$category' AND plan_id = '$plan_id'"
+                "SELECT * FROM `$this->table1` LEFT JOIN `$this->table2` ON $this->table1.product_code = $this->table2.product_code WHERE $this->table1.category = '$category' AND $this->table2.plan_id = '$plan_id'"
             );
         }
 
@@ -55,7 +55,7 @@ class Product Extends Utility
     public function getProductWithCode($product_code, $plan_id)
     {
         $result = $this->db->getRecFrmQry(
-            "SELECT * FROM `product_plan` LEFT JOIN `products` ON products.id = product_plan.product_id WHERE product_code = '$product_code' AND plan_id = '$plan_id'"
+            "SELECT * FROM `$this->table1` LEFT JOIN `$this->table2` ON $this->table1.product_code = $this->table2.product_code WHERE $this->table1.product_code = '$product_code' AND $this->table2.plan_id = '$plan_id'"
         );
 
         if (count($result) > 0){
