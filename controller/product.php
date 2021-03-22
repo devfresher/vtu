@@ -342,29 +342,68 @@ elseif (isset($_POST['fetch_products'])) {
     
     $productInsertData = array();
 
-    
+    $utility->db->beginTransaction();
+
     try {
-        $utility->db->beginTransaction();
-        $utility->db->getRecFrmQry2("TRUNCATE `products`");
+        $utility->db->delete2("DELETE FROM $product->table1");
 
         $i = 0;
         foreach ($response as $product) {
+
+            if(strpos($product->name, 'MTN') !== false){
+                $productIcon = UPLOADS_DIR.'mtn1.png';
+            } elseif(strpos($product->name, 'GLO') !== false){
+                $productIcon = UPLOADS_DIR.'glo1.png';
+            } elseif(strpos($product->name, 'Airtel') !== false){
+                $productIcon = UPLOADS_DIR.'airtel1.png';
+            } elseif(strpos($product->name, '9Mobile') !== false){
+                $productIcon = UPLOADS_DIR.'9mobile.jpg';
+            } elseif ($product->name == 'IBEDC Prepaid') {
+                $productIcon = UPLOADS_DIR.'ibdec.jpg';
+            } elseif ($product->name == 'Ikeja Prepaid') {
+                $productIcon = UPLOADS_DIR.'ikedc.jpg';
+            } elseif ($product->name == 'Eko Prepaid') {
+                $productIcon = UPLOADS_DIR.'ekedc.jpg';
+            } elseif ($product->name == 'Port Harcourt Prepaid') {
+                $productIcon = UPLOADS_DIR.'phedc.jpg';
+            } elseif ($product->name == 'Abuja Prepaid') {
+                $productIcon = UPLOADS_DIR.'aedc.jpg';
+            } elseif ($product->name == 'Enugu Prepaid') {
+                $productIcon = UPLOADS_DIR.'eedc.png';
+            } elseif ($product->name == 'Jos Prepaid') {
+                $productIcon = UPLOADS_DIR.'jedc.jpg';
+            } elseif ($product->name == 'Kaduna Prepaid') {
+                $productIcon = UPLOADS_DIR.'kadedc.jpg';
+            } elseif ($product->name == 'Kano Prepaid') {
+                $productIcon = UPLOADS_DIR.'kedco.jpg';
+            } elseif(strpos($product->name, 'Star Times') !== false){
+                $productIcon = UPLOADS_DIR.'startimes.png';
+            } elseif(strpos($product->name, 'DSTV') !== false){
+                $productIcon = UPLOADS_DIR.'dstv.jpg';
+            } elseif(strpos($product->name, 'GOtv') !== false){
+                $productIcon = UPLOADS_DIR.'gotv.jpg';
+            } elseif(strpos($product->name, 'Smile') !== false){
+                $productIcon = UPLOADS_DIR.'smile.jpg';
+            }
+
             $productInsertData[$i]['product_name'] = $product->name;
             $productInsertData[$i]['product_code'] = $product->product_code;
             $productInsertData[$i]['category'] = $product->category;
             $productInsertData[$i]['company_price'] = $product->company_price;
+            $productInsertData[$i]['product_icon'] = $productIcon;
             $productInsertData[$i]['status'] = 1;
             $productInsertData[$i]['date'] = date('Y-m-d H:i:s');
             $productInsertData[$i]['cost_price'] = $price_response[$i]->vtutop_fee;
+
             $i++;
         }
     
         if (isset($productInsertData) && !empty($productInsertData)) {
             $insert = $utility->db->multiInsert("products", $productInsertData);
-            // $utility->db->commit();
+            $utility->db->commit();
         }
 
-    } catch (\Throwable $th) {
+    } catch (Exception $e) {
         $utility->db->rollBack();
     }
 

@@ -93,7 +93,7 @@
 									</div>
 									<div class="navi-text">
 										<div class="font-weight-bold">Switch</div>
-										<div class="text-muted">Switch to user</div>
+										<div class="text-muted"></div>
 									</div>
 								</div>
 							</a>
@@ -119,7 +119,7 @@
 									</div>
 									<div class="navi-text">
 										<div class="font-weight-bold">Switch</div>
-										<div class="text-muted">Switch to admin</div>
+										<div class="text-muted"></div>
 									</div>
 								</div>
 							</a>

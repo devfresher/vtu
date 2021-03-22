@@ -40,17 +40,25 @@ $productList = $product->getAllProducts();
                                 <!--begin::Row-->
                                 <div class="row">
                                     <div class="col-xl-12">
-                                        <div class="card card-custom card-stretch">
-                                            <div class="card-header">
-                                                <div class="container d-flex justify-content-between align-items-center py-2 px-1">
-                                                    <div>
-                                                        <button id="updateList" class="btn btn-success btn-sm">Update Product List</button>
-                                                    </div>
-                        
-                                                    <!-- <div>
-                                                        <button type="button" class="btn btn-danger btn-sm" id="edit_list">Edit</button>
-                                                        <button type="button" class="btn btn-success btn-sm" id="submit_prices" disabled>Save</button>
-                                                    </div> -->
+                                        <div class="card card-custom">
+                                            <div class="card-header flex-wrap border-0 pt-6 pb-0 ">
+                                                <div class="card-toolbar">
+                                                    <!--begin::Button-->
+                                                    <button class="btn btn-primary font-weight-bolder" id="updateList">
+                                                        <span class="svg-icon svg-icon-md">
+                                                            <!--begin::Svg Icon | path:assets/media/svg/icons/Design/Flatten.svg-->
+                                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                                    <rect x="0" y="0" width="24" height="24"></rect>
+                                                                    <circle fill="#000000" cx="9" cy="15" r="6"></circle>
+                                                                    <path d="M8.8012943,7.00241953 C9.83837775,5.20768121 11.7781543,4 14,4 C17.3137085,4 20,6.6862915 20,10 C20,12.2218457 18.7923188,14.1616223 16.9975805,15.1987057 C16.9991904,15.1326658 17,15.0664274 17,15 C17,10.581722 13.418278,7 9,7 C8.93357256,7 8.86733422,7.00080962 8.8012943,7.00241953 Z" fill="#000000" opacity="0.3"></path>
+                                                                </g>
+                                                            </svg>
+                                                            <!--end::Svg Icon-->
+                                                        </span>
+                                                        Update Product List
+                                                    </button>
+                                                    <!--end::Button-->
                                                 </div>
                                             </div>
                                             <div class="card-body">                                            
@@ -152,6 +160,7 @@ $productList = $product->getAllProducts();
                                                             <th title="Field #3" class="custom-th">Category</th>
                                                             <th title="Field #4" class="custom-th">Company Price</th>
                                                             <th title="Field #5" class="custom-th">Cost Price</th>
+                                                            <th title="Field #6" class="custom-th">Points</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -160,7 +169,16 @@ $productList = $product->getAllProducts();
                                                             foreach ($productList as $product) {?>
                                                                 <tr>
                                                                     <td><?php echo $i?></td>
-                                                                    <td><?php echo $product['product_name']?></td>
+                                                                    <td>
+                                                                        <div class="d-flex align-items-center mb-6">
+                                                                            <div class="symbol symbol-40 flex-shrink-0">
+                                                                                <div class="symbol-label" style="background-image:url('<?php echo BASE_URL.$product['product_icon']?>')"></div>
+                                                                            </div>
+                                                                            <div class="ml-2">
+                                                                                <?php echo $product['product_name']?>
+                                                                            </div>
+                                                                        </div>
+                                                                    </td>
                                                                     <td><?php echo $product['category']?></td>
                                                                     <td><?php echo $appInfo->currency_code.number_format($product['company_price'], 2)?></td>
                                                                     <td><?php echo $appInfo->currency_code.number_format($product['cost_price'], 2)?></td>

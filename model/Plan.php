@@ -8,6 +8,21 @@ class Plan Extends Utility
         $this->table = 'plan';
     }
 
+    public function getAllPlans()
+    {
+        $result = $this->db->getAllRecords($this->table, "*");
+
+        if (count($result) > 0){
+
+            $feedback = $result;
+            $this->responseBody =  $this->arrayToObject($feedback);
+        } else {
+            $this->responseBody =  false;
+        }
+
+        return $this->responseBody;
+    }
+
     public function getPlan($planId)
     {
         if ($result = $this->db->getAllRecords($this->table, "*", "AND id = $planId")){
@@ -18,6 +33,19 @@ class Plan Extends Utility
             $this->responseBody =  false;
         }
         
+        return $this->responseBody;
+    }
+
+    public function createPlan($planData)
+    {
+        $create = $this->db->insert($this->table, $planData);
+
+        if ($create > 0) {
+            $this->responseBody =  true;
+        } else {
+            $this->responseBody =  false;
+        }
+
         return $this->responseBody;
     }
 }
