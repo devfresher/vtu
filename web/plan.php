@@ -59,7 +59,7 @@ if (isset($_GET['id'])) {
                                                 </div>
                                                 <div class="card-toolbar">
                                                     <!--begin::Button-->
-                                                    <button class="btn btn-danger font-weight-bolder edit_list mr-2" data-toggle="modal" data-target="#newPlanForm">
+                                                    <button class="btn btn-danger font-weight-bolder edit_list mr-2">
                                                         <span class="svg-icon svg-icon-md">
                                                             <!--begin::Svg Icon | path:assets/media/svg/icons/Design/Flatten.svg-->
                                                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -213,16 +213,16 @@ if (isset($_GET['id'])) {
                                                                     <td><?php echo $appInfo->currency.number_format($product['cost_price'], 2)?></td>
                                                                     <td>    
                                                                         <div class="input-group">
-                                                                            <input type="number" class="form-control list-input-sp" placeholder="0.00" aria-label="Percentage (to the nearest number)"/>
-                                                                            <input type="hidden" class="company_price" id="company_price<?php echo $product['id']?>" name="company_price<?php echo $product['id']?>" value="<?php echo $product['company_price']?>">
+                                                                            <input type="number" class="form-control list-input-sp" placeholder="0.00" aria-label="Percentage (to the nearest number)" disabled/>
+                                                                            <input type="hidden" class="company_price" name="company_price<?php echo $product['id']?>" value="<?php echo $product['company_price']?>">
                                                                             <div class="input-group-append">
                                                                                 <span class="input-group-text"><i class="fas fa-percentage"></i></span>
                                                                             </div>
                                                                         </div>
                                                                     </td>
-                                                                    <td class="selling_price" id="selling_price<?php echo $product['id']?>"></td>
-                                                                    <td> <input type="number" id="xtra_charge<?php echo $product['id']?>" class="form-control list-input-xc" placeholder="0.00" aria-label="Extra Charge"/></td>
-                                                                    <td class="net_selling_price" id="net_selling_price<?php echo $product['id']?>"></td>
+                                                                    <td class=""><span class="selling_price"></span></td>
+                                                                    <td> <input type="number"  class="form-control list-input-xc" placeholder="0.00" aria-label="Extra Charge" disabled/></td>
+                                                                    <td class=""><span class="net_selling_price"></span></td>
                                                                 </tr>
                                                             <?php $i++; } ?>
                                                         <?php } ?>
@@ -269,24 +269,37 @@ if (isset($_GET['id'])) {
 
             })
 
-            // $('.list-input-sp').each(function (index) {
-                $(document).on("keyup", '.list-input-sp', function () {
-                    console.log($(this));
-                    var companyPrice = $(this).siblings('.company_price').val();
-                    var extraCharge = $(this).parents("tr").find("#extra_charge").val();
+            $(document).on("keyup", '.list-input-sp', function () {
+                var companyPrice = $(this).siblings('.company_price').val();
+                var extraCharge = $(this).parents("tr").find(".list-input-xc").val();
+                extraCharge = extraCharge == '' ? 0:extraCharge;
+                
+                var sp = parseFloat(($(this).val()/100)*companyPrice);
+                var nsp = sp + parseFloat(extraCharge);
+                
+                var spCol = $(this).parents("tr").find(".selling_price");
+                var nSpCol = $(this).parents("tr").find(".net_selling_price");
 
-                    console.log(extraCharge);
+                spCol.html('<?php echo $appInfo->currency_code ?>'+sp);
+                nSpCol.html('<?php echo $appInfo->currency_code ?>'+nsp);
+            })
 
-                    // var sp = ($(this).val()/100)*companyPrice;
-                    // var nsp = sp + extraCharge;
+            $(document).on("keyup", '.list-input-xc', function () {
+                var companyPrice = $(this).parents("tr").find('.company_price').val();
+                var sellingPrice = $(this).parents("tr").find(".list-input-sp").val();
+                
+                sellingPrice = parseFloat(sellingPrice == '' ? 0:sellingPrice);
 
-                    // var spCol = $('#selling_price'+index+1);
-                    // var nSpCol = $('#net_selling_price'+index+1);
+                
+                var sp = parseFloat((sellingPrice/100)*companyPrice);
+                var nsp = sp + parseFloat($(this).val());
+                
+                var spCol = $(this).parents("tr").find(".selling_price");
+                var nSpCol = $(this).parents("tr").find(".net_selling_price");
 
-                    // spCol.html(sp);
-                    // nSpCol.html(nsp);
-                })
-            // })
+                spCol.html('<?php echo $appInfo->currency_code ?>'+sp);
+                nSpCol.html('<?php echo $appInfo->currency_code ?>'+nsp);
+            })
 
             $('.submit_prices').on('click', function () {
                 var button = $('.submit_prices');
