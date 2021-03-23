@@ -386,6 +386,7 @@ elseif (isset($_POST['fetch_products'])) {
                 $productIcon = UPLOADS_DIR.'smile.jpg';
             }
 
+            $productInsertData[$i]['id'] = $i+1;
             $productInsertData[$i]['product_name'] = $product->name;
             $productInsertData[$i]['product_code'] = $product->product_code;
             $productInsertData[$i]['category'] = $product->category;

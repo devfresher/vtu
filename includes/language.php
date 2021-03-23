@@ -85,6 +85,8 @@
     // for required fields
 	$clientLang['required_fields']="Fill all required field";
 
-	$clientLang['plan created']="Plan Created";
+	$clientLang['plan_created']="Plan Created";
+
+	$clientLang['plan_updated']="Plan Updates";
 
 ?>

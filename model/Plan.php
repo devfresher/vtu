@@ -48,4 +48,17 @@ class Plan Extends Utility
 
         return $this->responseBody;
     }
+
+    public function updatePlan($planData, $planId)
+    {
+        $update = $this->db->update($this->table, $planData, array('id' => $planId));
+
+        if ($update > 0) {
+            $this->responseBody =  true;
+        } else {
+            $this->responseBody =  false;
+        }
+
+        return $this->responseBody;
+    }
 }

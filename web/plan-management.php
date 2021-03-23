@@ -278,6 +278,7 @@ $planList = $plan->getAllPlans();
                                                                                 <div class="modal-body">
                                                                                     <div data-scroll="true" data-height="300">
                                                                                         <input type="hidden" name="form_url" value="<?php echo BASE_URL.ADMIN_ROOT?>plan-management">
+                                                                                        <input type="hidden" name="plan_id" value="<?php echo $plan['id']?>">
 
                                                                                         <div class="form-group row">
                                                                                             <div class="col-md">
@@ -312,7 +313,7 @@ $planList = $plan->getAllPlans();
                                                                                 </div>
                                                                                 <div class="modal-footer">
                                                                                     <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
-                                                                                    <button type="submit" name="create_plan" class="btn btn-primary font-weight-bold">Save</button>
+                                                                                    <button type="submit" name="update_plan" class="btn btn-primary font-weight-bold">Save</button>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
