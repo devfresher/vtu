@@ -215,6 +215,7 @@ if (isset($_GET['id'])) {
                                                                         <div class="input-group">
                                                                             <input type="number" name="selling_percent<?php echo $product['id']?>" class="form-control list-input-sp" placeholder="0.00" aria-label="Percentage (to the nearest number)" disabled/>
                                                                             <input type="hidden" class="company_price" name="company_price<?php echo $product['id']?>" value="<?php echo $product['company_price']?>">
+                                                                            <input type="hidden" name="product_code<?php echo $product['id']?>" value="<?php echo $product['product_code']?>">
                                                                             <div class="input-group-append">
                                                                                 <span class="input-group-text"><i class="fas fa-percentage"></i></span>
                                                                             </div>
@@ -307,15 +308,19 @@ if (isset($_GET['id'])) {
                 
                 var i = 1;
                 $('.list-input-xc').each(function () {
-                    var spriceName = $(this).attr('name');
-                    var cpValue = $(this).val();
+                    // var spriceName = $(this).parents("tr").find(".net_selling_price").attr(name);
+                    // var spriceValue = $(this).parents("tr").find(".net_selling_price").val();
 
-                    var product_category = $(this).attr('data-category');
-                    var product_name = $(this).attr('data-name');
-                    if(i  == $('.list-input').length){
-                        var priceItem = '{"'+cpName+'" : '+'"'+cpValue+'", "category":'+ '"'+product_category+'", "name":'+ '"'+product_name+'"}';
+                    var spercName = $(this).parents("tr").find(".list-input-sp").attr(name);
+                    var spercValue = $(this).parents("tr").find(".list-input-sp").val();
+
+                    var extraName = $(this).parents("tr").find(".list-input-xc").attr(name);
+                    var extraValue = $(this).parents("tr").find(".list-input-xc").val();
+
+                    if(i  == $('.list-input-xc').length){
+                        var priceItem = '{"'+spercName+'":'+ '"'+spercValue+'", "'+spercName+'":'+ '"'+spercValue+'", "'+extraName+'":'+ '"'+extraValue+'"}';
                     } else {
-                        var priceItem = '{"'+cpName+'" : '+'"'+cpValue+'", "category":'+ '"'+product_category+'", "name":'+ '"'+product_name+'"},';
+                        var priceItem = '{"'+spercName+'":'+ '"'+spercValue+'", "'+extraName+'":'+ '"'+extraValue+'"},';
                     }
                     data += priceItem;
 
@@ -327,7 +332,7 @@ if (isset($_GET['id'])) {
                 updateData = JSON.parse(data);
 
                 $.ajax({
-                    url: "<?php echo BASE_URL.'/controller.php'?>",
+                    url: "<?php echo BASE_URL.'controller/plan.php'?>",
                     type: "post",
                     data: updateData,
                     beforeSend: function(){
@@ -337,7 +342,7 @@ if (isset($_GET['id'])) {
                     success: function(result) {
                         button.html('Save');
                         console.log(result);
-                        window.location = '<?php echo BASE_URL?>control.php';
+                        window.location = '<?php echo BASE_URL. .'plan?id='.$planId?>';
                     }
                 })
             })
