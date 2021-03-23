@@ -182,13 +182,13 @@ if (isset($_GET['id'])) {
                                                 <!--end: Search Form-->
 
                                                 <!--begin: Datatable-->
-                                                <table class="datatable datatable-bordered datatable-head-custom" id="plan_list_datatable">
+                                                <table class="datatable datatable-bordered datatable-head-custom" id="product_plan_datatable">
                                                     <thead>
                                                         <tr>
                                                             <th title="Field #1" class="custom-th">S/N</th>
                                                             <th title="Field #2" class="custom-th">Product</th>
                                                             <th title="Field #3" class="custom-th">Cost Price</th>
-                                                            <th title="Field #4" class="custom-th">Selling Price (%)</th>
+                                                            <th title="Field #4" class="custom-th">Selling Percentage (%)</th>
                                                             <th title="Field #5" class="custom-th">Selling Price </th>
                                                             <th title="Field #6" class="custom-th">Extra Charge</th>
                                                             <th title="Field #7" class="custom-th">Net Selling Price</th>
@@ -210,10 +210,10 @@ if (isset($_GET['id'])) {
                                                                             </div>
                                                                         </div>
                                                                     </td>
-                                                                    <td><?php echo $appInfo->currency.number_format($product['cost_price'], 2)?></td>
+                                                                    <td><?php echo $appInfo->currency_code.number_format($product['cost_price'], 2)?></td>
                                                                     <td>    
                                                                         <div class="input-group">
-                                                                            <input type="number" class="form-control list-input-sp" placeholder="0.00" aria-label="Percentage (to the nearest number)" disabled/>
+                                                                            <input type="number" name="selling_percent<?php echo $product['id']?>" class="form-control list-input-sp" placeholder="0.00" aria-label="Percentage (to the nearest number)" disabled/>
                                                                             <input type="hidden" class="company_price" name="company_price<?php echo $product['id']?>" value="<?php echo $product['company_price']?>">
                                                                             <div class="input-group-append">
                                                                                 <span class="input-group-text"><i class="fas fa-percentage"></i></span>
@@ -221,8 +221,8 @@ if (isset($_GET['id'])) {
                                                                         </div>
                                                                     </td>
                                                                     <td class=""><span class="selling_price"></span></td>
-                                                                    <td> <input type="number"  class="form-control list-input-xc" placeholder="0.00" aria-label="Extra Charge" disabled/></td>
-                                                                    <td class=""><span class="net_selling_price"></span></td>
+                                                                    <td> <input type="number" name="extra_charge<?php echo $product['id']?>"  class="form-control list-input-xc" placeholder="0.00" aria-label="Extra Charge" disabled/></td>
+                                                                    <td class=""><input type="text" name="selling_price<?php echo $product['id']?>" class="net_selling_price form-control" disabled /></td>
                                                                 </tr>
                                                             <?php $i++; } ?>
                                                         <?php } ?>
@@ -274,14 +274,14 @@ if (isset($_GET['id'])) {
                 var extraCharge = $(this).parents("tr").find(".list-input-xc").val();
                 extraCharge = extraCharge == '' ? 0:extraCharge;
                 
-                var sp = parseFloat(($(this).val()/100)*companyPrice);
+                var sp = parseFloat(($(this).val()/100)*companyPrice, 2);
                 var nsp = sp + parseFloat(extraCharge);
                 
                 var spCol = $(this).parents("tr").find(".selling_price");
                 var nSpCol = $(this).parents("tr").find(".net_selling_price");
 
                 spCol.html('<?php echo $appInfo->currency_code ?>'+sp);
-                nSpCol.html('<?php echo $appInfo->currency_code ?>'+nsp);
+                nSpCol.val(nsp);
             })
 
             $(document).on("keyup", '.list-input-xc', function () {
@@ -297,17 +297,17 @@ if (isset($_GET['id'])) {
                 var spCol = $(this).parents("tr").find(".selling_price");
                 var nSpCol = $(this).parents("tr").find(".net_selling_price");
 
-                spCol.html('<?php echo $appInfo->currency_code ?>'+sp);
-                nSpCol.html('<?php echo $appInfo->currency_code ?>'+nsp);
+                spCol.html('<?php echo $appInfo->currency_code?>'+sp);
+                nSpCol.val(nsp);
             })
 
             $('.submit_prices').on('click', function () {
                 var button = $('.submit_prices');
-                var data = '{"update_products" : 1, "data" : [';
+                var data = '{"update_plan_product" : 1, "data" : [';
                 
                 var i = 1;
-                $('.list-input').each(function () {
-                    var cpName = $(this).attr('name');
+                $('.list-input-xc').each(function () {
+                    var spName = $(this).attr('name');
                     var cpValue = $(this).val();
 
                     var product_category = $(this).attr('data-category');

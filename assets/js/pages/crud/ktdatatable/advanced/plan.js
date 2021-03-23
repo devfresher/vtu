@@ -68,6 +68,33 @@ var KTDatatableColumnRenderingDemo = function() {
 				}],
 		});
 
+		$('#product_plan_datatable').KTDatatable({
+
+
+			// layout definition
+			layout: {
+				overflow: 'visible',
+				scroll: true, // enable/disable datatable scroll both horizontal and vertical when needed.
+			},
+
+			// column sorting
+			sortable: true,
+
+			pagination: false,
+
+			search: {
+				input: $('#kt_datatable_search_query'),
+				delay: 400,
+				key: 'generalSearch'
+			},
+
+			// columns definition
+			columns: [
+				
+			],
+		});
+
+
 		$('#kt_datatable_search_status').on('change', function() {
 			datatable.search($(this).val().toLowerCase(), 'Status');
 		});
