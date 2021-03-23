@@ -31,7 +31,7 @@ if (isset($_POST['create_plan'])) {
         'plan_lock' => $planLock,
         'plan_type' => $planType,
         'created_by' => $user->currentUser->id,
-        'created_date' => date("Y-m-d H:i:s",),
+        'created_date' => date("Y-m-d H:i:s"),
         'status' => 1
     );
 

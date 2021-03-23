@@ -52,7 +52,7 @@
 											</a>
 										<?php } ?>
 
-										<?php if ($user->currentUser->role->id == 1) {?>
+										<?php if (!$utility->accessAdmin()) {?>
 											<a href="<?php echo BASE_URL.ADMIN_ROOT?>system-settings" class="btn btn-transparent-white font-weight-bold py-3 px-6 mr-2">
 												<i class="fas fa-folder-plus"></i>
 												Fund Wallet
@@ -66,7 +66,7 @@
 									<?php } else { ?>
 										<a href="<?php echo BASE_URL.ADMIN_ROOT?>system-settings" class="btn btn-transparent-white font-weight-bold py-3 px-6 mr-2">
 											<i class="fas fa-folder-plus"></i>
-											Fund Wallet
+											Fund 	
 										</a>
 									<?php } ?>
 									<!--end::Button-->
