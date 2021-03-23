@@ -270,10 +270,12 @@ if (isset($_GET['id'])) {
             })
 
             // $('.list-input-sp').each(function (index) {
-                $(document).on("keyup", $(this), function () {
+                $(document).on("keyup", '.list-input-sp', function () {
                     console.log($(this));
-                    // var companyPrice = $('.company_price'+index+1).val();
-                    // var extraCharge = $('#xtra_charge'+index+1).val();
+                    var companyPrice = $(this).siblings('.company_price').val();
+                    var extraCharge = $(this).parents("tr").find("#extra_charge").val();
+
+                    console.log(extraCharge);
 
                     // var sp = ($(this).val()/100)*companyPrice;
                     // var nsp = sp + extraCharge;
