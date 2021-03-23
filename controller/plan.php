@@ -48,8 +48,7 @@ if (isset($_POST['create_plan'])) {
 
 elseif (isset($_POST['update_plan'])) {
     extract($_POST);
-
-    $required_fields = array('plan_name', 'migration_fee', 'plan_lock', 'plan_type');
+    $required_fields = array('migration_fee', 'plan_lock', 'plan_type');
     foreach ($required_fields as $field) {
         if (in_array($field, array_keys($_POST)) AND $_POST[$field] != '') {
             continue;

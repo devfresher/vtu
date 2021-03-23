@@ -87,6 +87,6 @@
 
 	$clientLang['plan_created']="Plan Created";
 
-	$clientLang['plan_updated']="Plan Updates";
+	$clientLang['plan_updated']="Plan Updated";
 
 ?>

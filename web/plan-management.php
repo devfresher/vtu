@@ -3,9 +3,12 @@ require_once '../includes/config.php';
 require_once '../components/head.php';
 
 require_once '../model/Plan.php';
+require_once '../model/Product.php';
 
+$product = new Product($db);
 $plan = new Plan($db);
 
+$productList = $product->getAllProducts();
 $planList = $plan->getAllPlans();
 ?>
 		<!--begin::Page Vendors Styles(used by this page)-->
@@ -220,53 +223,9 @@ $planList = $plan->getAllPlans();
                                                     <tbody>
                                                         <?php if($planList !== false){
                                                             $i = 1;
-                                                            foreach ($planList as $plan) {?>
-                                                                <tr>
-                                                                    <td><?php echo $i?></td>
-                                                                    <td><?php echo $plan['plan_name']?></td>
-                                                                    <td><?php echo $appInfo->currency_code.number_format($plan['migration_fee'], 2)?></td>
-                                                                    <td><?php echo $plan['plan_type']?></td>
-                                                                    <td>
-                                                                        <span style="overflow: visible;position: relative;">
-                                                                            <a href="javascript:;"data-toggle="modal" data-target="#editPlanForm<?php echo $i?>" class="btn btn-sm btn-clean btn-icon mr-2" title="Modify Plan Settings">
-                                                                                <span class="svg-icon svg-icon-md">
-                                                                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                                                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                                                                            <rect x="0" y="0" width="24" height="24"/>
-                                                                                            <path d="M5,8.6862915 L5,5 L8.6862915,5 L11.5857864,2.10050506 L14.4852814,5 L19,5 L19,9.51471863 L21.4852814,12 L19,14.4852814 L19,19 L14.4852814,19 L11.5857864,21.8994949 L8.6862915,19 L5,19 L5,15.3137085 L1.6862915,12 L5,8.6862915 Z M12,15 C13.6568542,15 15,13.6568542 15,12 C15,10.3431458 13.6568542,9 12,9 C10.3431458,9 9,10.3431458 9,12 C9,13.6568542 10.3431458,15 12,15 Z" fill="#000000"/>
-                                                                                        </g>
-                                                                                    </svg>
-                                                                                </span>
-                                                                            </a>
-
-                                                                            <a href="javascript:;" class="btn btn-sm btn-clean btn-icon mr-2" title="Edit Price">
-                                                                                <span class="svg-icon svg-icon-md">
-                                                                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                                                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                                                                            <rect x="0" y="0" width="24" height="24"/>
-                                                                                            <path d="M8,17.9148182 L8,5.96685884 C8,5.56391781 8.16211443,5.17792052 8.44982609,4.89581508 L10.965708,2.42895648 C11.5426798,1.86322723 12.4640974,1.85620921 13.0496196,2.41308426 L15.5337377,4.77566479 C15.8314604,5.0588212 16,5.45170806 16,5.86258077 L16,17.9148182 C16,18.7432453 15.3284271,19.4148182 14.5,19.4148182 L9.5,19.4148182 C8.67157288,19.4148182 8,18.7432453 8,17.9148182 Z" fill="#000000" fill-rule="nonzero"\ transform="translate(12.000000, 10.707409) rotate(-135.000000) translate(-12.000000, -10.707409) "/>
-                                                                                            <rect fill="#000000" opacity="0.3" x="5" y="20" width="15" height="2" rx="1"/>
-                                                                                        </g>
-                                                                                    </svg>
-                                                                                </span>
-                                                                            </a>
-
-                                                                            <a href="javascript:;" class="btn btn-sm btn-clean btn-icon" title="Delete Plan">
-                                                                                <span class="svg-icon svg-icon-md">
-                                                                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                                                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                                                                            <rect x="0" y="0" width="24" height="24"/>
-                                                                                            <path d="M6,8 L6,20.5 C6,21.3284271 6.67157288,22 7.5,22 L16.5,22 C17.3284271,22 18,21.3284271 18,20.5 L18,8 L6,8 Z" fill="#000000" fill-rule="nonzero"/>
-                                                                                            <path d="M14,4.5 L14,4 C14,3.44771525 13.5522847,3 13,3 L11,3 C10.4477153,3 10,3.44771525 10,4 L10,4.5 L5.5,4.5 C5.22385763,4.5 5,4.72385763 5,5 L5,5.5 C5,5.77614237 5.22385763,6 5.5,6 L18.5,6 C18.7761424,6 19,5.77614237 19,5.5 L19,5 C19,4.72385763 18.7761424,4.5 18.5,4.5 L14,4.5 Z" fill="#000000" opacity="0.3"/>
-                                                                                        </g>
-                                                                                    </svg>
-                                                                                </span>
-                                                                            </a>
-                                                                        </span>
-                                                                    </td>
-                                                                </tr>
-                                                                <form class="form" method="POST" id="edit-plan-form<?php echo $i?>" action="<?php echo BASE_URL?>controller/plan.php">
-                                                                    <div class="modal fade" id="editPlanForm<?php echo $i?>" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="editPlanForm<?php echo $i?>" aria-hidden="true">
+                                                            foreach ($planList as $plan) { ?>
+                                                                <div class="modal fade" id="editPlanForm<?php echo $plan['id']?>" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="editPlanForm<?php echo $plan['id']?>" aria-hidden="true">
+                                                                    <form class="form" method="POST" id="edit-plan-form<?php echo $plan['id']?>" action="<?php echo BASE_URL?>controller/plan.php">
                                                                         <div class="modal-dialog modal-dialog-centered modal-md modal-dialog-scrollable" role="document">
                                                                             <div class="modal-content">
                                                                                 <div class="modal-header">
@@ -313,12 +272,122 @@ $planList = $plan->getAllPlans();
                                                                                 </div>
                                                                                 <div class="modal-footer">
                                                                                     <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
-                                                                                    <button type="submit" name="update_plan" class="btn btn-primary font-weight-bold">Save</button>
+                                                                                    <button type="submit" name="update_plan" class="btn btn-primary font-weight-bold">Save Changes</button>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-                                                                    </div>
-                                                                </form>
+                                                                    </form>
+                                                                </div>
+
+                                                                <div class="modal fade" id="planPricingForm<?php echo $plan['id']?>" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="planPricingForm<?php echo $plan['id']?>" aria-hidden="true">
+                                                                    <form class="form" method="POST" id="edit-price-form<?php echo $plan['id']?>" action="<?php echo BASE_URL?>controller/plan.php">
+                                                                        <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable" role="document">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <h5 class="modal-title" id="exampleModalLabel"> <?php echo $plan['plan_name']?> Plan Pricing</h5>
+                                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                        <i aria-hidden="true" class="ki ki-close"></i>
+                                                                                    </button>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <div data-scroll="true" data-height="300">
+                                                                                    <table class="datatable datatable-bordered datatable-head-custom" id="product_list_datatable">
+                                                                                        <thead>
+                                                                                            <tr>
+                                                                                                <th title="Field #1" class="custom-th">Product</th>
+                                                                                                <th title="Field #2" class="custom-th">Cost Price</th>
+                                                                                                <th title="Field #3" class="custom-th">Selling Price (%)</th>
+                                                                                                <th title="Field #4" class="custom-th">Selling Price (<?php echo $appInfo->currency?>)</th>
+                                                                                                <th title="Field #5" class="custom-th">Extra Charge</th>
+                                                                                                <th title="Field #6" class="custom-th">Net Selling Price/th>
+                                                                                            </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                            <?php if($productList !== false){
+                                                                                                $i = 1;
+                                                                                                foreach ($productList as $product) {?>
+                                                                                                    <tr>
+                                                                                                        <td>
+                                                                                                            <div class="d-flex align-items-center mb-6">
+                                                                                                                <div class="symbol symbol-40 flex-shrink-0">
+                                                                                                                    <div class="symbol-label" style="background-image:url('<?php echo BASE_URL.$product['product_icon']?>')"></div>
+                                                                                                                </div>
+                                                                                                                <div class="ml-2">
+                                                                                                                    <?php echo $product['product_name']?>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </td>
+                                                                                                        <td><?php echo $product['cost_price']?></td>
+                                                                                                        <td>    
+                                                                                                            <div class="input-group">
+                                                                                                                <input type="number" class="form-control" placeholder="0.00" aria-label="Percentage (to the nearest number)"/>
+                                                                                                                <div class="input-group-append">
+                                                                                                                    <span class="input-group-text"><i class="fas fa-percent"></i></span>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </td>
+                                                                                                        <td class="selling_price"><?php echo $product['cost_price']?></td>
+                                                                                                        <td> <input type="number" class="form-control" placeholder="0.00" aria-label="Extra Charge"/></td>
+                                                                                                        <td class="net_selling_price"></td>
+                                                                                                    </tr>
+                                                                                                <?php $i++; } ?>
+                                                                                            <?php } ?>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="modal-footer">
+                                                                                    <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
+                                                                                    <button type="submit" name="update_plan" class="btn btn-primary font-weight-bold">Save Changes</button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                                <tr>
+                                                                    <td><?php echo $i?></td>
+                                                                    <td><?php echo $plan['plan_name']?></td>
+                                                                    <td><?php echo $appInfo->currency_code.number_format($plan['migration_fee'], 2)?></td>
+                                                                    <td><?php echo $plan['plan_type']?></td>
+                                                                    <td>
+                                                                        <span style="overflow: visible;position: relative;">
+                                                                            <a href="javascript:;" data-toggle="modal" data-target="#editPlanForm<?php echo $plan['id']?>" class="btn btn-sm btn-clean btn-icon mr-2" title="Modify Plan Settings">
+                                                                                <span class="svg-icon svg-icon-md">
+                                                                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                                                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                                                            <rect x="0" y="0" width="24" height="24"/>
+                                                                                            <path d="M5,8.6862915 L5,5 L8.6862915,5 L11.5857864,2.10050506 L14.4852814,5 L19,5 L19,9.51471863 L21.4852814,12 L19,14.4852814 L19,19 L14.4852814,19 L11.5857864,21.8994949 L8.6862915,19 L5,19 L5,15.3137085 L1.6862915,12 L5,8.6862915 Z M12,15 C13.6568542,15 15,13.6568542 15,12 C15,10.3431458 13.6568542,9 12,9 C10.3431458,9 9,10.3431458 9,12 C9,13.6568542 10.3431458,15 12,15 Z" fill="#000000"/>
+                                                                                        </g>
+                                                                                    </svg>
+                                                                                </span>
+                                                                            </a>
+
+                                                                            <a href="javascript:;" data-toggle="modal" data-target="#planPricingForm<?php echo $plan['id']?>" class="btn btn-sm btn-clean btn-icon mr-2" title="Edit Price">
+                                                                                <span class="svg-icon svg-icon-md">
+                                                                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                                                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                                                            <rect x="0" y="0" width="24" height="24"/>
+                                                                                            <path d="M8,17.9148182 L8,5.96685884 C8,5.56391781 8.16211443,5.17792052 8.44982609,4.89581508 L10.965708,2.42895648 C11.5426798,1.86322723 12.4640974,1.85620921 13.0496196,2.41308426 L15.5337377,4.77566479 C15.8314604,5.0588212 16,5.45170806 16,5.86258077 L16,17.9148182 C16,18.7432453 15.3284271,19.4148182 14.5,19.4148182 L9.5,19.4148182 C8.67157288,19.4148182 8,18.7432453 8,17.9148182 Z" fill="#000000" fill-rule="nonzero"\ transform="translate(12.000000, 10.707409) rotate(-135.000000) translate(-12.000000, -10.707409) "/>
+                                                                                            <rect fill="#000000" opacity="0.3" x="5" y="20" width="15" height="2" rx="1"/>
+                                                                                        </g>
+                                                                                    </svg>
+                                                                                </span>
+                                                                            </a>
+
+                                                                            <a href="javascript:;" class="btn btn-sm btn-clean btn-icon" title="Delete Plan">
+                                                                                <span class="svg-icon svg-icon-md">
+                                                                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                                                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                                                            <rect x="0" y="0" width="24" height="24"/>
+                                                                                            <path d="M6,8 L6,20.5 C6,21.3284271 6.67157288,22 7.5,22 L16.5,22 C17.3284271,22 18,21.3284271 18,20.5 L18,8 L6,8 Z" fill="#000000" fill-rule="nonzero"/>
+                                                                                            <path d="M14,4.5 L14,4 C14,3.44771525 13.5522847,3 13,3 L11,3 C10.4477153,3 10,3.44771525 10,4 L10,4.5 L5.5,4.5 C5.22385763,4.5 5,4.72385763 5,5 L5,5.5 C5,5.77614237 5.22385763,6 5.5,6 L18.5,6 C18.7761424,6 19,5.77614237 19,5.5 L19,5 C19,4.72385763 18.7761424,4.5 18.5,4.5 L14,4.5 Z" fill="#000000" opacity="0.3"/>
+                                                                                        </g>
+                                                                                    </svg>
+                                                                                </span>
+                                                                            </a>
+                                                                        </span>
+                                                                    </td>
+                                                                </tr>
                                                             <?php $i++; } ?>
                                                         <?php } ?>
                                                     </tbody>
