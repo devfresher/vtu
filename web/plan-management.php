@@ -278,72 +278,6 @@ $planList = $plan->getAllPlans();
                                                                         </div>
                                                                     </form>
                                                                 </div>
-
-                                                                <div class="modal fade" id="planPricingForm<?php echo $plan['id']?>" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="planPricingForm<?php echo $plan['id']?>" aria-hidden="true">
-                                                                    <form class="form" method="POST" id="edit-price-form<?php echo $plan['id']?>" action="<?php echo BASE_URL?>controller/plan.php">
-                                                                        <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable" role="document">
-                                                                            <div class="modal-content">
-                                                                                <div class="modal-header">
-                                                                                    <h5 class="modal-title" id="exampleModalLabel"> <?php echo $plan['plan_name']?> Plan Pricing</h5>
-                                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                                        <i aria-hidden="true" class="ki ki-close"></i>
-                                                                                    </button>
-                                                                                </div>
-                                                                                <div class="modal-body">
-                                                                                    <div data-scroll="true" data-height="300">
-                                                                                    <table class="datatable datatable-bordered datatable-head-custom" id="product_list_datatable">
-                                                                                        <thead>
-                                                                                            <tr>
-                                                                                                <th title="Field #1" class="custom-th">Product</th>
-                                                                                                <th title="Field #2" class="custom-th">Cost Price</th>
-                                                                                                <th title="Field #3" class="custom-th">Selling Price (%)</th>
-                                                                                                <th title="Field #4" class="custom-th">Selling Price (<?php echo $appInfo->currency?>)</th>
-                                                                                                <th title="Field #5" class="custom-th">Extra Charge</th>
-                                                                                                <th title="Field #6" class="custom-th">Net Selling Price/th>
-                                                                                            </tr>
-                                                                                        </thead>
-                                                                                        <tbody>
-                                                                                            <?php if($productList !== false){
-                                                                                                $i = 1;
-                                                                                                foreach ($productList as $product) {?>
-                                                                                                    <tr>
-                                                                                                        <td>
-                                                                                                            <div class="d-flex align-items-center mb-6">
-                                                                                                                <div class="symbol symbol-40 flex-shrink-0">
-                                                                                                                    <div class="symbol-label" style="background-image:url('<?php echo BASE_URL.$product['product_icon']?>')"></div>
-                                                                                                                </div>
-                                                                                                                <div class="ml-2">
-                                                                                                                    <?php echo $product['product_name']?>
-                                                                                                                </div>
-                                                                                                            </div>
-                                                                                                        </td>
-                                                                                                        <td><?php echo $product['cost_price']?></td>
-                                                                                                        <td>    
-                                                                                                            <div class="input-group">
-                                                                                                                <input type="number" class="form-control" placeholder="0.00" aria-label="Percentage (to the nearest number)"/>
-                                                                                                                <div class="input-group-append">
-                                                                                                                    <span class="input-group-text"><i class="fas fa-percent"></i></span>
-                                                                                                                </div>
-                                                                                                            </div>
-                                                                                                        </td>
-                                                                                                        <td class="selling_price"><?php echo $product['cost_price']?></td>
-                                                                                                        <td> <input type="number" class="form-control" placeholder="0.00" aria-label="Extra Charge"/></td>
-                                                                                                        <td class="net_selling_price"></td>
-                                                                                                    </tr>
-                                                                                                <?php $i++; } ?>
-                                                                                            <?php } ?>
-                                                                                        </tbody>
-                                                                                    </table>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div class="modal-footer">
-                                                                                    <button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
-                                                                                    <button type="submit" name="update_plan" class="btn btn-primary font-weight-bold">Save Changes</button>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </form>
-                                                                </div>
                                                                 <tr>
                                                                     <td><?php echo $i?></td>
                                                                     <td><?php echo $plan['plan_name']?></td>
@@ -362,7 +296,7 @@ $planList = $plan->getAllPlans();
                                                                                 </span>
                                                                             </a>
 
-                                                                            <a href="javascript:;" data-toggle="modal" data-target="#planPricingForm<?php echo $plan['id']?>" class="btn btn-sm btn-clean btn-icon mr-2" title="Edit Price">
+                                                                            <a href="<?php echo BASE_URL.ADMIN_ROOT.'plan?id'.$plan['id']?>" data-toggle="modal" data-target="#planPricingForm<?php echo $plan['id']?>" class="btn btn-sm btn-clean btn-icon mr-2" title="Edit Price">
                                                                                 <span class="svg-icon svg-icon-md">
                                                                                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                                                                         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">

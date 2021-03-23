@@ -608,7 +608,7 @@
 									<div class="dropdown-menu p-0 m-0 dropdown-menu-right dropdown-menu-anim-up dropdown-menu-lg">
 										<form>
 											<!--begin::Header-->
-											<div class="d-flex flex-column pt-12 bgi-size-cover bgi-no-repeat rounded-top" style="background-image: url(assets/media/misc/bg-1.jpg)">
+											<div class="d-flex flex-column pt-12 bgi-size-cover bgi-no-repeat rounded-top" style="background-image: url(<?php echo BASE_URL.USER_ROOT?>assets/media/misc/bg-1.jpg)">
 												<!--begin::Title-->
 												<h4 class="d-flex flex-center rounded-top">
 													<span class="text-white">User Notifications</span>
