@@ -307,7 +307,7 @@ if (isset($_GET['id'])) {
                 
                 var i = 1;
                 $('.list-input-xc').each(function () {
-                    var spName = $(this).attr('name');
+                    var spriceName = $(this).attr('name');
                     var cpValue = $(this).val();
 
                     var product_category = $(this).attr('data-category');
