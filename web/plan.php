@@ -11,7 +11,7 @@ if (isset($_GET['id'])) {
     $product = new Product($db);
     $plan = new Plan($db);
     
-    $productList = $product->getAllProducts();
+    $productList = $product->getProductsWithPlan($planId);
     $planDetail = $plan->getPlan($planId);
 }else {
     http_response_code(404);
@@ -197,7 +197,10 @@ if (isset($_GET['id'])) {
                                                     <tbody>
                                                         <?php if($productList !== false){
                                                             $i = 1;
-                                                            foreach ($productList as $product) {?>
+                                                            foreach ($productList as $product) {
+                                                                $sellingPrice = $appInfo->currency_code.number_format(($product['selling_percentage']/100)*$product['company_price'], 2);
+                                                                $netSellingPrice = $appInfo->currency_code.number_format((($product['selling_percentage']/100)*$product['company_price'] + $product['extra_charge']), 2);
+                                                            ?>
                                                                 <tr>
                                                                     <td><?php echo $i?></td>
                                                                     <td>
@@ -213,17 +216,17 @@ if (isset($_GET['id'])) {
                                                                     <td><?php echo $appInfo->currency_code.number_format($product['cost_price'], 2)?></td>
                                                                     <td>    
                                                                         <div class="input-group">
-                                                                            <input type="number" name="selling_percent<?php echo $product['id']?>" class="form-control list-input-sp" placeholder="0.00" aria-label="Percentage (to the nearest number)" disabled/>
+                                                                            <input type="number" name="selling_percent<?php echo $product['id']?>" class="form-control list-input-sp" placeholder="0" value="<?php echo $product['selling_percentage']?>" aria-label="Percentage (to the nearest number)" disabled/>
                                                                             <input type="hidden" class="company_price" name="company_price<?php echo $product['id']?>" value="<?php echo $product['company_price']?>">
-                                                                            <input type="hidden" name="product_code<?php echo $product['id']?>" value="<?php echo $product['product_code']?>">
+                                                                            <input type="hidden" class="product_code" name="product_code<?php echo $product['id']?>" value="<?php echo $product['product_code']?>">
                                                                             <div class="input-group-append">
                                                                                 <span class="input-group-text"><i class="fas fa-percentage"></i></span>
                                                                             </div>
                                                                         </div>
                                                                     </td>
-                                                                    <td class=""><span class="selling_price"></span></td>
-                                                                    <td> <input type="number" name="extra_charge<?php echo $product['id']?>"  class="form-control list-input-xc" placeholder="0.00" aria-label="Extra Charge" disabled/></td>
-                                                                    <td class=""><input type="text" name="selling_price<?php echo $product['id']?>" class="net_selling_price form-control" disabled /></td>
+                                                                    <td class=""><span class="selling_price"><?php echo $sellingPrice?></span></td>
+                                                                    <td> <input type="number" name="extra_charge<?php echo $product['id']?>" value="<?php echo $product['extra_charge']?>" class="form-control list-input-xc"  placeholder="0.00" aria-label="Extra Charge" disabled/></td>
+                                                                    <td class=""><input type="text" name="selling_price<?php echo $product['id']?>" value="<?php echo $netSellingPrice?>" class="net_selling_price form-control" disabled /></td>
                                                                 </tr>
                                                             <?php $i++; } ?>
                                                         <?php } ?>
@@ -299,52 +302,70 @@ if (isset($_GET['id'])) {
                 var nSpCol = $(this).parents("tr").find(".net_selling_price");
 
                 spCol.html('<?php echo $appInfo->currency_code?>'+sp);
-                nSpCol.val(nsp);
+                nSpCol.val('<?php echo $appInfo->currency?>'+nsp);
             })
 
             $('.submit_prices').on('click', function () {
-                var button = $('.submit_prices');
-                var data = '{"update_plan_product" : 1, "data" : [';
-                
-                var i = 1;
-                $('.list-input-xc').each(function () {
-                    // var spriceName = $(this).parents("tr").find(".net_selling_price").attr(name);
-                    // var spriceValue = $(this).parents("tr").find(".net_selling_price").val();
 
-                    var spercName = $(this).parents("tr").find(".list-input-sp").attr(name);
-                    var spercValue = $(this).parents("tr").find(".list-input-sp").val();
+                Swal.fire({
+                    icon: 'question',
+                    text: 'Are you sure you want to save? This action is irreversible',
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, sure",
+                    cancelButtonText: "Cancel!",
+                }).then(function(result) {
+                    if (result.value) {
+                        var button = $('.submit_prices');
+                        var data = '{"update_plan_product" : 1, "data" : [';
+                        
+                        var i = 1;
+                        $('.list-input-xc').each(function () {
+                            // var productCodeName = $(this).parents("tr").find(".product_code").attr(name);
+                            var productCode = $(this).parents("tr").find(".product_code").val();
+        
+                            var planId = '<?php echo $_GET['id']?>';
+        
+                            // var spercName = $(this).parents("tr").find(".list-input-sp").attr(name);
+                            var sellingPercentage = $(this).parents("tr").find(".list-input-sp").val();
+        
+                            // var extraName = $(this).parents("tr").find(".list-input-xc").attr(name);
+                            var extraCharge = $(this).parents("tr").find(".list-input-xc").val();
+        
+                            if(i  == $('.list-input-xc').length){
+                                var priceItem = '{"product_code":'+ '"'+productCode+'", "plan_id":'+ '"'+planId+'", "selling_percentage":'+ '"'+sellingPercentage+'", "extra_charge":'+ '"'+extraCharge+'"}';
+                            } else {
+                                var priceItem = '{"product_code":'+ '"'+productCode+'", "plan_id":'+ '"'+planId+'", "selling_percentage":'+ '"'+sellingPercentage+'", "extra_charge":'+ '"'+extraCharge+'"},';
+                            }
+                            data += priceItem;
+        
+                            i++;
+                        })
+        
+                        data += "]}";
+        
+                        updateData = JSON.parse(data);
+        
+                        $.ajax({
+                            url: "<?php echo BASE_URL.'controller/plan.php'?>",
+                            type: "post",
+                            data: updateData,
+                            beforeSend: function(){
+                                button.html("Saving <i class='fas fa-spinner fa-pulse'></i>");
+                                button.prop('disabled', true);
+                            },
+                            success: function(result) {
+                                $('.edit_list').removeAttr('disabled');
+                                button.html('Save Changes');
 
-                    var extraName = $(this).parents("tr").find(".list-input-xc").attr(name);
-                    var extraValue = $(this).parents("tr").find(".list-input-xc").val();
+                                $('.list-input-sp').prop('disabled', true)
+                                $('.list-input-xc').prop('disabled', true)
 
-                    if(i  == $('.list-input-xc').length){
-                        var priceItem = '{"'+spercName+'":'+ '"'+spercValue+'", "'+spercName+'":'+ '"'+spercValue+'", "'+extraName+'":'+ '"'+extraValue+'"}';
-                    } else {
-                        var priceItem = '{"'+spercName+'":'+ '"'+spercValue+'", "'+extraName+'":'+ '"'+extraValue+'"},';
+                                console.log(result);
+                                // window.location = '<?php echo BASE_URL.ADMIN_ROOT.'plan?id='.$planId?>';
+                            }
+                        })
                     }
-                    data += priceItem;
-
-                    i++;
-                })
-
-                data += "]}";
-
-                updateData = JSON.parse(data);
-
-                $.ajax({
-                    url: "<?php echo BASE_URL.'controller/plan.php'?>",
-                    type: "post",
-                    data: updateData,
-                    beforeSend: function(){
-                        button.html("Saving <i class='fas fa-spinner fa-pulse'></i>");
-                        button.prop('disabled', true);
-                    },
-                    success: function(result) {
-                        button.html('Save');
-                        console.log(result);
-                        window.location = '<?php echo BASE_URL. .'plan?id='.$planId?>';
-                    }
-                })
+                });
             })
         </script>
 		<!--end::Page Vendors-->

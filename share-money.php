@@ -258,7 +258,6 @@ $histories = $wallet->getMoneyShareHistories($user->currentUser->id);
 			currentUser = JSON.parse(currentUser);
 
 			function validate(amount, receiverPhone) {
-				console.log(currentUser);
 				if (amount == '' || amount == undefined) {
 					$('#amount').focus()
 					Swal.fire({

@@ -2,10 +2,12 @@
 require_once '../includes/config.php';
 require_once '../model/Api.php';
 require_once '../model/Plan.php';
+require_once '../model/Product.php';
 
 $plan = new Plan($db);
+$product = new Product($db);
 $api = new Api($db);
-
+print_r($_POST);    
 if (isset($_POST['create_plan'])) {
     extract($_POST);
 
@@ -79,5 +81,27 @@ elseif (isset($_POST['update_plan'])) {
 
     header("Location: ".$_POST['form_url']);
     exit();
-} 
+}
+
+elseif (isset($_POST['update_plan_product'])) {
+    print_r($_POST);
+
+    $productPlanData = $_POST['data'];
+    
+    $plan->db->beginTransaction();
+
+    try {
+        $plan->db->delete2("DELETE FROM $product->table2");
+
+    
+        if (isset($productPlanData) && !empty($productPlanData)) {
+            $insert = $utility->db->multiInsert($product->table2, $productPlanData);
+            $utility->db->commit();
+        }
+
+    } catch (Exception $e) {
+        $utility->db->rollBack();
+        echo $e->getMessage();
+    }
+}
 ?>
