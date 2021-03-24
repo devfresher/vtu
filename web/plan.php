@@ -361,7 +361,7 @@ if (isset($_GET['id'])) {
                                 $('.list-input-xc').prop('disabled', true)
 
                                 console.log(result);
-                                // window.location = '<?php echo BASE_URL.ADMIN_ROOT.'plan?id='.$planId?>';
+                                window.location = '<?php echo BASE_URL.ADMIN_ROOT.'plan?id='.$planId?>';
                             }
                         })
                     }
