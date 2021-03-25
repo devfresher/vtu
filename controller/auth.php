@@ -161,3 +161,45 @@ elseif (isset($_POST['verify_user']) AND isset($_POST['user_id'])) {
     echo json_encode($result);
     exit();
 }
+
+elseif ($_POST["update_user"]) {
+
+    $required_fields = array('plan', 'role', '', '', '');
+    foreach ($required_fields as $field) {
+        if (in_array($field, array_keys($_POST)) AND $_POST[$field] != '') {
+            continue;
+        }else {
+            $_SESSION['errorLoginMessage'] = $clientLang['required_fields'];
+            header("Location: ".$_POST['form_url']);
+            exit();
+        }
+    }
+
+    $userUpdateData = array(
+        'plan_id' => , 
+    );
+    
+    $plan->db->beginTransaction();
+
+    try {
+        
+        foreach ($productPlanData as $productPlan) {
+            $updateData = array(
+                'selling_percentage' => $productPlan['selling_percentage'], 
+                'extra_charge' => $productPlan['extra_charge'], 
+            );
+            $whereData = array(
+                'product_code' => $productPlan['product_code'],
+                'plan_id' => $productPlan['plan_id']
+            );
+            
+            $update = $utility->db->update($product->table2, $updateData, $whereData);
+        }
+
+        $utility->db->commit();
+
+    } catch (Exception $e) {
+        $utility->db->rollBack();
+        echo $e->getMessage();
+    }
+}

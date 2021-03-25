@@ -128,14 +128,60 @@ $allrole = $role->getAllRoles();
 															<!--begin::User-->
 															<!--begin::Actions-->
 															<div class="my-lg-0 my-1">
-																<a href="#" class="btn btn-sm btn-light-primary font-weight-bolder text-uppercase mr-2">Actions</a>
+																<div class="dropdown dropdown-inline mr-2">
+																	<button type="button" class="btn btn-sm btn-light-primary font-weight-bolder dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+																	<span class="svg-icon svg-icon-md">
+																		<!--begin::Svg Icon | path:assets/media/svg/icons/Design/PenAndRuller.svg-->
+																		<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+																			<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+																				<rect x="0" y="0" width="24" height="24" />
+																				<path d="M3,16 L5,16 C5.55228475,16 6,15.5522847 6,15 C6,14.4477153 5.55228475,14 5,14 L3,14 L3,12 L5,12 C5.55228475,12 6,11.5522847 6,11 C6,10.4477153 5.55228475,10 5,10 L3,10 L3,8 L5,8 C5.55228475,8 6,7.55228475 6,7 C6,6.44771525 5.55228475,6 5,6 L3,6 L3,4 C3,3.44771525 3.44771525,3 4,3 L10,3 C10.5522847,3 11,3.44771525 11,4 L11,19 C11,19.5522847 10.5522847,20 10,20 L4,20 C3.44771525,20 3,19.5522847 3,19 L3,16 Z" fill="#000000" opacity="0.3" />
+																				<path d="M16,3 L19,3 C20.1045695,3 21,3.8954305 21,5 L21,15.2485298 C21,15.7329761 20.8241635,16.200956 20.5051534,16.565539 L17.8762883,19.5699562 C17.6944473,19.7777745 17.378566,19.7988332 17.1707477,19.6169922 C17.1540423,19.602375 17.1383289,19.5866616 17.1237117,19.5699562 L14.4948466,16.565539 C14.1758365,16.200956 14,15.7329761 14,15.2485298 L14,5 C14,3.8954305 14.8954305,3 16,3 Z" fill="#000000" />
+																			</g>
+																		</svg>
+																		<!--end::Svg Icon-->
+																	</span>Actions</button>
+																	<!--begin::Dropdown Menu-->
+																	<div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
+																		<!--begin::Navigation-->
+																		<ul class="navi flex-column navi-hover py-2">
+																			<li class="navi-header font-weight-bolder text-uppercase font-size-sm text-primary pb-2">Choose an action:</li>
+																			<li class="navi-item">
+																				<a href="#" class="navi-link">
+																					<span class="navi-icon">
+																						<i class="la la-print"></i>
+																					</span>
+																					<span class="navi-text">Fund Wallet</span>
+																				</a>
+																			</li>
+																			<li class="navi-item">
+																				<a href="#" class="navi-link">
+																					<span class="navi-icon">
+																						<i class="la la-file-pdf-o"></i>
+																					</span>
+																					<span class="navi-text">Disable User</span>
+																				</a>
+																			</li>
+																			<li class="navi-item">
+																				<a href="#" class="navi-link">
+																					<span class="navi-icon">
+																						<i class="la la-file-pdf-o"></i>
+																					</span>
+																					<span class="navi-text">Suspend User</span>
+																				</a>
+																			</li>
+																		</ul>
+																		<!--end::Navigation-->
+																	</div>
+																	<!--end::Dropdown Menu-->
+																</div>
 																<a href="#"  data-toggle="modal" data-target="#manageUserForm" class="btn btn-sm btn-primary font-weight-bolder text-uppercase">Manage</a>
 															</div>
 															<!--end::Actions-->
 														</div>
 
 														<!-- Modal-->
-														<form class="form" method="POST" id="new-plan-form" action="<?php echo BASE_URL?>controller/plan.php">
+														<form class="form" method="POST" id="manage-user-form" action="<?php echo BASE_URL?>controller/auth.php">
 															<div class="modal fade" id="manageUserForm" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="manageUserForm" aria-hidden="true">
 																<div class="modal-dialog modal-dialog-centered modal-md modal-dialog-scrollable" role="document">
 																	<div class="modal-content">
@@ -146,59 +192,88 @@ $allrole = $role->getAllRoles();
 																			</button>
 																		</div>
 																		<div class="modal-body">
-																			<div data-scroll="true" data-height="300">
+																			<div data-scroll="true" data-height="400">
 																				<input type="hidden" name="form_url" value="<?php echo BASE_URL.ADMIN_ROOT?>member-info">
+																				
+																				<div class="accordion accordion-solid accordion-toggle-plus" id="accordionExample6">
+																					<div class="card">
+																						<div class="card-header" id="headingOne6">
+																							<div class="card-title" data-toggle="collapse" data-target="#collapseOne6">
+																								<i class="flaticon2-user-1"></i> User Information
+																							</div>
+																						</div>
 
-																				<div class="form-group row">
-																					<div class="col-md">
-																						<label class="col-form-label">First Name</label>
-																						<input type="text" value="<?php echo $userDetail->firstname ?>" name="firstname" class="form-control" disabled />
+																						<div id="collapseOne6" class="collapse show" data-parent="#accordionExample6">
+																							<div class="card-body">
+																								<div class="form-group row">
+																									<div class="col-md">
+																										<label class="col-form-label">First Name</label>
+																										<input type="text" value="<?php echo $userDetail->firstname ?>" name="firstname" class="form-control" disabled />
+																									</div>
+																									<div class="col-md">
+																										<label class="col-form-label">Last Name</label>
+																										<input type="text" value="<?php echo $userDetail->lastname ?>" name="lastname" class="form-control" disabled />
+																									</div>
+																								</div>
+																								<div class="form-group row">
+																									<div class="col-md">
+																										<label class="col-form-label">Plan</label>
+																										<select name="plan" class="form-control selectpicker" data-size="4">
+																											<?php foreach ($allplan as $index => $planDetail) { print_r($planDetail) ?>
+																												<option value="<?php echo $planDetail['id']?>" <?php echo ($userDetail->plan_id == $planDetail['id']) ? 'selected':''?>><?php echo $planDetail['plan_name']?></option>
+																											<?php } ?>
+																										</select>
+																									</div>
+																									<div class="col-md">
+																										<label class="col-form-label">Role</label>
+																										<select name="role" class="form-control selectpicker" data-size="4">
+																											<?php foreach ($allrole as $index => $roleDetail) { ?>
+																												<option value="<?php echo $roleDetail['id']?>" <?php echo ($userDetail->role_id == $roleDetail['id']) ? 'selected':''?>><?php echo $roleDetail['role_name']?></option>
+																											<?php } ?>
+																										</select>
+																									</div>
+																								</div>
+																							</div>
+																						</div>
 																					</div>
-																					<div class="col-md">
-																						<label class="col-form-label">Last Name</label>
-																						<input type="text" value="<?php echo $userDetail->lastname ?>" name="lastname" class="form-control" disabled />
-																					</div>
-																				</div>
-																				<div class="form-group row">
-																					<div class="col-md">
-																						<label class="col-form-label">Plan</label>
-																						<select name="plan" class="form-control selectpicker" data-size="4">
-																							<?php foreach ($allplan as $index => $planDetail) { print_r($planDetail) ?>
-																								<option value="<?php echo $planDetail['id']?>" <?php echo ($userDetail->plan_id == $planDetail['id']) ? 'selected':''?>><?php echo $planDetail['plan_name']?></option>
-																							<?php } ?>
-																						</select>
-																					</div>
-																					<div class="col-md">
-																						<label class="col-form-label">Role</label>
-																						<select name="role" class="form-control selectpicker" data-size="4">
-																							<?php foreach ($allrole as $index => $roleDetail) { ?>
-																								<option value="<?php echo $roleDetail['id']?>" <?php echo ($userDetail->role_id == $roleDetail['id']) ? 'selected':''?>><?php echo $roleDetail['role_name']?></option>
-																							<?php } ?>
-																						</select>
-																					</div>
-																				</div>
 
-																				<div class="form-group row">
-																					<div class="col-md">
-																						<label class="col-form-label">Plan Lock</label>
-																						<select name="plan_lock" class="form-control selectpicker" data-size="2">
-																							<option value="1">Lock</option>
-																							<option value="0">Unlock</option>
-																						</select>
-																					</div>
-																					<div class="col-md">
-																						<label class="col-form-label">Plan Type</label>
-																						<select name="plan_type" class="form-control selectpicker" data-size="2">
-																							<option value="private">Private</option>
-																							<option value="public">Public</option>
-																						</select>
+																					<div class="card">
+																						<div class="card-header" id="headingTwo6">
+																							<div class="card-title collapsed" data-toggle="collapse" data-target="#collapseTwo6">
+																								<i class="flaticon2-shopping-cart"></i> Other Information
+																							</div>
+																						</div>
+																						<div id="collapseTwo6" class="collapse" data-parent="#accordionExample6">
+																							<div class="card-body">
+																								<div class="form-group row">
+																									<div class="col-md">
+																										<label class="col-form-label">Minimum Wallet Recharge</label>
+																										<input type="number" value="" name="min_wallet_recharge" class="form-control" />
+																									</div>
+																									<div class="col-md">
+																										<label class="checkbox checkbox-outline checkbox-success">
+																											<input type="checkbox" name="sms_notification" />
+																											<span></span>
+																											SMS Notification
+																										</label>
+																									</div>
+																								</div>
+
+																								<div class="form-group row">
+																									<div class="col-md">
+																										<label class="col-form-label">Daily Minimum Purchase</label>
+																										<input type="number" value="" name="dily_min_purchase" class="form-control" />
+																									</div>
+																								</div>
+																							</div>
+																						</div>
 																					</div>
 																				</div>
 																			</div>
 																		</div>
 																		<div class="modal-footer">
 																			<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
-																			<button type="submit" name="create_plan" class="btn btn-primary font-weight-bold">Save</button>
+																			<button type="submit" name="update_user" class="btn btn-primary font-weight-bold">Save</button>
 																		</div>
 																	</div>
 																</div>
