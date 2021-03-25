@@ -8,15 +8,10 @@ var KTDatatableColumnRenderingDemo = function() {
 	var demo = function() {
 
 		var datatable = $('#plan_list_datatable').KTDatatable({
-			// datasource definition
-			data: {
-				pageSize: 10, // display 20 records per page
-			},
-
 			// layout definition
 			layout: {
-				scroll: false, // enable/disable datatable scroll both horizontal and vertical when needed.
-				footer: false, // display/hide footer
+				class: 'datatable-bordered',
+        		scroll: 'true',
 			},
 
 			// column sorting
@@ -74,7 +69,8 @@ var KTDatatableColumnRenderingDemo = function() {
 			// layout definition
 			layout: {
 				overflow: 'visible',
-				scroll: true, // enable/disable datatable scroll both horizontal and vertical when needed.
+				class: 'datatable-bordered',
+				scroll: true,
 			},
 
 			// column sorting

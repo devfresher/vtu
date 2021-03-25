@@ -286,6 +286,7 @@ class Database
      */
     public function delete($tableName, array $where)
     {
+        // echo "DELETE FROM $tableName WHERE ".key($where) . ' = ?';
         $stmt = $this->pdo->prepare("DELETE FROM $tableName WHERE ".key($where) . ' = ?');
         try {
             $stmt->execute(array(current($where)));

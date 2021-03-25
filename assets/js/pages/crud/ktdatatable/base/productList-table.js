@@ -7,9 +7,6 @@ var KTDatatableHtmlTableDemo = function() {
   // demo initializer
   var demo = function() {
     var product_list_datatable = $('#product_list_datatable').KTDatatable({
-      // data: {
-      //   saveState: {cookie: false},
-      // },
       search: {
         input: $('#kt_datatable_search_query'),
         key: 'generalSearch',
@@ -63,7 +60,6 @@ var KTDatatableHtmlTableDemo = function() {
   };
 
   return {
-    // Public functions
     init: function() {
       // init dmeo
       demo();

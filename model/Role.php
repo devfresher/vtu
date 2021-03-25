@@ -6,6 +6,21 @@ class Role Extends Utility
         $this->table = 'role';
     }
 
+    public function getAllRoles()
+    {
+        $result = $this->db->getAllRecords($this->table, "*");
+
+        if (count($result) > 0){
+
+            $feedback = $result;
+            $this->responseBody =  $this->arrayToObject($feedback);
+        } else {
+            $this->responseBody =  false;
+        }
+
+        return $this->responseBody;
+    }
+
     public function getRole($roleId)
     {
         $result = $this->db->getAllRecords($this->table, "*", "AND id = $roleId");

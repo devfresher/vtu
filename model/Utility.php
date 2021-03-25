@@ -245,6 +245,8 @@ class Utility extends Database {
             BASE_PATH.ADMIN_ROOT.'dashboard.php',
             BASE_PATH.ADMIN_ROOT.'products.php',
             BASE_PATH.ADMIN_ROOT.'plan-management.php',
+            BASE_PATH.ADMIN_ROOT.'plan.php',
+            BASE_PATH.ADMIN_ROOT.'member-info.php',
         );
 
         if (in_array(SCRIPT_NAME, $admin_pages)) {

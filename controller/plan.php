@@ -7,7 +7,7 @@ require_once '../model/Product.php';
 $plan = new Plan($db);
 $product = new Product($db);
 $api = new Api($db);
-print_r($_POST);    
+
 if (isset($_POST['create_plan'])) {
     extract($_POST);
 
@@ -84,20 +84,42 @@ elseif (isset($_POST['update_plan'])) {
 }
 
 elseif (isset($_POST['update_plan_product'])) {
-    print_r($_POST);
-
     $productPlanData = $_POST['data'];
     
     $plan->db->beginTransaction();
 
     try {
-        $plan->db->delete2("DELETE FROM $product->table2");
-
-    
-        if (isset($productPlanData) && !empty($productPlanData)) {
-            $insert = $utility->db->multiInsert($product->table2, $productPlanData);
-            $utility->db->commit();
+        
+        foreach ($productPlanData as $productPlan) {
+            $updateData = array(
+                'selling_percentage' => $productPlan['selling_percentage'], 
+                'extra_charge' => $productPlan['extra_charge'], 
+            );
+            $whereData = array(
+                'product_code' => $productPlan['product_code'],
+                'plan_id' => $productPlan['plan_id']
+            );
+            
+            $update = $utility->db->update($product->table2, $updateData, $whereData);
         }
+
+        $utility->db->commit();
+
+    } catch (Exception $e) {
+        $utility->db->rollBack();
+        echo $e->getMessage();
+    }
+}
+
+elseif (isset($_POST['delete_plan'])) {
+    $planId = $_POST['plan_id'];
+    
+    $plan->db->beginTransaction();
+
+    try {
+        $plan->db->delete($plan->table, array('id' => $planId));
+        $plan->db->delete($plan->table2, array('plan_id' => $planId));
+        $utility->db->commit();
 
     } catch (Exception $e) {
         $utility->db->rollBack();

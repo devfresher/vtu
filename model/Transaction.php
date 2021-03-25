@@ -10,7 +10,7 @@ class Transaction Extends Utility
 
     public function getAllTxn($catId='')
     {
-        if ($catId != '') {
+        if ($catId == '') {
             $result = $this->db->getRecFrmQry(
                 "SELECT t.*, pp.product_code, pp.product_plan_name, pp.cost_price, p.product_name, p.product_icon, c.name AS category
                 FROM $this->table t 
@@ -44,7 +44,7 @@ class Transaction Extends Utility
     {
         if ($catId != '') {
             $result = $this->db->getRecFrmQry(
-                "SELECT t.*, p.product_code,  pp.percentage_discount, p.product_name, p.product_icon, p.category
+                "SELECT t.*, p.product_code,  pp.selling_percentage, p.product_name, p.product_icon, p.category
                 FROM $this->table t
                 LEFT JOIN product_plan pp ON t.product_plan_id = pp.id 
                 LEFT JOIN products p ON pp.product_code = p.product_code 
@@ -53,7 +53,7 @@ class Transaction Extends Utility
             );
         }else {
             $result = $this->db->getRecFrmQry(
-                "SELECT t.*, p.product_code,  pp.percentage_discount, p.product_name, p.product_icon, p.category
+                "SELECT t.*, p.product_code,  pp.selling_percentage, p.product_name, p.product_icon, p.category
                 FROM $this->table t
                 LEFT JOIN product_plan pp ON t.product_plan_id = pp.id 
                 LEFT JOIN products p ON pp.product_code = p.product_code
@@ -74,11 +74,10 @@ class Transaction Extends Utility
     public function getTxn($orderId)
     {
         $result = $this->db->getRecFrmQry(
-            "SELECT t.*, pp.product_code, t.user_id, pp.product_plan_name, pp.cost_price, p.product_name, p.product_icon, c.name AS category
+            "SELECT t.*, pp.*, p.*
             FROM $this->table t 
             LEFT JOIN product_plan pp ON t.product_plan_id = pp.id 
-            LEFT JOIN products p ON pp.product_id = p.id 
-            LEFT JOIN category c ON pp.cat_id = c.id
+            LEFT JOIN products p ON pp.product_code = p.product_code
             WHERE t.order_id = '$orderId' OR t.reference = '$orderId'"
         );
 

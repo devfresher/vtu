@@ -82,15 +82,15 @@ $airtimePurchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 1)
 																			<div class="col-md-3 col-sm-3 col-6">
 																				<label class="option">
 																					<span class="option-control">
-																						<span class="radio radio-bold radio-brand"/>
-																							<input type="radio" name="network_type" value="<?php echo $value['product_code']?>" data-discount = "<?php echo $value['percentage_discount']?>"/>
+																						<span class="radio radio-bold radio-brand">
+																							<input type="radio" name="network_type" value="<?php echo $value['product_code']?>" data-percent = "<?php echo $value['selling_percentage']?>"/>
 																							<span></span>
 																						</span>
 																					</span>
 																					<span class="option-label">
 																						<span class="option-head">
 																							<span class="option-focus">
-																								<?php echo $value['percentage_discount']?>%
+																								<?php echo 100 - $value['selling_percentage']?>% Off
 																							</span>
 																						</span>
 																						<span class="option-body">
@@ -382,9 +382,9 @@ $airtimePurchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 1)
 					var maxAirtime = <?php echo $appInfo->max_airtime_vending;?>;
 	
 					var amount = $('#amount').val()
-					var percentageDiscount = $("input[name='network_type']:checked").attr('data-discount');
+					var sellingPercentage = $("input[name='network_type']:checked").attr('data-percent');
 
-					var to_pay = amount -(amount*percentageDiscount/100);
+					var to_pay = amount*sellingPercentage/100;
 	
 					$('#to_pay').val(to_pay);
 	

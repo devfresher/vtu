@@ -14,8 +14,8 @@ var KTDatatableHtmlTableDemo = function() {
       sortable: false,
       fontSize: '20px',
       layout: {
-        class: '',
         scroll: 'true',
+        class: 'datatable-bordered',
         pagination: false
       },
       columns: [

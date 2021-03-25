@@ -8,9 +8,6 @@ var KTDatatableHtmlTableDemo = function() {
   var demo = function() {
 
     var datatable = $('#kt_datatable').KTDatatable({
-      // data: {
-      //   saveState: {cookie: false},
-      // },
       search: {
         input: $('#kt_datatable_search_query'),
         key: 'generalSearch',

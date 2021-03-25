@@ -308,7 +308,7 @@ $planList = $plan->getAllPlans();
                                                                                 </span>
                                                                             </a>
 
-                                                                            <a href="javascript:;" class="btn btn-sm btn-clean btn-icon" title="Delete Plan">
+                                                                            <a href="javascript:;" class="btn btn-sm btn-clean btn-icon delete-plan" data-id="<?php echo $plan['id']?>" title="Delete Plan">
                                                                                 <span class="svg-icon svg-icon-md">
                                                                                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                                                                                         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -356,6 +356,43 @@ $planList = $plan->getAllPlans();
         <script src="<?php echo BASE_URL?>assets/js/pages/crud/ktdatatable/advanced/plan.js"></script>
         <script src="<?php echo BASE_URL?>assets/js/pages/features/miscellaneous/sweetalert2.js"></script>
 		<?php include_once '../components/message.php'?>
+
+        <script>
+            $(document).on('click', '.delete-plan', function () {
+                deleteBtn = $(this);
+                Swal.fire({
+                    icon: 'question',
+                    text: 'Are you sure you want to delete this plan',
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, sure",
+                    cancelButtonText: "Cancel!",
+                }).then(function (result) {
+                    if (result.value) {
+                        planId = deleteBtn.attr('data-id')
+
+                        var data = {
+                            "delete_plan" : 1,
+                            "plan_id" : planId
+                        };
+        
+                        $.ajax({
+                            url: "<?php echo BASE_URL.'controller/plan.php'?>",
+                            type: "post",
+                            data: data,
+
+                            beforeSend: function(){
+                                deleteBtn.html("<i class='fas fa-spinner fa-pulse'></i>");
+                                deleteBtn.prop('disabled', true);
+                            },
+                            success: function(result) {
+                                console.log(result);
+                                window.location = '<?php echo BASE_URL.ADMIN_ROOT.'plan-management'?>';
+                            }
+                        })
+                    }
+                })
+            })
+        </script>
 		<!--end::Page Vendors-->
 	</body>
 	<!--end::Body-->

@@ -19,6 +19,40 @@ class User extends Utility {
         }
     }
 
+    function getAllUser($roleId = '') {
+
+        $plan = new Plan($this->db);
+        $role = new Role($this->db);
+        $wallet = new Wallet($this->db);
+
+        if ($roleId == '') {
+            $result = $this->db->getAllRecords($this->table, "*");
+        } else {
+            $result = $this->db->getAllRecords($this->table, "*", "AND role_id = '$roleId'");
+        }
+
+        if (count($result) > 0) {
+            foreach ($result as $index => $user) {
+                $users[$index] = $this->arrayToObject($user);
+
+                $users[$index]->walletBalance = $wallet->getWalletBalance($users[$index]->id);
+                $users[$index]->role = $role->getrole($users[$index]->role_id);
+                $users[$index]->plan = $plan->getPlan($users[$index]->plan_id);
+
+                $users[$index]->firstLetter = $users[$index]->firstname[0].$users[$index]->lastname[0];
+                $users[$index]->fullName = $users[$index]->firstname.' '.$users[$index]->lastname;
+
+                unset($users[$index]->role->permission);
+            }
+            $this->responseBody = $users;
+            
+        }else {
+            $this->responseBody = false;
+        }
+        
+        return $this->responseBody;
+    }
+
     function getUserById($userId) {
         
         $plan = new Plan($this->db);
