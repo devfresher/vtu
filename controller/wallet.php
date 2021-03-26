@@ -3,7 +3,7 @@ require_once '../includes/config.php';
 require_once '../model/Wallet.php';
 require_once '../model/User.php';
 
-// $user = new User($db);
+$wallet = new Wallet($db);
 
 if (isset($_POST['fund_wallet'])) {
     extract($_POST);
@@ -32,8 +32,6 @@ if (isset($_POST['fund_wallet'])) {
     }
 
     else {
-        $wallet = new Wallet($db);
-
         $requestedAmount = filter_var($_POST["amount_requested"], FILTER_SANITIZE_NUMBER_INT);
         $method = filter_var($_POST["method"], FILTER_SANITIZE_STRING);
 
@@ -83,9 +81,9 @@ if (isset($_POST['fund_wallet'])) {
         // print_r($walletRequestData);
         if($wallet->fundWalletRequest($walletRequestData)){
             if ($method == 'auto_fund') {
-                $_SESSION["successMessage"] = 'auto_fund_request_sent';
+                $_SESSION["successMessage"] = 'Autofunding Wallet request sent';
             } elseif ($method == 'manual') {
-                $_SESSION["successMessage"] = 'manual_request_sent';
+                $_SESSION["successMessage"] = 'Manual wallet request sent';
             }
             header("Location: ".$_POST['form_url']);
             exit();
@@ -121,7 +119,6 @@ elseif (isset($_POST['share_money'])) {
     } elseif (!password_verify($password, $currentUser->transaction_pin)) {
         $_SESSION["errorMessage"] = $clientLang['incorrect_pin'];
     } else {
-        $wallet = new Wallet($db);
         $amount = filter_var($_POST["amount"], FILTER_SANITIZE_NUMBER_FLOAT);
         $phone = filter_var($_POST["phone_number"], FILTER_SANITIZE_STRING);
 
@@ -158,7 +155,7 @@ elseif (isset($_POST['share_money'])) {
 
         if ($fund !== false AND $spend !== false){
             $db->commit();
-            $_SESSION["successMessage"] = 'money_shared';
+            $_SESSION["successMessage"] = 'Money shared successfully';
         } else {
             $db->rollBack();
             $_SESSION["errorMessage"] = 'Money can not be shared now';
@@ -169,4 +166,82 @@ elseif (isset($_POST['share_money'])) {
     exit();
 
     // print_r($_SESSION);
+}
+
+elseif (isset($_POST['modify_wallet'])) {
+    extract($_POST);
+    
+    $required_fields = array('amount', 'type');
+    foreach ($required_fields as $field) {
+        if (in_array($field, array_keys($_POST)) AND $_POST[$field] != '') {
+            continue;
+        }else {
+            $_SESSION['errorMessage'] = $clientLang['required_fields'];
+            header("Location: ".$_POST['form_url']);
+            exit();
+        }
+    }
+
+    if(!filter_var($amount, FILTER_VALIDATE_INT)){
+        $_SESSION["errorMessage"] = $clientLang['invalid_amount'];
+        header("Location: ".$_POST['form_url']);
+        exit();
+    }else {
+        if($type == 'deduct') {
+            $userDetail = $user->getUserById($user_id);
+
+            if ($amount > $userDetail->walletBalance) {
+                $_SESSION["errorMessage"] = "User wallet balance lesser than ".$amount;
+                header("Location: ".$_POST['form_url']);
+                exit();
+            }else {
+                $reference = $utility->genUniqueRef('admin_deduct');
+
+                $walletOutData = array(
+                    'user_id' => $user_id,
+                    'old_balance' => $userDetail->walletBalance,
+                    'amount' => $amount,
+                    'balance_after' => $userDetail->walletBalance - $amount,
+                    'reference' => $reference,
+                    'type' => 3,
+                    'status' => 6,
+                    'date' => date('Y-m-d H:i:s'),
+                );
+                $deduct = $wallet->spendFromWallet($walletOutData);
+
+                if ($deduct !== false){
+                    $_SESSION["successMessage"] = $amount.' deducted from '.$userDetail->firstname.'\'s wallet';
+                } else {
+                    $_SESSION["errorMessage"] = $clientLang['unexpected_error'];
+                }
+            }
+        }elseif ($type == 'fund') {
+            $reference = $utility->genUniqueRef('fund_wallet');
+
+            $walletRequestData = array(
+                'user_id' => $user_id,
+                'old_balance' => $userDetail->walletBalance,
+                'amount' => $amount,
+                'balance_after' => $userDetail->walletBalance,
+                'reference' => $reference,
+                'method' => 'manual',
+                'type' => 1,
+                'status' => 1,
+                'date' => date('Y-m-d H:i:s'),
+            );
+
+            $request = $wallet->fundWalletRequest($walletRequestData);
+            $approve = $wallet->approveWalletRequest($reference);
+
+            if ($request !== false AND $approve !== false){
+                $_SESSION["successMessage"] = $amount.' added to '.$userDetail->firstname.'\'s wallet';
+            } else {
+                $_SESSION["errorMessage"] = $clientLang['unexpected_error'];
+            }
+        }
+    }
+
+    header("Location: ".$_POST['form_url']);
+    exit();
+    
 }

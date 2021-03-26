@@ -2,6 +2,8 @@
 require_once '../includes/config.php';
 include_once '../model/User.php';
 
+$user = new User($db);
+
 if (isset($_POST["login"])) {
 
     $username = filter_var($_POST["username"], FILTER_SANITIZE_STRING);
@@ -18,7 +20,7 @@ if (isset($_POST["login"])) {
         }
     }
 
-    $user = new User($db);
+    
 
     $userResult = $user->getUser($username);
     $hashPassword = $userResult->password;
@@ -58,7 +60,6 @@ if (isset($_POST["login"])) {
     }
 
 }
-
 
 elseif (isset($_POST["register"])) {
     extract($_POST);
@@ -105,8 +106,6 @@ elseif (isset($_POST["register"])) {
     }
 
     else {
-        $user = new User($db);
-
         $firstname = filter_var($_POST["firstname"], FILTER_SANITIZE_STRING);
         $lastname = filter_var($_POST["lastname"], FILTER_SANITIZE_STRING);
         $email = filter_var($_POST["email"], FILTER_SANITIZE_EMAIL);
@@ -162,9 +161,10 @@ elseif (isset($_POST['verify_user']) AND isset($_POST['user_id'])) {
     exit();
 }
 
-elseif ($_POST["update_user"]) {
+elseif (isset($_POST["update_user"])) {
+    extract($_POST);
 
-    $required_fields = array('plan', 'role', '', '', '');
+    $required_fields = array('plan', 'role');
     foreach ($required_fields as $field) {
         if (in_array($field, array_keys($_POST)) AND $_POST[$field] != '') {
             continue;
@@ -175,31 +175,219 @@ elseif ($_POST["update_user"]) {
         }
     }
 
-    $userUpdateData = array(
-        'plan_id' => , 
-    );
-    
-    $plan->db->beginTransaction();
+    $userDetail = $user->getUserById($user_id);
 
-    try {
+    if ($userDetail == false) {
+        $_SESSION['errorMessage'] = $clientLang['user_not_found'];
+    } else {
+
+        $roleId = filter_var($_POST["role"], FILTER_SANITIZE_NUMBER_INT);
+        $planId = filter_var($_POST["plan"], FILTER_SANITIZE_NUMBER_INT);
+    
+        if ($_POST["sales_reward"] == '') {
+            $salesTargetReward = null;
+        }else {
+            $salesTargetReward = filter_var($_POST["sales_reward"], FILTER_SANITIZE_NUMBER_INT);
+        }
+    
+        if ($_POST["sales_amount"] == '') {
+            $salesTargetAmount = null;
+        }else {
+            $salesTargetAmount = filter_var($_POST["sales_amount"], FILTER_SANITIZE_NUMBER_INT);
+        }
+    
+        if ($_POST["sales_services"] == '') {
+            $salesTargetServices = null;
+        }else {
+            $salesTargetServices = filter_var($_POST["sales_services"], FILTER_SANITIZE_STRING);
+        }
+    
+        if ($_POST["daily_min_purchase"] == '') {
+            $dailyMinPurchase = null;
+        }else {
+            $dailyMinPurchase = filter_var($_POST["daily_min_purchase"], FILTER_SANITIZE_NUMBER_INT);
+        }
+    
+        if ($_POST["min_wallet_recharge"] == '') {
+            $minWalletRecharge = null;
+        }else {
+            $minWalletRecharge = filter_var($_POST["min_wallet_recharge"], FILTER_SANITIZE_NUMBER_INT);
+        }
+    
+        if ($_POST["sms_noti"] == 'on') {
+            $smsNoti = 1;
+        }else {
+            $smsNoti = 0;
+        }
+    
+        $salesTargetPeriod = filter_var($_POST["sales_period"], FILTER_SANITIZE_STRING);
+    
+        $userUpdateData = array(
+            'plan_id' => $planId, 
+            'role_id' => $roleId,
+            'sales_reward' => $salesTargetReward,
+            'sales_amount' => $salesTargetAmount,
+            'sales_period' => $salesTargetPeriod,
+            'sales_services' => $salesTargetServices,
+            'daily_min_purchase' => $dailyMinPurchase,
+            'min_wallet_recharge' => $minWalletRecharge,
+            'sms_noti' => $smsNoti
+        );
+        print_r($userUpdateData);
         
-        foreach ($productPlanData as $productPlan) {
-            $updateData = array(
-                'selling_percentage' => $productPlan['selling_percentage'], 
-                'extra_charge' => $productPlan['extra_charge'], 
-            );
-            $whereData = array(
-                'product_code' => $productPlan['product_code'],
-                'plan_id' => $productPlan['plan_id']
-            );
+        $update = $user->updateUser($userUpdateData, $user_id);
+    
+        if ($update) {
+            $_SESSION['successMessage'] = "User info updated successfully";
+        } else {
+            $_SESSION['errorMessage'] = $clientLang['unexpected_error'];
+        }
+        
+    }
+
+    // print_r($_SESSION);
+    header("Location: ".$_POST['form_url']);
+    exit();
+}
+
+elseif (isset($_POST["suspend_user"])) {
+    extract($_POST);
+
+    $userDetail = $user->getUserById($user_id);
+
+    if ($userDetail == false) {
+        $_SESSION['errorMessage'] = $clientLang['user_not_found'];
+    } else {
             
-            $update = $utility->db->update($product->table2, $updateData, $whereData);
+        $userUpdateData = array(
+            'suspend' => 1, 
+        );
+        
+        $update = $user->updateUser($userUpdateData, $user_id);
+    
+        if ($update) {
+            $result = '{
+                "status": 1
+            }';
+
+            $_SESSION['successMessage'] = 'User suspended from purchase';
+        } else {
+            $result = '{
+                "status": 0
+            }';
+
+            $_SESSION['errorMessage'] = $clientLang['unexpected_error'];
         }
 
-        $utility->db->commit();
-
-    } catch (Exception $e) {
-        $utility->db->rollBack();
-        echo $e->getMessage();
+        echo json_encode($result);
+        exit();
     }
+
+    header("Location: ".$_POST['form_url']);
+    exit();
+}
+
+elseif (isset($_POST["unsuspned_user"])) {
+    extract($_POST);
+
+    $userDetail = $user->getUserById($user_id);
+
+    if ($userDetail == false) {
+        $_SESSION['errorMessage'] = $clientLang['user_not_found'];
+    } else {
+            
+        $userUpdateData = array(
+            'suspend' => 0, 
+        );
+        
+        $update = $user->updateUser($userUpdateData, $user_id);
+    
+        if ($update) {
+            $result = '{
+                "status": 1
+            }';
+            $_SESSION['successMessage'] = 'User activated for purchase';
+        } else {
+            $result = '{
+                "status": 0
+            }';
+            $_SESSION['errorMessage'] = $clientLang['unexpected_error'];
+        }
+
+        echo json_encode($result);
+        exit();
+    }
+
+    header("Location: ".$_POST['form_url']);
+    exit();
+}
+
+elseif (isset($_POST["disable_user"])) {
+    extract($_POST);
+
+    $userDetail = $user->getUserById($user_id);
+
+    if ($userDetail == false) {
+        $_SESSION['errorMessage'] = $clientLang['user_not_found'];
+    } else {
+            
+        $userUpdateData = array(
+            'disable' => 1, 
+        );
+        
+        $update = $user->updateUser($userUpdateData, $user_id);
+    
+        if ($update) {
+            $result = '{
+                "status": 1
+            }';
+            $_SESSION['successMessage'] = 'User disabled successfully';
+        } else {
+            $result = '{
+                "status": 0
+            }';
+            $_SESSION['errorMessage'] = $clientLang['unexpected_error'];
+        }
+
+        echo json_encode($result);
+        exit();
+    }
+
+    header("Location: ".$_POST['form_url']);
+    exit();
+}
+
+elseif (isset($_POST["enable_user"])) {
+    extract($_POST);
+
+    $userDetail = $user->getUserById($user_id);
+
+    if ($userDetail == false) {
+        $_SESSION['errorMessage'] = $clientLang['user_not_found'];
+    } else {
+            
+        $userUpdateData = array(
+            'disable' => 0, 
+        );
+        
+        $update = $user->updateUser($userUpdateData, $user_id);
+    
+        if ($update) {
+            $result = '{
+                "status": 1
+            }';
+            $_SESSION['successMessage'] = 'User enabled successfully';
+        } else {
+            $result = '{
+                "status": 0
+            }';
+            $_SESSION['errorMessage'] = $clientLang['unexpected_error'];
+        }
+
+        echo json_encode($result);
+        exit();
+    }
+
+    header("Location: ".$_POST['form_url']);
+    exit();
 }

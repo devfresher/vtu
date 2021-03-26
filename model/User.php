@@ -3,6 +3,7 @@ require_once MODEL_DIR.'Utility.php';
 require_once MODEL_DIR.'Wallet.php';
 require_once MODEL_DIR.'Plan.php';
 require_once MODEL_DIR.'Role.php';
+require_once MODEL_DIR.'Transaction.php';
 
 class User extends Utility {
     public $currentUser;
@@ -20,10 +21,10 @@ class User extends Utility {
     }
 
     function getAllUser($roleId = '') {
-
         $plan = new Plan($this->db);
         $role = new Role($this->db);
         $wallet = new Wallet($this->db);
+        $transaction = new Transaction($this->db);
 
         if ($roleId == '') {
             $result = $this->db->getAllRecords($this->table, "*");
@@ -42,6 +43,9 @@ class User extends Utility {
                 $users[$index]->firstLetter = $users[$index]->firstname[0].$users[$index]->lastname[0];
                 $users[$index]->fullName = $users[$index]->firstname.' '.$users[$index]->lastname;
 
+                $userTransaction = $transaction->getAllUserTxn($user[$index]->id);
+                $users[$index]->totalTransaction = $userTransaction->total;
+
                 unset($users[$index]->role->permission);
             }
             $this->responseBody = $users;
@@ -54,10 +58,10 @@ class User extends Utility {
     }
 
     function getUserById($userId) {
-        
         $plan = new Plan($this->db);
         $role = new Role($this->db);
         $wallet = new Wallet($this->db);
+        $transaction = new Transaction($this->db);
 
         $result = $this->db->getAllRecords($this->table, "*", "AND id = '$userId'");
 
@@ -71,6 +75,9 @@ class User extends Utility {
             $this->responseBody->firstLetter = $this->responseBody->firstname[0].$this->responseBody->lastname[0];
             $this->responseBody->fullName = $this->responseBody->firstname.' '.$this->responseBody->lastname;
 
+            $userTransaction = $transaction->getAllUserTxn($this->responseBody->id);
+            $this->responseBody->tottalTransaction = $userTransaction->total;
+
             unset($this->responseBody->role->permission);
         }else {
             $this->responseBody = false;
@@ -83,6 +90,7 @@ class User extends Utility {
         $plan = new Plan($this->db);
         $role = new Role($this->db);
         $wallet = new Wallet($this->db);
+        $transaction = new Transaction($this->db);
 
         $result = $this->db->getAllRecords($this->table, "*", "AND email = '$key' OR phone_number = '$key'");
 
@@ -96,6 +104,9 @@ class User extends Utility {
             $this->responseBody->firstLetter = $this->responseBody->firstname[0].$this->responseBody->lastname[0];
             $this->responseBody->fullName = $this->responseBody->firstname.' '.$this->responseBody->lastname;
 
+            $userTransaction = $transaction->getAllUserTxn($this->responseBody->id);
+            $this->responseBody->tottalTransaction = $userTransaction->total;
+
             unset($this->responseBody->role->permission);
         }else {
             $this->responseBody = false;
@@ -108,6 +119,7 @@ class User extends Utility {
         $plan = new Plan($this->db);
         $role = new Role($this->db);
         $wallet = new Wallet($this->db);
+        $transaction = new Transaction($this->db);
 
         $result = $this->db->getAllRecords($this->table, "*", "AND email = '$email'");
         
@@ -121,6 +133,9 @@ class User extends Utility {
             $this->responseBody->firstLetter = $this->responseBody->firstname[0].$this->responseBody->lastname[0];
             $this->responseBody->fullName = $this->responseBody->firstname.' '.$this->responseBody->lastname;
 
+            $userTransaction = $transaction->getAllUserTxn($this->responseBody->id);
+            $this->responseBody->tottalTransaction = $userTransaction->total;
+
             unset($this->responseBody->role->permission);
         }else {
             $this->responseBody = false;
@@ -133,6 +148,8 @@ class User extends Utility {
         $plan = new Plan($this->db);
         $role = new Role($this->db);
         $wallet = new Wallet($this->db);
+        $transaction = new Transaction($this->db);
+
         $result = $this->db->getAllRecords($this->table, "*", "AND phone_number = '$phone'");
 
         if (count($result) > 0) {
@@ -145,6 +162,9 @@ class User extends Utility {
             $this->responseBody->firstLetter = $this->responseBody->firstname[0].$this->responseBody->lastname[0];
             $this->responseBody->fullName = $this->responseBody->firstname.' '.$this->responseBody->lastname;
 
+            $userTransaction = $transaction->getAllUserTxn($this->responseBody->id);
+            $this->responseBody->tottalTransaction = $userTransaction->total;
+            
             unset($this->responseBody->role->permission);
         }else {
             $this->responseBody = false;
@@ -233,5 +253,25 @@ class User extends Utility {
         $result = $this->db->getAllRecords("login_attempts", "ip_address", "AND  ip_address = '$ip'  AND time BETWEEN DATE_SUB( NOW() , INTERVAL 10 MINUTES ) AND NOW()");
         $row  = $result->fetch_assoc();
         $failed_login_attempt = $row['failed_login_attempt'];
+    }
+
+    public function updateUser($userData, $userId)
+    {
+        $user = $this->getUserById($userId);
+
+        if ($user == false) {
+            $this->responseBody =  false;
+        } else {
+
+            $update = $this->db->update($this->table, $userData, array('id' => $userId));
+    
+            if ($update > 0) {
+                $this->responseBody =  true;
+            } else {
+                $this->responseBody =  false;
+            }
+        }
+
+        return $this->responseBody;
     }
 }

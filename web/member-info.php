@@ -147,7 +147,7 @@ $allrole = $role->getAllRoles();
 																		<ul class="navi flex-column navi-hover py-2">
 																			<li class="navi-header font-weight-bolder text-uppercase font-size-sm text-primary pb-2">Choose an action:</li>
 																			<li class="navi-item">
-																				<a href="#" class="navi-link">
+																				<a href="javascript:;" data-toggle="modal" data-target="#modifyWalletForm" class="navi-link">
 																					<span class="navi-icon">
 																						<i class="la la-print"></i>
 																					</span>
@@ -155,19 +155,19 @@ $allrole = $role->getAllRoles();
 																				</a>
 																			</li>
 																			<li class="navi-item">
-																				<a href="#" class="navi-link">
+																				<a href="javascript:;" id="<?php echo ($userDetail->disable == 0)? 'disable':'enable'?>" data-id="<?php echo $userDetail->id?>" class="navi-link">
 																					<span class="navi-icon">
 																						<i class="la la-file-pdf-o"></i>
 																					</span>
-																					<span class="navi-text">Disable User</span>
+																					<span class="navi-text"><?php echo ($userDetail->disable == 0)? 'Disable':'Enable'?> User</span>
 																				</a>
 																			</li>
 																			<li class="navi-item">
-																				<a href="#" class="navi-link">
+																				<a href="javascript:;" id="<?php echo ($userDetail->suspend == 0)? 'suspend':'activate'?>" data-id="<?php echo $userDetail->id?>" class="navi-link">
 																					<span class="navi-icon">
 																						<i class="la la-file-pdf-o"></i>
 																					</span>
-																					<span class="navi-text">Suspend User</span>
+																					<span class="navi-text"><?php echo ($userDetail->suspend == 0)? 'Suspend':'Activate'?> User</span>
 																				</a>
 																			</li>
 																		</ul>
@@ -181,7 +181,7 @@ $allrole = $role->getAllRoles();
 														</div>
 
 														<!-- Modal-->
-														<form class="form" method="POST" id="manage-user-form" action="<?php echo BASE_URL?>controller/auth.php">
+														<form class="form" method="POST" id="new-plan-form" action="<?php echo BASE_URL?>controller/auth.php">
 															<div class="modal fade" id="manageUserForm" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="manageUserForm" aria-hidden="true">
 																<div class="modal-dialog modal-dialog-centered modal-md modal-dialog-scrollable" role="document">
 																	<div class="modal-content">
@@ -194,6 +194,8 @@ $allrole = $role->getAllRoles();
 																		<div class="modal-body">
 																			<div data-scroll="true" data-height="400">
 																				<input type="hidden" name="form_url" value="<?php echo BASE_URL.ADMIN_ROOT?>member-info">
+																				<input type="hidden" name="user_id" value="<?php echo $userDetail->id?>">
+
 																				
 																				<div class="accordion accordion-solid accordion-toggle-plus" id="accordionExample6">
 																					<div class="card">
@@ -238,31 +240,78 @@ $allrole = $role->getAllRoles();
 																					</div>
 
 																					<div class="card">
+																						<div class="card-header" id="headingThree6">
+																							<div class="card-title collapsed" data-toggle="collapse" data-target="#collapseThree6">
+																								<i class="flaticon2-line-chart"></i> Sales Target Information
+																							</div>
+																						</div>
+																						<div id="collapseThree6" class="collapse" data-parent="#accordionExample6">
+																							<div class="card-body">
+																								<div class="form-group row">
+																									<div class="col-md">
+																										<label class="col-form-label">Sales Target Reward</label>
+																										<input type="number" value="<?php echo $userDetail->sales_reward?>" name="sales_reward" class="form-control" />
+																									</div>
+
+																									<div class="col-md">
+																										<label class="col-form-label">Sales Target Amount</label>
+																										<input type="number" value="<?php echo $userDetail->sales_amount?>" name="sales_amount" class="form-control" />
+																									</div>
+																								</div>
+
+																								<div class="form-group row">
+																									<div class="col-md">
+																										<label class="col-form-label">Sales Target Period</label>
+																										<select name="sales_period" class="form-control selectpicker" data-size="3">
+																											<option value="daily" <?php echo ($userDetail->sales_period == 'daily')? 'selected':''?>>Daily</option>
+																											<option value="weekly" <?php echo ($userDetail->sales_period == 'weekly')? 'selected':''?>>Weekly</option>
+																											<option value="monthly" <?php echo ($userDetail->sales_period == 'monthly')? 'selected':''?>>Monthly</option>
+																										</select>
+																									</div>
+																								</div>
+
+																								<div class="form-group row">
+																									<div class="col-md">
+																										<label class="col-form-label">Sales Services</label>
+																										<select name="sales_services" class="form-control selectpicker" multiple>
+																											<option>Airtime</option>
+																											<option>Data Bundle</option>
+																											<option>MTN SME</option>
+																											<option>Cable TV</option>
+																											<option>Electricity</option>
+																										</select>
+																									</div>
+																								</div>
+																							</div>
+																						</div>
+																					</div>
+
+																					<div class="card">
 																						<div class="card-header" id="headingTwo6">
 																							<div class="card-title collapsed" data-toggle="collapse" data-target="#collapseTwo6">
-																								<i class="flaticon2-shopping-cart"></i> Other Information
+																								<i class="flaticon2-shopping-cart"></i> Other Infomation
 																							</div>
 																						</div>
 																						<div id="collapseTwo6" class="collapse" data-parent="#accordionExample6">
 																							<div class="card-body">
 																								<div class="form-group row">
 																									<div class="col-md">
-																										<label class="col-form-label">Minimum Wallet Recharge</label>
-																										<input type="number" value="" name="min_wallet_recharge" class="form-control" />
+																										<label class="col-form-label">Daily Minimum Purchase</label>
+																										<input type="number" value="<?php echo $userDetail->daily_min_purchase ?>" name="daily_min_purchase" class="form-control" />
 																									</div>
 																									<div class="col-md">
-																										<label class="checkbox checkbox-outline checkbox-success">
-																											<input type="checkbox" name="sms_notification" />
-																											<span></span>
-																											SMS Notification
-																										</label>
+																										<label class="col-form-label">Minimum Wallet Recharge</label>
+																										<input type="number" value="<?php echo $userDetail->min_wallet_recharge ?>" name="min_wallet_recharge" class="form-control" />
 																									</div>
 																								</div>
 
 																								<div class="form-group row">
 																									<div class="col-md">
-																										<label class="col-form-label">Daily Minimum Purchase</label>
-																										<input type="number" value="" name="dily_min_purchase" class="form-control" />
+																										<label class="checkbox checkbox-outline checkbox-success">
+																											<input type="checkbox" name="sms_noti" <?php echo ($userDetail->sms_noti == 1)? 'checked':''?>/>
+																											<span></span>
+																											SMS Notification
+																										</label>
 																									</div>
 																								</div>
 																							</div>
@@ -281,6 +330,50 @@ $allrole = $role->getAllRoles();
 														</form>
 														<!-- Modal-->
 
+														<!-- Modal-->
+														<form class="form" method="POST" id="modify-wallet-form" action="<?php echo BASE_URL?>controller/wallet.php">
+															<div class="modal fade" id="modifyWalletForm" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="manageUserForm" aria-hidden="true">
+																<div class="modal-dialog modal-dialog-centered modal-md modal-dialog-scrollable" role="document">
+																	<div class="modal-content">
+																		<div class="modal-header">
+																			<h5 class="modal-title" id="exampleModalLabel"><?php echo $userDetail->firstname ?>'s wallet</h5>
+																			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																				<i aria-hidden="true" class="ki ki-close"></i>
+																			</button>
+																		</div>
+																		<div class="modal-body">
+																			<div data-scroll="true" data-height="200">
+																				<input type="hidden" name="form_url" value="<?php echo BASE_URL.ADMIN_ROOT?>member-info">
+																				<input type="hidden" name="user_id" value="<?php echo $userDetail->id?>">
+
+																				<div class="form-group row">
+																					<div class="col-md">
+																						<label class="col-form-label">Type</label>
+																						<select name="type" class="form-control selectpicker" data-size="4">
+																							<option>Fund</option>
+																							<option>Deduct</option>
+																						</select>
+																					</div>
+																				</div>
+
+																				<div class="form-group row">
+																					<div class="col-md">
+																						<label class="col-form-label">Amount</label>
+																						<input type="number" name="amount" class="form-control" />
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																		<div class="modal-footer">
+																			<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
+																			<button type="submit" name="modify_wallet" class="btn btn-primary font-weight-bold">Save Change</button>
+																		</div>
+																	</div>
+																</div>
+															</div>
+														</form>
+														<!-- Modal-->
+
 														<!--end::Title-->
 														<!--begin::Content-->
 														<div class="d-flex align-items-center flex-wrap justify-content-between">
@@ -290,11 +383,11 @@ $allrole = $role->getAllRoles();
 															<!--end::Description-->
 															<!--begin::Progress-->
 															<div class="d-flex mt-4 mt-sm-0">
-																<span class="font-weight-bold mr-4">Progress</span>
+																<span class="font-weight-bold mr-4">Sales Target Progress</span>
 																<div class="progress progress-xs mt-2 mb-2 flex-shrink-0 w-150px w-xl-250px">
-																	<div class="progress-bar bg-success" role="progressbar" style="width: 63%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+																	<div class="progress-bar bg-success" role="progressbar" style="width: <?php echo $userDetail->totalTransaction/$userDetail->sales_amount*100?>%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
 																</div>
-																<span class="font-weight-bolder text-dark ml-4">78%</span>
+																<span class="font-weight-bolder text-dark ml-4"><?php echo $userDetail->totalTransaction/$userDetail->sales_amount*100?>%</span>
 															</div>
 															<!--end::Progress-->
 														</div>
@@ -335,7 +428,7 @@ $allrole = $role->getAllRoles();
 																<span class="text-dark-50 font-weight-bold">
 																	<?php echo $appInfo->currency?>
 																</span>
-																<?php echo number_format(3000, 2)?>
+																<?php echo number_format($userDetail->totalTransaction, 2)?>
 															</span>
 														</div>
 													</div>
@@ -346,9 +439,13 @@ $allrole = $role->getAllRoles();
 															<i class="flaticon-pie-chart icon-2x text-muted font-weight-bold"></i>
 														</span>
 														<div class="d-flex flex-column text-dark-75">
-															<span class="font-weight-bolder font-size-sm">Net</span>
+															<span class="font-weight-bolder font-size-sm">Sales Target</span>
 															<span class="font-weight-bolder font-size-h5">
-															<span class="text-dark-50 font-weight-bold">$</span>782,300</span>
+																<span class="text-dark-50 font-weight-bold">
+																	<?php echo $appInfo->currency_code?>
+																</span>
+																<?php echo number_format($userDetail->sales_amount, 2)?>
+															</span>
 														</div>
 													</div>
 													<!--end: Item-->
@@ -363,17 +460,6 @@ $allrole = $role->getAllRoles();
 														</div>
 													</div>
 													<!--end: Item-->
-													<!--begin: Item-->
-													<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
-														<span class="mr-4">
-															<i class="flaticon-chat-1 icon-2x text-muted font-weight-bold"></i>
-														</span>
-														<div class="d-flex flex-column">
-															<span class="text-dark-75 font-weight-bolder font-size-sm">648 Comments</span>
-															<a href="#" class="text-primary font-weight-bolder">View</a>
-														</div>
-													</div>
-													<!--end: Item-->
 												</div>
 												<!--end::Bottom-->
 											</div>
@@ -383,9 +469,9 @@ $allrole = $role->getAllRoles();
 								<?php } ?>
 
 								<!--begin::Pagination-->
-								<div class="card card-custom">
+								<!-- <div class="card card-custom">
 									<div class="card-body py-7">
-										<!--begin::Pagination-->
+										begin::Pagination
 										<div class="d-flex justify-content-between align-items-center flex-wrap">
 											<div class="d-flex flex-wrap mr-3">
 												<a href="#" class="btn btn-icon btn-sm btn-light-primary mr-2 my-1">
@@ -420,9 +506,9 @@ $allrole = $role->getAllRoles();
 												<span class="text-muted">Displaying 10 of 230 records</span>
 											</div>
 										</div>
-										<!--end:: Pagination-->
+										end:: Pagination
 									</div>
-								</div>
+								</div> -->
 								<!--end::Pagination-->
 							</div>
 							<!--end::Container-->
@@ -449,6 +535,104 @@ $allrole = $role->getAllRoles();
         <script src="<?php echo BASE_URL?>assets/js/pages/crud/ktdatatable/advanced/plan.js"></script>
         <script src="<?php echo BASE_URL?>assets/js/pages/features/miscellaneous/sweetalert2.js"></script>
 		<?php include_once '../components/message.php'?>
+
+		<script>
+			$('#disable').on('click', function () {
+				button = $(this);
+				userId = button.attr('data-id')
+				var data = {
+					"disable_user" : 1,
+					"user_id" : userId
+				};
+				$.ajax({
+					url: "<?php echo BASE_URL.'controller/auth.php'?>",
+					type: "post",
+					data: data,
+
+					beforeSend: function(){
+						button.html("Wait <i class='fas fa-spinner fa-pulse'></i>");
+						button.prop('disabled', true);
+					},
+					success: function(result) {
+						msg = JSON.parse(result);
+						console.log(msg);
+						window.location = '<?php echo BASE_URL.ADMIN_ROOT.'member-info'?>';
+					}
+				})
+			})
+
+			$('#enable').on('click', function () {
+				button = $(this);
+				userId = button.attr('data-id')
+				var data = {
+					"enable_user" : 1,
+					"user_id" : userId
+				};
+				$.ajax({
+					url: "<?php echo BASE_URL.'controller/auth.php'?>",
+					type: "post",
+					data: data,
+
+					beforeSend: function(){
+						button.html("Wait <i class='fas fa-spinner fa-pulse'></i>");
+						button.prop('disabled', true);
+					},
+					success: function(result) {
+						msg = JSON.parse(result);
+						console.log(msg);
+						window.location = '<?php echo BASE_URL.ADMIN_ROOT.'member-info'?>';
+					}
+				})
+			})
+
+			$('#suspend').on('click', function () {
+				button = $(this);
+				userId = button.attr('data-id')
+				var data = {
+					"suspend_user" : 1,
+					"user_id" : userId
+				};
+				$.ajax({
+					url: "<?php echo BASE_URL.'controller/auth.php'?>",
+					type: "post",
+					data: data,
+
+					beforeSend: function(){
+						button.html("Wait <i class='fas fa-spinner fa-pulse'></i>");
+						button.prop('disabled', true);
+					},
+					success: function(result) {
+						// msg = JSON.parse(result);
+						console.log(result);
+						window.location = '<?php echo BASE_URL.ADMIN_ROOT.'member-info'?>';
+					}
+				})
+			})
+
+			$('#activate').on('click', function () {
+				button = $(this);
+				userId = button.attr('data-id')
+				var data = {
+					"unsuspned_user" : 1,
+					"user_id" : userId
+				};
+				$.ajax({
+					url: "<?php echo BASE_URL.'controller/auth.php'?>",
+					type: "post",
+					data: data,
+
+					beforeSend: function(){
+						button.html("Wait <i class='fas fa-spinner fa-pulse'></i>");
+						button.prop('disabled', true);
+					},
+					success: function(result) {
+						msg = JSON.parse(result);
+						console.log(msg);
+						window.location = '<?php echo BASE_URL.ADMIN_ROOT.'member-info'?>';
+					}
+				})
+			})
+		</script>
 		<!--end::Page Vendors-->
 	</body>
 	<!--end::Body-->
