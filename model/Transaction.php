@@ -49,6 +49,7 @@ class Transaction Extends Utility
                 LEFT JOIN product_plan pp ON t.product_plan_id = pp.id 
                 LEFT JOIN products p ON pp.product_code = p.product_code 
                 WHERE t.user_id = '$userId'
+                GROUP BY t.id, p.product_name, p.product_icon, p.category
                 ORDER BY t.date DESC"
             );
         }else {
@@ -58,6 +59,7 @@ class Transaction Extends Utility
                 LEFT JOIN product_plan pp ON t.product_plan_id = pp.id 
                 LEFT JOIN products p ON pp.product_code = p.product_code
                 WHERE t.user_id = '$userId' AND p.category = '$catId'
+                GROUP BY t.id, p.product_name, p.product_icon, p.category
                 ORDER BY t.date DESC"
             );
         }
