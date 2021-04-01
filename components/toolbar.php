@@ -19,7 +19,7 @@
 										<!--begin::Header Nav-->
 										<ul class="menu-nav">
 											<li class="menu-item menu-item-open menu-item-here menu-item-rel" data-menu-toggle="click" aria-haspopup="true">
-												<a href="<?php echo BASE_URL.USER_ROOT?>dashboard" class="menu-link">
+												<a href="<?php echo BASE_URL.USER_ROOT?>home" class="menu-link">
 													<span class="menu-text">Dashboard</span>
 													<i class="menu-arrow"></i>
 												</a>

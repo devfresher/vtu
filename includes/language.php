@@ -87,6 +87,12 @@
 
 	$clientLang['plan_created']="Plan Created Successfully";
 
+	$clientLang['role_created']="Role Created Successfully";
+
 	$clientLang['plan_updated']="Plan Updated Successfully";
+
+	$clientLang['role_updated']="Role Updated Successfully";
+
+	$clientLang['role_deleted']="You have deleted a role";
 
 ?>

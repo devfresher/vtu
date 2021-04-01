@@ -13,7 +13,7 @@ $wallet = new Wallet($db);
 $role = new Role($db);
 $plan = new Plan($db);
 
-$userList = $user->getAllUser(2);
+$userList = $user->getAllUser();
 $allplan = $plan->getAllPlans();
 $allrole = $role->getAllRoles();
 ?>
@@ -69,11 +69,15 @@ $allrole = $role->getAllRoles();
 															<!--begin::User-->
 															<div class="mr-3">
 																<!--begin::Name-->
-																<a href="#" class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3"><?php echo  $userDetail->firstname.' '.$userDetail->lastname?>
+																<a href="#" class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3">
+																	<?php echo  $userDetail->firstname.' '.$userDetail->lastname?>
+																	
 																	<?php if ($userDetail->role->id == 1) { ?>
 																		<i class="flaticon2-correct text-success icon-md ml-2"></i>
 																	<?php } elseif ($userDetail->role->id == 3) { ?>
 																		<i class="flaticon2-correct text-danger icon-md ml-2"></i>
+																	<?php } elseif ($userDetail->role->id == 4) { ?>
+																		<i class="flaticon2-correct text-warning icon-md ml-2"></i>
 																	<?php } ?>
 																</a>
 																<!--end::Name-->
@@ -126,6 +130,7 @@ $allrole = $role->getAllRoles();
 																<!--end::Contacts-->
 															</div>
 															<!--begin::User-->
+
 															<!--begin::Actions-->
 															<div class="my-lg-0 my-1">
 																<div class="dropdown dropdown-inline mr-2">
@@ -186,7 +191,7 @@ $allrole = $role->getAllRoles();
 																<div class="modal-dialog modal-dialog-centered modal-md modal-dialog-scrollable" role="document">
 																	<div class="modal-content">
 																		<div class="modal-header">
-																			<h5 class="modal-title" id="exampleModalLabel">Manage User #<?php echo $userDetail->id ?></h5>
+																			<h5 class="modal-title" id="exampleModalLabel"><?php echo $userDetail->firstname.' '.$userDetail->lastname ?></h5>
 																			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 																				<i aria-hidden="true" class="ki ki-close"></i>
 																			</button>
@@ -382,13 +387,15 @@ $allrole = $role->getAllRoles();
 															<br />A second could be persuade people. You want people to bay objective.</div>
 															<!--end::Description-->
 															<!--begin::Progress-->
-															<div class="d-flex mt-4 mt-sm-0">
-																<span class="font-weight-bold mr-4">Sales Target Progress</span>
-																<div class="progress progress-xs mt-2 mb-2 flex-shrink-0 w-150px w-xl-250px">
-																	<div class="progress-bar bg-success" role="progressbar" style="width: <?php echo $userDetail->totalTransaction/$userDetail->sales_amount*100?>%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+															<?php if ($userDetail->sales_amount !== NUll AND $userDetail->sales_amount !== 0) { ?>
+																<div class="d-flex mt-4 mt-sm-0">
+																	<span class="font-weight-bold mr-4">Sales Target Progress</span>
+																	<div class="progress progress-xs mt-2 mb-2 flex-shrink-0 w-150px w-xl-250px">
+																		<div class="progress-bar bg-success" role="progressbar" style="width: <?php echo $userDetail->totalTransaction/$userDetail->sales_amount*100?>%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+																	</div>
+																	<span class="font-weight-bolder text-dark ml-4"><?php echo $userDetail->totalTransaction/$userDetail->sales_amount*100?>%</span>
 																</div>
-																<span class="font-weight-bolder text-dark ml-4"><?php echo $userDetail->totalTransaction/$userDetail->sales_amount*100?>%</span>
-															</div>
+															<?php } ?>
 															<!--end::Progress-->
 														</div>
 														<!--end::Content-->
@@ -426,7 +433,7 @@ $allrole = $role->getAllRoles();
 															<span class="font-weight-bolder font-size-sm">Total Transactions</span>
 															<span class="font-weight-bolder font-size-h5">
 																<span class="text-dark-50 font-weight-bold">
-																	<?php echo $appInfo->currency?>
+																	<?php echo $appInfo->currency_code?>
 																</span>
 																<?php echo number_format($userDetail->totalTransaction, 2)?>
 															</span>

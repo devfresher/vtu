@@ -43,7 +43,7 @@ if (isset($_POST["login"])) {
                     if (isset($_SERVER['HTTP_REFRRER'])) {
                         header("Location: ".$_SERVER['HTTP_REFRRER']);
                     }else {
-                        header("Location: ".BASE_URL.USER_ROOT.'dashboard');
+                        header("Location: ".BASE_URL.USER_ROOT.'home');
                     }
                     exit();
                 } 

@@ -46,7 +46,9 @@ class User extends Utility {
                 $userTransaction = $transaction->getAllUserTxn($user[$index]->id);
                 $users[$index]->totalTransaction = $userTransaction->total;
 
-                unset($users[$index]->role->permission);
+                $pagePermissions = json_decode($users[$index]->role->permission)->pages;
+                $users[$index]->pagePermissions = $pagePermissions;
+                // unset($users[$index]->role->permission);
             }
             $this->responseBody = $users;
             
@@ -78,7 +80,7 @@ class User extends Utility {
             $userTransaction = $transaction->getAllUserTxn($this->responseBody->id);
             $this->responseBody->tottalTransaction = $userTransaction->total;
 
-            unset($this->responseBody->role->permission);
+            // unset($this->responseBody->role->permission);
         }else {
             $this->responseBody = false;
         }
@@ -107,7 +109,7 @@ class User extends Utility {
             $userTransaction = $transaction->getAllUserTxn($this->responseBody->id);
             $this->responseBody->tottalTransaction = $userTransaction->total;
 
-            unset($this->responseBody->role->permission);
+            // unset($this->responseBody->role->permission);
         }else {
             $this->responseBody = false;
         }
@@ -136,7 +138,7 @@ class User extends Utility {
             $userTransaction = $transaction->getAllUserTxn($this->responseBody->id);
             $this->responseBody->tottalTransaction = $userTransaction->total;
 
-            unset($this->responseBody->role->permission);
+            // unset($this->responseBody->role->permission);
         }else {
             $this->responseBody = false;
         }
@@ -164,8 +166,8 @@ class User extends Utility {
 
             $userTransaction = $transaction->getAllUserTxn($this->responseBody->id);
             $this->responseBody->tottalTransaction = $userTransaction->total;
-            
-            unset($this->responseBody->role->permission);
+
+            // unset($this->responseBody->role->permission);
         }else {
             $this->responseBody = false;
         }
@@ -239,6 +241,32 @@ class User extends Utility {
         $user = $this->getUserById($userId);
 
         if ($user !== false AND $user->role->name == 'admin') {
+            $this->responseBody = true;
+        }else {
+            $this->responseBody = false;
+        }
+
+        return $this->responseBody;
+    }
+
+    public function isSuperAdmin($userId)
+    {
+        $user = $this->getUserById($userId);
+
+        if ($user !== false AND $user->role->name == 'super admin') {
+            $this->responseBody = true;
+        }else {
+            $this->responseBody = false;
+        }
+
+        return $this->responseBody;
+    }
+
+    public function isStaffAdmin($userId)
+    {
+        $user = $this->getUserById($userId);
+
+        if ($user !== false AND $user->role->name == 'staff admin') {
             $this->responseBody = true;
         }else {
             $this->responseBody = false;
