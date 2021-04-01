@@ -88,15 +88,28 @@ elseif (isset($_POST['delete_role'])) {
 }
 
 elseif (isset($_POST['set_permission'])) {
-    $roleId = $_POST['role_id'];
-    
-    $delete  = $role->deleteRole($roleId);
+    $permissionData = $_POST['data'];
+    $role->db->beginTransaction();
 
-    if($delete) {
-        $_SESSION['successMessage'] = $clientLang['role_deleted'];
-    }
-    else {
-        $_SESSION['errorMessage'] = $clientLang['unexpected_error'];
+    try {
+        
+        foreach ($permissionData as $permission) {
+            $updateData = array(
+                'view' => $permission['view'],
+                'create_new' => $permission['create'],
+                'edit' => $permission['update'],
+                'del' => $permission['delete'],
+            );
+            print_r($permission);
+            print_r($updateData);
+
+            echo $update = $role->updatePermission($updateData, $permission['role_id'], $permission['module_id']);
+        }
+        $utility->db->commit();
+
+    } catch (Exception $e) {
+        echo $e->getMessage();
+        // $utility->db->rollBack();
     }
 }
 ?>

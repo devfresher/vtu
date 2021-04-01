@@ -1,9 +1,12 @@
 <?php
+require_once MODEL_DIR.'Module.php';
+
 class Role Extends Utility
 {
     public function __construct($db) {
         $this->db = $db;
         $this->table = 'role';
+        $this->table2 = 'role_permission';
     }
 
     public function createRole($roleData)
@@ -12,8 +15,11 @@ class Role Extends Utility
         try {
             
             $createRole = $this->db->insert($this->table, $roleData);
+            $roleId = $this->db->lastInsertId();
+            
+            $createRolePermission = $this->createRolePermission($roleId);
                         
-            if ($createRole) {
+            if ($createRole > 0 AND $createRolePermission > 0) {
                 $this->responseBody =  true;
                 $this->db->commit();
             } else {
@@ -60,7 +66,6 @@ class Role Extends Utility
     public function deleteRole($roleId)
     {
         $roleDetail = $this->getRole($roleId);
-        print_r($roleDetail);
 
         $this->db->beginTransaction();
         try {
@@ -83,6 +88,57 @@ class Role Extends Utility
     public function updateRole($roleData, $roleId)
     {
         $update = $this->db->update($this->table, $roleData, array('id' => $roleId));
+
+        if ($update > 0) {
+            $this->responseBody =  true;
+        } else {
+            $this->responseBody =  false;
+        }
+
+        return $this->responseBody;
+    }
+
+    public function createRolePermission($roleId)
+    {
+        $module = new Module($this->db);
+        $aminModules = $module->getAdminModules();
+
+        $permissionData = array();
+        $i = 0;
+        foreach ($aminModules as $moduleItem) {
+            $permissionData[$i]['module_id'] = $moduleItem['id'];
+            $permissionData[$i]['role_id'] = $roleId;
+            $permissionData[$i]['view'] = 0;
+            $permissionData[$i]['create_new'] = 0;
+            $permissionData[$i]['edit'] = 0;
+            $permissionData[$i]['del'] = 0;
+
+            $i++;
+        }
+
+        try {
+             $this->db->delete2("DELETE FROM ".$this->table2." WHERE role_id = ".$roleId."");
+
+            if (isset($permissionData) && !empty($permissionData)) {
+                $this->db->multiInsert($this->table2, $permissionData);
+                $this->responseBody =  true;
+            }
+        } catch (Exception $e) {
+            $this->responseBody =  false;
+            echo $e->getMessage();
+        }
+
+        return $this->responseBody;
+    }
+
+    public function updatePermission($updateData, $roleId, $moduleId)
+    {
+        $whereData = array(
+            'role_id' => $roleId,
+            'module_id' => $moduleId
+        );
+
+        $update = $this->db->update($this->table2, $updateData, $whereData);
 
         if ($update > 0) {
             $this->responseBody =  true;

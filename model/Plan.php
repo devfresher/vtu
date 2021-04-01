@@ -54,6 +54,7 @@ class Plan Extends Utility
                 $this->db->commit();
             } else {
                 $this->responseBody =  false;
+                $this->db->rollback();
             }
         } catch (Exception $e) {
             $this->db->rollback();

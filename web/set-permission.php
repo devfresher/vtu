@@ -180,24 +180,26 @@ if (isset($_GET['roleID'])) {
                                                     <tbody>
                                                         <?php
                                                             $moduleList = $module->getAdminModules();
+                                                            $permissions = $utility->db->getAllRecords("role_permission", "*", "AND role_id = '$roleId'");
                                                             if($moduleList !== false) {
+                                                                $i = 0;
                                                                 foreach ($moduleList as $index => $moduleDetail) { ?>
                                                                     <tr class="module-item" data-module-id="<?php echo $moduleDetail['id']?>">
                                                                         <td><?php echo $moduleDetail['module_name']?></td>
                                                                         <td>
-                                                                            <input type="checkbox" name="view" <?php echo ($moduleDetail['update'] == 1)? 'checked':''?>/>
+                                                                            <input type="checkbox" name="view" <?php echo ($permissions[$i]['view'] == 1)? 'checked':''?>/>
                                                                         </td>
                                                                         <td>
-                                                                            <input type="checkbox" name="create" <?php echo ($moduleDetail['update'] == 1)? 'checked':''?>/>
+                                                                            <input type="checkbox" name="create" <?php echo ($permissions[$i]['create_new'] == 1)? 'checked':''?>/>
                                                                         </td>
                                                                         <td>
-                                                                            <input type="checkbox" name="update" <?php echo ($moduleDetail['update'] == 1)? 'checked':''?>/>
+                                                                            <input type="checkbox" name="update" <?php echo ($permissions[$i]['edit'] == 1)? 'checked':''?>/>
                                                                         </td>
                                                                         <td>
-                                                                            <input type="checkbox" name="delete" <?php echo ($moduleDetail['update'] == 1)? 'checked':''?>/>
+                                                                            <input type="checkbox" name="delete" <?php echo ($permissions[$i]['del'] == 1)? 'checked':''?>/>
                                                                         </td>   
                                                                     </tr>
-                                                                <?php } ?>
+                                                                <?php $i++; } ?>
                                                             <?php } ?>
                                                     </tbody>
                                                 </table>
@@ -267,7 +269,6 @@ if (isset($_GET['roleID'])) {
                             } else {
                                 var permissionItem = '{"module_id":'+ '"'+moduleId+'", "role_id":'+ '"'+roleId+'", "view":'+ '"'+view+'", "create":'+ '"'+create+'", "update":'+ '"'+update+'", "delete":'+ '"'+del+'"},';
                             }
-                            console.log(permissionItem);
 
                             data += permissionItem;
 
@@ -290,7 +291,7 @@ if (isset($_GET['roleID'])) {
                                 button.removeAttr('disabled');
                                 button.html('Save Changes');
                                 console.log(result);
-                                window.location = '<?php echo BASE_URL.ADMIN_ROOT.'set-permission?roleID='.$roleId?>';
+                                // window.location = '<?php echo BASE_URL.ADMIN_ROOT.'set-permission?roleID='.$roleId?>';
                             }
                         })
                     }
