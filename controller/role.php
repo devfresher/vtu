@@ -92,24 +92,23 @@ elseif (isset($_POST['set_permission'])) {
     $role->db->beginTransaction();
 
     try {
-        
         foreach ($permissionData as $permission) {
             $updateData = array(
                 'view' => $permission['view'],
-                'create_new' => $permission['create'],
-                'edit' => $permission['update'],
-                'del' => $permission['delete'],
+                'create_new' => $permission['create_new'],
+                'edit' => $permission['edit'],
+                'del' => $permission['del'],
             );
-            print_r($permission);
-            print_r($updateData);
 
-            echo $update = $role->updatePermission($updateData, $permission['role_id'], $permission['module_id']);
+            $update = $utility->db->update_new($role->table2, $updateData, "AND module_id = ".$permission['module_id']." AND role_id = ".$permission['role_id']."");
         }
         $utility->db->commit();
+        $_SESSION['successMessage'] = 'Permission updated';
 
     } catch (Exception $e) {
+        $utility->db->rollBack();
+        $_SESSION['errorMessage'] = $clientLang['unexpected_error'];
         echo $e->getMessage();
-        // $utility->db->rollBack();
     }
 }
 ?>

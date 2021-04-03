@@ -148,11 +148,13 @@ class Wallet Extends Utility
 
     public function approveWalletRequest($reference)
     {
-        $update = $this->db->getRecFrmQry2(
-            "UPDATE $this->table SET `status` = 3, `balance_after` = SUM(old_balance + amount) WHERE reference = '$reference'"
+        $updateData = array(
+            'status' => 3,
+            'balance_after' => 'old_balance + amount'
         );
+        $update = $this->db->update_new($this->table1, $updateData, "AND reference = '$reference'");
 
-        if (count($update) > 0) {
+        if ($update > 0) {
             $this->responseBody =  true;
         } else {
             $this->responseBody =  false;

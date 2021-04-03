@@ -100,7 +100,7 @@ elseif (isset($_POST['update_plan_product'])) {
                 'plan_id' => $productPlan['plan_id']
             );
             
-            $update = $utility->db->update($product->table2, $updateData, $whereData);
+            echo $update = $utility->db->update($product->table2, $updateData, $whereData);
         }
 
         $utility->db->commit();

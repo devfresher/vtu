@@ -27,9 +27,9 @@ class User extends Utility {
         $transaction = new Transaction($this->db);
 
         if ($roleId == '') {
-            $result = $this->db->getAllRecords($this->table, "*");
+            $result = $this->db->getAllRecords($this->table, "*", "ORDER BY role_id ASC");
         } else {
-            $result = $this->db->getAllRecords($this->table, "*", "AND role_id = '$roleId'");
+            $result = $this->db->getAllRecords($this->table, "*", "AND role_id = '$roleId'", "ORDER BY role_id ASC");
         }
 
         if (count($result) > 0) {
@@ -43,15 +43,25 @@ class User extends Utility {
                 $users[$index]->firstLetter = $users[$index]->firstname[0].$users[$index]->lastname[0];
                 $users[$index]->fullName = $users[$index]->firstname.' '.$users[$index]->lastname;
 
-                $userTransaction = $transaction->getAllUserTxn($user[$index]->id);
-                $users[$index]->totalTransaction = $userTransaction->total;
+                $userTransactions = $transaction->getAllUserTxn($users[$index]->id);
+                $userTxn1mnth = $transaction->getUserTxnWithin($users[$index]->id, '1 month');
 
-                $pagePermissions = json_decode($users[$index]->role->permission)->pages;
-                $users[$index]->pagePermissions = $pagePermissions;
-                // unset($users[$index]->role->permission);
+                $users[$index]->allTxns = $userTransactions;
+
+                $sum = 0;
+                foreach ($userTransactions as $txn) {
+                    $sum += $txn['amount'];
+                }
+                $users[$index]->sumAllTxn = $sum;
+
+                $users[$index]->aMonthTxn = $userTxn1mnth;
+                $sum = 0;
+                foreach ($userTxn1mnth as $txn) {
+                    $sum += $txn['amount'];
+                }
+                $users[$index]->sumMonthTxn = $sum;
             }
             $this->responseBody = $users;
-            
         }else {
             $this->responseBody = false;
         }
@@ -77,8 +87,11 @@ class User extends Utility {
             $this->responseBody->firstLetter = $this->responseBody->firstname[0].$this->responseBody->lastname[0];
             $this->responseBody->fullName = $this->responseBody->firstname.' '.$this->responseBody->lastname;
 
-            $userTransaction = $transaction->getAllUserTxn($this->responseBody->id);
-            $this->responseBody->tottalTransaction = $userTransaction->total;
+            $userTransactions = $transaction->getAllUserTxn($this->responseBody->id);
+            $userTxn1mnth = $transaction->getUserTxnWithin($this->responseBody->id, '1 month');
+
+            $this->responseBody->allTxns = $userTransactions;
+            $this->responseBody->aMonthTxn = $userTxn1mnth;
 
             // unset($this->responseBody->role->permission);
         }else {
@@ -106,8 +119,11 @@ class User extends Utility {
             $this->responseBody->firstLetter = $this->responseBody->firstname[0].$this->responseBody->lastname[0];
             $this->responseBody->fullName = $this->responseBody->firstname.' '.$this->responseBody->lastname;
 
-            $userTransaction = $transaction->getAllUserTxn($this->responseBody->id);
-            $this->responseBody->tottalTransaction = $userTransaction->total;
+            $userTransactions = $transaction->getAllUserTxn($this->responseBody->id);
+            $userTxn1mnth = $transaction->getUserTxnWithin($this->responseBody->id, '1 month');
+
+            $this->responseBody->allTxns = $userTransactions;
+            $this->responseBody->aMonthTxn = $userTxn1mnth;
 
             // unset($this->responseBody->role->permission);
         }else {
@@ -134,9 +150,12 @@ class User extends Utility {
 
             $this->responseBody->firstLetter = $this->responseBody->firstname[0].$this->responseBody->lastname[0];
             $this->responseBody->fullName = $this->responseBody->firstname.' '.$this->responseBody->lastname;
+            
+            $userTransactions = $transaction->getAllUserTxn($this->responseBody->id);
+            $userTxn1mnth = $transaction->getUserTxnWithin($this->responseBody->id, '1 month');
 
-            $userTransaction = $transaction->getAllUserTxn($this->responseBody->id);
-            $this->responseBody->tottalTransaction = $userTransaction->total;
+            $this->responseBody->allTxns = $userTransactions;
+            $this->responseBody->aMonthTxn = $userTxn1mnth;
 
             // unset($this->responseBody->role->permission);
         }else {
@@ -164,8 +183,11 @@ class User extends Utility {
             $this->responseBody->firstLetter = $this->responseBody->firstname[0].$this->responseBody->lastname[0];
             $this->responseBody->fullName = $this->responseBody->firstname.' '.$this->responseBody->lastname;
 
-            $userTransaction = $transaction->getAllUserTxn($this->responseBody->id);
-            $this->responseBody->tottalTransaction = $userTransaction->total;
+            $userTransactions = $transaction->getAllUserTxn($this->responseBody->id);
+            $userTxn1mnth = $transaction->getUserTxnWithin($this->responseBody->id, '1 month');
+
+            $this->responseBody->allTxns = $userTransactions;
+            $this->responseBody->aMonthTxn = $userTxn1mnth;
 
             // unset($this->responseBody->role->permission);
         }else {
@@ -240,7 +262,7 @@ class User extends Utility {
     {
         $user = $this->getUserById($userId);
 
-        if ($user !== false AND $user->role->name == 'admin') {
+        if ($user !== false AND $user->role->role_code == 'ADMIN') {
             $this->responseBody = true;
         }else {
             $this->responseBody = false;
@@ -253,7 +275,7 @@ class User extends Utility {
     {
         $user = $this->getUserById($userId);
 
-        if ($user !== false AND $user->role->name == 'super admin') {
+        if ($user !== false AND $user->role->role_code == 'SUPERADMIN') {
             $this->responseBody = true;
         }else {
             $this->responseBody = false;
@@ -266,7 +288,7 @@ class User extends Utility {
     {
         $user = $this->getUserById($userId);
 
-        if ($user !== false AND $user->role->name == 'staff admin') {
+        if ($user !== false AND $user->role->role_code == 'STAFFADMIN') {
             $this->responseBody = true;
         }else {
             $this->responseBody = false;

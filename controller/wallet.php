@@ -183,13 +183,14 @@ elseif (isset($_POST['modify_wallet'])) {
     }
 
     if(!filter_var($amount, FILTER_VALIDATE_INT)){
-        $_SESSION["errorMessage"] = $clientLang['invalid_amount'];
-        header("Location: ".$_POST['form_url']);
-        exit();
-    }else {
-        if($type == 'deduct') {
-            $userDetail = $user->getUserById($user_id);
 
+        $_SESSION["errorMessage"] = $clientLang['invalid_amount'];
+
+    }else {
+        $userDetail = $user->getUserById($user_id);
+
+        if($type == 'deduct') {
+            
             if ($amount > $userDetail->walletBalance) {
                 $_SESSION["errorMessage"] = "User wallet balance lesser than ".$amount;
                 header("Location: ".$_POST['form_url']);
@@ -210,7 +211,7 @@ elseif (isset($_POST['modify_wallet'])) {
                 $deduct = $wallet->spendFromWallet($walletOutData);
 
                 if ($deduct !== false){
-                    $_SESSION["successMessage"] = $amount.' deducted from '.$userDetail->firstname.'\'s wallet';
+                    $_SESSION["successMessage"] = $appInfo->currency.$amount.' deducted from '.$userDetail->firstname.'\'s wallet';
                 } else {
                     $_SESSION["errorMessage"] = $clientLang['unexpected_error'];
                 }
@@ -229,16 +230,17 @@ elseif (isset($_POST['modify_wallet'])) {
                 'status' => 1,
                 'date' => date('Y-m-d H:i:s'),
             );
-
+            // print_r($walletRequestData);
             $request = $wallet->fundWalletRequest($walletRequestData);
             $approve = $wallet->approveWalletRequest($reference);
 
             if ($request !== false AND $approve !== false){
-                $_SESSION["successMessage"] = $amount.' added to '.$userDetail->firstname.'\'s wallet';
+                $_SESSION["successMessage"] = $appInfo->currency.$amount.' added to '.$userDetail->firstname.'\'s wallet';
             } else {
                 $_SESSION["errorMessage"] = $clientLang['unexpected_error'];
             }
         }
+
     }
 
     header("Location: ".$_POST['form_url']);

@@ -228,7 +228,9 @@ class Database
                 return $value . '=:' . $value;
            },
            array_keys($set)
-         );
+        );
+
+        //  echo "UPDATE $tableName SET ". implode(',', $arrSet).' WHERE '. key($where). '=:'. key($where) . 'Field';
         $stmt = $this->pdo->prepare(
             "UPDATE $tableName SET ". implode(',', $arrSet).' WHERE '. key($where). '=:'. key($where) . 'Field'
          );
@@ -237,6 +239,34 @@ class Database
             $stmt->bindValue(':'.$field, $value);
         }
         $stmt->bindValue(':'.key($where) . 'Field', current($where));
+        try {
+            $stmt->execute();
+
+            return $stmt->rowCount();
+        } catch (\PDOException $e) {
+            throw new \RuntimeException("[".$e->getCode()."] : ". $e->getMessage());
+        }
+    }
+
+    public function update_new($tableName, array $set, $cond = '')
+    {
+        
+        $arrSet = array_map(
+           function($value) {
+                return $value . '=:' . $value;
+           },
+           array_keys($set)
+        );
+
+        // echo "UPDATE $tableName SET ". implode(',', $arrSet).' WHERE 1 '.$cond;
+        $stmt = $this->pdo->prepare(
+            "UPDATE $tableName SET ". implode(',', $arrSet).' WHERE 1 '.$cond
+         );
+
+        foreach ($set as $field => $value) {
+            $stmt->bindValue(':'.$field, $value);
+        }
+        // $stmt->bindValue(':'.key($where) . 'Field', current($where));
         try {
             $stmt->execute();
 

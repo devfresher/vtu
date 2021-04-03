@@ -12,6 +12,11 @@ if (isset($_GET['roleID'])) {
     $module = new Module($db);
 
     $roleDetail = $role->getRole($roleId);
+    if ($roleDetail === false) {
+        http_response_code(404);
+        include '../error/404.php';
+        die();
+    }
 }else {
     http_response_code(404);
     include '../error/404.php'; // provide your own HTML for the error page
@@ -256,18 +261,17 @@ if (isset($_GET['roleID'])) {
                             var update = $(this).find("input[name=update]");
                             var del = $(this).find("input[name=delete]");
 
-                            view = (view.prop("checked"))? 1:0;
-                            create = (create.prop("checked"))? 1:0;
-                            update = (update.prop("checked"))? 1:0;
-                            del = (del.prop("checked"))? 1:0;
+                            view = (view.prop("checked"))? '1':'0';
+                            create = (create.prop("checked"))? '1':'0';
+                            update = (update.prop("checked"))? '1':'0';
+                            del = (del.prop("checked"))? '1':'0';
 
                             var roleId = '<?php echo $_GET['roleID']?>';
 
-
                             if(i  == $('.module-item').length){
-                                var permissionItem = '{"module_id":'+ '"'+moduleId+'", "role_id":'+ '"'+roleId+'", "view":'+ '"'+view+'", "create":'+ '"'+create+'", "update":'+ '"'+update+'", "delete":'+ '"'+del+'"}';
+                                var permissionItem = '{"module_id":'+ '"'+moduleId+'", "role_id":'+ '"'+roleId+'", "view":'+ '"'+view+'", "create_new":'+ '"'+create+'", "edit":'+ '"'+update+'", "del":'+ '"'+del+'"}';
                             } else {
-                                var permissionItem = '{"module_id":'+ '"'+moduleId+'", "role_id":'+ '"'+roleId+'", "view":'+ '"'+view+'", "create":'+ '"'+create+'", "update":'+ '"'+update+'", "delete":'+ '"'+del+'"},';
+                                var permissionItem = '{"module_id":'+ '"'+moduleId+'", "role_id":'+ '"'+roleId+'", "view":'+ '"'+view+'", "create_new":'+ '"'+create+'", "edit":'+ '"'+update+'", "del":'+ '"'+del+'"},';
                             }
 
                             data += permissionItem;
@@ -291,7 +295,7 @@ if (isset($_GET['roleID'])) {
                                 button.removeAttr('disabled');
                                 button.html('Save Changes');
                                 console.log(result);
-                                // window.location = '<?php echo BASE_URL.ADMIN_ROOT.'set-permission?roleID='.$roleId?>';
+                                window.location = '<?php echo BASE_URL.ADMIN_ROOT.'set-permission?roleID='.$roleId?>';
                             }
                         })
                     }

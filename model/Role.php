@@ -131,21 +131,52 @@ class Role Extends Utility
         return $this->responseBody;
     }
 
-    public function updatePermission($updateData, $roleId, $moduleId)
-    {
-        $whereData = array(
-            'role_id' => $roleId,
-            'module_id' => $moduleId
-        );
+    public function getRolePermission($roleId)
+    {        
+        try {
+            $result = $this->db->getRecFrmQry(
+                "SELECT rp.view, rp.create_new, rp.edit, rp.del, m.module_name
+                FROM $this->table2 rp
+                LEFT JOIN modules m ON rp.module_id = m.id
+                WHERE rp.role_id = '$roleId' AND rp.view != 0"
+            );
+            // $result = $this->db->getAllRecords($this->table2, "view, create_new, edit, del", "AND role_id = $roleId");
 
-        $update = $this->db->update($this->table2, $updateData, $whereData);
-
-        if ($update > 0) {
-            $this->responseBody =  true;
-        } else {
+            if (count($result) > 0) {
+                $this->responseBody =  $this->arrayToObject($result);
+            }
+        } catch (Exception $e) {
             $this->responseBody =  false;
+            echo $e->getMessage();
         }
 
         return $this->responseBody;
     }
+
+    // public function updatePermission($updateData, $roleId, $moduleId)
+    // {
+    //     $this->db->beginTransaction();
+
+    //     try {
+
+    //         $update = $this->db->update_new($this->table2, $updateData, "AND module_id = $moduleId AND role_id = $roleId");
+    //         print_r($updateData);
+            
+    //         if ($update > 0) {
+    //             $this->responseBody =  true;
+    //             $this->db->commit();
+    //         } else {
+    //             $this->responseBody =  false;
+    //             $this->db->rollBack();
+    //         }
+
+    //     } catch (Exception $e) {
+    //         $this->responseBody =  false;
+    //         echo $e->getMessage();
+
+    //         $this->db->rollBack();
+    //     }
+
+    //     return $this->responseBody;
+    // }
 }

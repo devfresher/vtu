@@ -42,24 +42,52 @@ class Transaction Extends Utility
 
     public function getAllUserTxn($userId, $catId='')
     {
-        if ($catId != '') {
+        if ($catId == '') {
+            $result = $this->db->getRecFrmQry(
+                "SELECT t.*, p.product_code,  pp.selling_percentage, p.product_name, p.product_icon, p.category
+                FROM $this->table t
+                LEFT JOIN product_plan pp ON t.product_plan_id = pp.id 
+                LEFT JOIN products p ON pp.product_code = p.product_code 
+                WHERE t.user_id = '$userId'
+                ORDER BY t.date DESC"
+            );
+        }else {
+            $result = $this->db->getRecFrmQry(
+                "SELECT t.*,  p.product_code,  pp.selling_percentage, p.product_name, p.product_icon, p.category
+                FROM $this->table t
+                LEFT JOIN product_plan pp ON t.product_plan_id = pp.id 
+                LEFT JOIN products p ON pp.product_code = p.product_code
+                WHERE t.user_id = '$userId' AND p.category = '$catId'
+                ORDER BY t.date DESC"
+            );
+        }
+
+        if (count($result) > 0) {
+            $this->responseBody = $this->arrayToObject($result);
+        }else {
+            $this->responseBody = false;
+        }
+        return $this->responseBody;
+    }
+
+    public function getUserTxnWithin($userId, $period='')
+    {
+        if ($period == '') {
             $result = $this->db->getRecFrmQry(
                 "SELECT t.*, SUM(t.amount) AS total, p.product_code,  pp.selling_percentage, p.product_name, p.product_icon, p.category
                 FROM $this->table t
                 LEFT JOIN product_plan pp ON t.product_plan_id = pp.id 
                 LEFT JOIN products p ON pp.product_code = p.product_code 
                 WHERE t.user_id = '$userId'
-                GROUP BY t.id, p.product_name, p.product_icon, p.category
                 ORDER BY t.date DESC"
             );
         }else {
             $result = $this->db->getRecFrmQry(
-                "SELECT t.*, SUM(t.amount) AS total, p.product_code,  pp.selling_percentage, p.product_name, p.product_icon, p.category
+                "SELECT t.*, p.product_code,  pp.selling_percentage, p.product_name, p.product_icon, p.category
                 FROM $this->table t
                 LEFT JOIN product_plan pp ON t.product_plan_id = pp.id 
                 LEFT JOIN products p ON pp.product_code = p.product_code
-                WHERE t.user_id = '$userId' AND p.category = '$catId'
-                GROUP BY t.id, p.product_name, p.product_icon, p.category
+                WHERE t.user_id = '$userId' AND t.date >= DATE_SUB(CURRENT_DATE, INTERVAL $period)
                 ORDER BY t.date DESC"
             );
         }
