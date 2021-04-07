@@ -64,7 +64,7 @@ try {
 }
 $db = new Database($pdo);
 
-require_once INCLUDES_DIR.'transactionConnect.php';
+// require_once INCLUDES_DIR.'transactionConnect.php';
 
 include_once MODEL_DIR.'App.php';
 include_once MODEL_DIR.'Utility.php';
