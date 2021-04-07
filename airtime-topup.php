@@ -8,7 +8,7 @@ $product = new Product($db);
 $transaction = new Transaction($db);
 
 $airtimeProducts = $product->getProductsWithPlan($user->currentUser->plan->id, 'Airtime Topup');
-$airtimePurchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 1);
+$airtimePurchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 'Airtime Topup');
 ?>
 		<!--begin::Page Vendors Styles(used by this page)-->
 		<link href="<?php echo BASE_URL.USER_ROOT?>assets/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />

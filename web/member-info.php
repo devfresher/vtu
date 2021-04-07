@@ -13,7 +13,13 @@ $wallet = new Wallet($db);
 $role = new Role($db);
 $plan = new Plan($db);
 
-$userList = $user->getAllUser();
+if (isset($_GET['role'])) {
+	$roleId = $_GET['role'];
+	$userList = $user->getAllUser($roleId);
+}else {
+	$roleId = '';
+	$userList = $user->getAllUser();
+}
 $allplan = $plan->getAllPlans();
 $allrole = $role->getAllRoles();
 ?>
@@ -46,8 +52,44 @@ $allrole = $role->getAllRoles();
 						<div class="d-flex flex-column-fluid">
 							<!--begin::Container-->
 							<div class="container">
+								<div class="mb-7 row">
+									<div class="col-sm-4">
+										<form action="" method="GET" class="d-flex align-items-center">
+											<select name="role" class="form-control selectpicker" data-size="5">
+												<option value="">All</option>
+												<?php foreach ($allrole as $index => $roleDetail) { ?>
+													<option value="<?php echo $roleDetail['id']?>" <?php echo ($roleId == $roleDetail['id']) ? 'selected':''?>><?php echo $roleDetail['role_name']?></option>
+												<?php } ?>
+											</select>
+
+											<button type="submit" name="filter" class="btn btn-light-primary px-6 font-weight-bold mx-3">
+												Filter
+											</button>
+											<a href="<?php echo BASE_URL.ADMIN_ROOT.'member-info'?>" type="reset" class="btn btn-light-danger px-6 font-weight-bold">
+												Reset
+											</a>
+										
+										</form>
+									</div>
+								</div>
+
 								<?php if($userList !== false) {
-									foreach ($userList as $index => $userDetail) { ?>
+									foreach ($userList as $index => $userDetail) { 
+
+										if ($user->isSuperAdmin($userDetail->id)) {
+											$icon = '<i class="flaticon2-correct text-success icon-md ml-2"></i>';
+											$color = 'success';
+										} elseif ($user->isAdmin($userDetail->id)) {
+											$icon = '<i class="flaticon2-correct text-danger icon-md ml-2"></i>';
+											$color = 'danger';
+										} elseif ($user->isStaffAdmin($userDetail->id)) {
+											$icon = '<i class="flaticon2-correct text-info icon-md ml-2"></i>';
+											$color = 'info';
+										} else {
+											$icon = '';
+											$color = 'primary';
+										} 
+									?>
 										<!--begin::Card-->
 										<div class="card card-custom gutter-b">
 											<div class="card-body">
@@ -55,10 +97,10 @@ $allrole = $role->getAllRoles();
 												<div class="d-flex">
 													<!--begin::Pic-->
 													<div class="flex-shrink-0 mr-7">
-														<div class="symbol symbol-50 symbol-lg-120">
-															<div class="symbol-label text-dark-50" style="font-size: 35px;">
+														<div class="symbol symbol-50 symbol-lg-120 symbol-light-<?php echo $color?>">
+															<span class="font-size-h3 symbol-label font-weight-boldest">
 																<?php echo $userDetail->firstLetter?>
-															</div>
+															</span>
 														</div>
 													</div>
 													<!--end::Pic-->
@@ -70,13 +112,7 @@ $allrole = $role->getAllRoles();
 															<div class="mr-3">
 																<!--begin::Name-->
 																<a href="#" class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3">
-																	<?php echo  $userDetail->firstname.' '.$userDetail->lastname?>
-																	
-																	<?php if ($userDetail->role->role_code == 'SUPERADMIN') { ?>
-																		<i class="flaticon2-correct text-success icon-md ml-2"></i>
-																	<?php } elseif ($userDetail->role->role_code == 'ADMIN') { ?>
-																		<i class="flaticon2-correct text-danger icon-md ml-2"></i>
-																	<?php } ?>
+																	<?php echo  $userDetail->firstname.' '.$userDetail->lastname.' '.$icon?>
 																</a>
 																<!--end::Name-->
 																<!--begin::Contacts-->
@@ -292,7 +328,7 @@ $allrole = $role->getAllRoles();
 														</span>
 														<div class="d-flex flex-column flex-lg-fill">
 															<span class="text-dark-75 font-weight-bolder font-size-sm"><?php echo ($userDetail->allTxns !== false)? count($utility->objectToArray($userDetail->allTxns)):0?> Transactions</span>
-															<a href="javascript:;" data-toggle="modal" data-target="#kt_datatable_modal<?php echo $userDetail->id?>" class="text-primary font-weight-bolder">View</a>
+															<a href="<?php echo BASE_URL.ADMIN_ROOT.'user-transactions.php?id='.$userDetail->id?>" class="text-primary font-weight-bolder">View</a>
 														</div>
 													</div>
 													<!--end: Item-->
@@ -494,239 +530,59 @@ $allrole = $role->getAllRoles();
 												</div>
 											</div>
 										</form>
-										<!-- Modal-->
-										
-										<!--begin::Modal-->
-										<div id="kt_datatable_modal<?php echo $userDetail->id?>" class="modal fade" role="dialog" aria-hidden="true">
-											<div class="modal-dialog modal-xl">
-												<div class="modal-content" style="min-height: 590px;">
-													<div class="modal-header py-5">
-														<h5 class="modal-title">Datatable
-														<span class="d-block text-muted font-size-sm">Remote data source</span></h5>
-														<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-															<i aria-hidden="true" class="ki ki-close"></i>
-														</button>
-													</div>
-													<div class="modal-body">
-														<!--begin: Search Form-->
-														<!--begin::Search Form-->
-														<div class="mb-5">
-															<div class="row align-items-center">
-																<div class="col-lg-9 col-xl-8">
-																	<div class="row align-items-center">
-																		<div class="col-md-4 my-2 my-md-0">
-																			<div class="input-icon">
-																				<input type="text" class="form-control" placeholder="Search..." id="kt_datatable_search_query_3" />
-																				<span>
-																					<i class="flaticon2-search-1 text-muted"></i>
-																				</span>
-																			</div>
-																		</div>
-																		<div class="col-md-4 my-2 my-md-0">
-																			<div class="d-flex align-items-center">
-																				<label class="mr-3 mb-0 d-none d-md-block">Status:</label>
-																				<select class="form-control" id="kt_datatable_search_status_3">
-																					<option value="">All</option>
-																					<option value="1">Pending</option>
-																					<option value="2">Delivered</option>
-																					<option value="3">Canceled</option>
-																					<option value="4">Success</option>
-																					<option value="5">Info</option>
-																					<option value="6">Danger</option>
-																				</select>
-																			</div>
-																		</div>
-																		<div class="col-md-4 my-2 my-md-0">
-																			<div class="d-flex align-items-center">
-																				<label class="mr-3 mb-0 d-none d-md-block">Type:</label>
-																				<select class="form-control" id="kt_datatable_search_type_3">
-																					<option value="">All</option>
-																					<option value="1">Online</option>
-																					<option value="2">Retail</option>
-																					<option value="3">Direct</option>
-																				</select>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-																<div class="col-lg-3 col-xl-4 mt-5 mt-lg-0">
-																	<a href="#" class="btn btn-light-primary px-6 font-weight-bold">Search</a>
-																</div>
-															</div>
-														</div>
-														<!--end::Search Form-->
-														<!--end: Search Form-->
-														<!--begin: Datatable-->
-														<!-- <div class="datatable datatable-bordered datatable-head-custom" id="kt_datatable_2"> -->
-														<table class="datatable datatable-bordered datatable-head-custom" id="kt_datatable_2">
-															<thead>
-																<tr>
-																	<th title="Field #1" class="custom-th">S/N</th>
-																	<th title="Field #2" class="custom-th">Plan Name</th>
-																	<th title="Field #3" class="custom-th">Migration Fee</th>
-																	<th title="Field #4" class="custom-th">planType</th>
-																	<th title="Field #5" class="custom-th">Actions</th>
-																</tr>
-															</thead>
-															<tbody>
-																<?php if($planList !== false){
-																	$i = 1;
-																	foreach ($planList as $plan) { ?>
-																		<div class="modal fade" id="editPlanForm<?php echo $plan['id']?>" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="editPlanForm<?php echo $plan['id']?>" aria-hidden="true">
-																			<form class="form" method="POST" id="edit-plan-form<?php echo $plan['id']?>" action="<?php echo BASE_URL?>controller/plan.php">
-																				<div class="modal-dialog modal-dialog-centered modal-md modal-dialog-scrollable" role="document">
-																					<div class="modal-content">
-																						<div class="modal-header">
-																							<h5 class="modal-title" id="exampleModalLabel">Edit Plan</h5>
-																							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																								<i aria-hidden="true" class="ki ki-close"></i>
-																							</button>
-																						</div>
-																						<div class="modal-body">
-																							<div data-scroll="true" data-height="300">
-																								<input type="hidden" name="form_url" value="<?php echo BASE_URL.ADMIN_ROOT?>plan-management">
-																								<input type="hidden" name="plan_id" value="<?php echo $plan['id']?>">
+										<!-- Modal-->									
+									<?php } ?>
 
-																								<div class="form-group row">
-																									<div class="col-md">
-																										<label class="col-form-label">Plan Name</label>
-																										<input type="text" name="plan_name" class="form-control" value="<?php echo $plan['plan_name']?>" disabled/>
-																									</div>
-																								</div>
-																								<div class="form-group row">
-																									<div class="col-md">
-																										<label class="col-form-label">Migration Fee (<?php echo $appInfo->currency?>)</label>
-																										<input type="number" name="migration_fee" class="form-control" value="<?php echo $plan['migration_fee']?>" />
-																									</div>
-																								</div>
-
-																								<div class="form-group row">
-																									<div class="col-md">
-																										<label class="col-form-label">Plan Lock</label>
-																										<select name="plan_lock" class="form-control selectpicker" data-size="2">
-																											<option value="1" <?php echo ($plan['plan_lock'] == 1)? 'selected':''?>>Lock</option>
-																											<option value="0" <?php echo ($plan['plan_lock'] == 0)? 'selected':''?>>Unlock</option>
-																										</select>
-																									</div>
-																									<div class="col-md">
-																										<label class="col-form-label">Plan Type</label>
-																										<select name="plan_type" class="form-control selectpicker" data-size="2">
-																											<option value="private" <?php echo ($plan['plan_type'] == 'private')? 'selected':''?>>Private</option>
-																											<option value="public" <?php echo ($plan['plan_type'] == 'public')? 'selected':''?>>Public</option>
-																										</select>
-																									</div>
-																								</div>
-																							</div>
-																						</div>
-																						<div class="modal-footer">
-																							<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
-																							<button type="submit" name="update_plan" class="btn btn-primary font-weight-bold">Save Changes</button>
-																						</div>
-																					</div>
-																				</div>
-																			</form>
-																		</div>
-																		<tr>
-																			<td><?php echo $i?></td>
-																			<td><?php echo $plan['plan_name']?></td>
-																			<td><?php echo $appInfo->currency_code.number_format($plan['migration_fee'], 2)?></td>
-																			<td><?php echo $plan['plan_type']?></td>
-																			<td>
-																				<span style="overflow: visible;position: relative;">
-																					<a href="javascript:;" data-toggle="modal" data-target="#editPlanForm<?php echo $plan['id']?>" class="btn btn-sm btn-clean btn-icon mr-2" title="Modify Plan Settings">
-																						<span class="svg-icon svg-icon-md">
-																							<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-																								<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-																									<rect x="0" y="0" width="24" height="24"/>
-																									<path d="M5,8.6862915 L5,5 L8.6862915,5 L11.5857864,2.10050506 L14.4852814,5 L19,5 L19,9.51471863 L21.4852814,12 L19,14.4852814 L19,19 L14.4852814,19 L11.5857864,21.8994949 L8.6862915,19 L5,19 L5,15.3137085 L1.6862915,12 L5,8.6862915 Z M12,15 C13.6568542,15 15,13.6568542 15,12 C15,10.3431458 13.6568542,9 12,9 C10.3431458,9 9,10.3431458 9,12 C9,13.6568542 10.3431458,15 12,15 Z" fill="#000000"/>
-																								</g>
-																							</svg>
-																						</span>
-																					</a>
-
-																					<a href="<?php echo BASE_URL.ADMIN_ROOT.'plan?id='.$plan['id']?>" class="btn btn-sm btn-clean btn-icon mr-2" title="Edit Price">
-																						<span class="svg-icon svg-icon-md">
-																							<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-																								<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-																									<rect x="0" y="0" width="24" height="24"/>
-																									<path d="M8,17.9148182 L8,5.96685884 C8,5.56391781 8.16211443,5.17792052 8.44982609,4.89581508 L10.965708,2.42895648 C11.5426798,1.86322723 12.4640974,1.85620921 13.0496196,2.41308426 L15.5337377,4.77566479 C15.8314604,5.0588212 16,5.45170806 16,5.86258077 L16,17.9148182 C16,18.7432453 15.3284271,19.4148182 14.5,19.4148182 L9.5,19.4148182 C8.67157288,19.4148182 8,18.7432453 8,17.9148182 Z" fill="#000000" fill-rule="nonzero"\ transform="translate(12.000000, 10.707409) rotate(-135.000000) translate(-12.000000, -10.707409) "/>
-																									<rect fill="#000000" opacity="0.3" x="5" y="20" width="15" height="2" rx="1"/>
-																								</g>
-																							</svg>
-																						</span>
-																					</a>
-
-																					<a href="javascript:;" class="btn btn-sm btn-clean btn-icon delete-plan" data-id="<?php echo $plan['id']?>" title="Delete Plan">
-																						<span class="svg-icon svg-icon-md">
-																							<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-																								<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-																									<rect x="0" y="0" width="24" height="24"/>
-																									<path d="M6,8 L6,20.5 C6,21.3284271 6.67157288,22 7.5,22 L16.5,22 C17.3284271,22 18,21.3284271 18,20.5 L18,8 L6,8 Z" fill="#000000" fill-rule="nonzero"/>
-																									<path d="M14,4.5 L14,4 C14,3.44771525 13.5522847,3 13,3 L11,3 C10.4477153,3 10,3.44771525 10,4 L10,4.5 L5.5,4.5 C5.22385763,4.5 5,4.72385763 5,5 L5,5.5 C5,5.77614237 5.22385763,6 5.5,6 L18.5,6 C18.7761424,6 19,5.77614237 19,5.5 L19,5 C19,4.72385763 18.7761424,4.5 18.5,4.5 L14,4.5 Z" fill="#000000" opacity="0.3"/>
-																								</g>
-																							</svg>
-																						</span>
-																					</a>
-																				</span>
-																			</td>
-																		</tr>
-																	<?php $i++; } ?>
-																<?php } ?>
-															</tbody>
-														</table>
-														<!-- </div> -->
-														<!--end: Datatable-->
-													</div>
+									<!--begin::Pagination-->
+									<div class="card card-custom">
+										<div class="card-body py-7">
+											<!-- begin::Pagination -->
+											<div class="d-flex justify-content-between align-items-center flex-wrap">
+												<div class="d-flex flex-wrap mr-3">
+													<a href="#" class="btn btn-icon btn-sm btn-light-primary mr-2 my-1">
+														<i class="ki ki-bold-double-arrow-back icon-xs"></i>
+													</a>
+													<a href="#" class="btn btn-icon btn-sm btn-light-primary mr-2 my-1">
+														<i class="ki ki-bold-arrow-back icon-xs"></i>
+													</a>
+													<a href="#" class="btn btn-icon btn-sm border-0 btn-hover-primary mr-2 my-1">...</a>
+													<a href="#" class="btn btn-icon btn-sm border-0 btn-hover-primary mr-2 my-1">23</a>
+													<a href="#" class="btn btn-icon btn-sm border-0 btn-hover-primary active mr-2 my-1">24</a>
+													<a href="#" class="btn btn-icon btn-sm border-0 btn-hover-primary mr-2 my-1">25</a>
+													<a href="#" class="btn btn-icon btn-sm border-0 btn-hover-primary mr-2 my-1">26</a>
+													<a href="#" class="btn btn-icon btn-sm border-0 btn-hover-primary mr-2 my-1">27</a>
+													<a href="#" class="btn btn-icon btn-sm border-0 btn-hover-primary mr-2 my-1">28</a>
+													<a href="#" class="btn btn-icon btn-sm border-0 btn-hover-primary mr-2 my-1">...</a>
+													<a href="#" class="btn btn-icon btn-sm btn-light-primary mr-2 my-1">
+														<i class="ki ki-bold-arrow-next icon-xs"></i>
+													</a>
+													<a href="#" class="btn btn-icon btn-sm btn-light-primary mr-2 my-1">
+														<i class="ki ki-bold-double-arrow-next icon-xs"></i>
+													</a>
+												</div>
+												<div class="d-flex align-items-center">
+													<select class="form-control form-control-sm text-primary font-weight-bold mr-4 border-0 bg-light-primary" style="width: 75px;">
+														<option value="10">10</option>
+														<option value="20">20</option>
+														<option value="30">30</option>
+														<option value="50">50</option>
+														<option value="100">100</option>
+													</select>
+													<span class="text-muted">Displaying 10 of 230 records</span>
 												</div>
 											</div>
+											<!-- end:: Pagination -->
 										</div>
-										<!--end::Modal-->
-										
-									<?php } ?>
-								<?php } ?>
-
-								<!--begin::Pagination-->
-								<!-- <div class="card card-custom">
-									<div class="card-body py-7">
-										begin::Pagination
-										<div class="d-flex justify-content-between align-items-center flex-wrap">
-											<div class="d-flex flex-wrap mr-3">
-												<a href="#" class="btn btn-icon btn-sm btn-light-primary mr-2 my-1">
-													<i class="ki ki-bold-double-arrow-back icon-xs"></i>
-												</a>
-												<a href="#" class="btn btn-icon btn-sm btn-light-primary mr-2 my-1">
-													<i class="ki ki-bold-arrow-back icon-xs"></i>
-												</a>
-												<a href="#" class="btn btn-icon btn-sm border-0 btn-hover-primary mr-2 my-1">...</a>
-												<a href="#" class="btn btn-icon btn-sm border-0 btn-hover-primary mr-2 my-1">23</a>
-												<a href="#" class="btn btn-icon btn-sm border-0 btn-hover-primary active mr-2 my-1">24</a>
-												<a href="#" class="btn btn-icon btn-sm border-0 btn-hover-primary mr-2 my-1">25</a>
-												<a href="#" class="btn btn-icon btn-sm border-0 btn-hover-primary mr-2 my-1">26</a>
-												<a href="#" class="btn btn-icon btn-sm border-0 btn-hover-primary mr-2 my-1">27</a>
-												<a href="#" class="btn btn-icon btn-sm border-0 btn-hover-primary mr-2 my-1">28</a>
-												<a href="#" class="btn btn-icon btn-sm border-0 btn-hover-primary mr-2 my-1">...</a>
-												<a href="#" class="btn btn-icon btn-sm btn-light-primary mr-2 my-1">
-													<i class="ki ki-bold-arrow-next icon-xs"></i>
-												</a>
-												<a href="#" class="btn btn-icon btn-sm btn-light-primary mr-2 my-1">
-													<i class="ki ki-bold-double-arrow-next icon-xs"></i>
-												</a>
-											</div>
-											<div class="d-flex align-items-center">
-												<select class="form-control form-control-sm text-primary font-weight-bold mr-4 border-0 bg-light-primary" style="width: 75px;">
-													<option value="10">10</option>
-													<option value="20">20</option>
-													<option value="30">30</option>
-													<option value="50">50</option>
-													<option value="100">100</option>
-												</select>
-												<span class="text-muted">Displaying 10 of 230 records</span>
-											</div>
-										</div>
-										end:: Pagination
 									</div>
-								</div> -->
-								<!--end::Pagination-->
+									<!--end::Pagination-->
+
+								<?php } else { ?>
+									<div class="card card-custom gutter-b">
+										<div class="card-body">
+											No Record Found
+										</div>
+									</div>
+								<?php } ?>
 							</div>
 							<!--end::Container-->
 						</div>

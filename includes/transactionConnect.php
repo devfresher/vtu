@@ -1,12 +1,6 @@
 <?php
-// Config
-$dbhost = 'localhost';
-$dbname = 'Employee_db';
- 
-// Connect to test database
-$m = new Mongo("mongodb://$dbhost");
- 
-$db = $m--->$dbname;
-// select the collection
-$collection = $db->movie;
+$client = new MongoDB\Client("mongodb://localhost:27017"); 
+
+$db2 = $client->DB_NAME;
+$db2 = $db->transaction;
 ?>

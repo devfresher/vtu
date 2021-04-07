@@ -23,6 +23,16 @@ var KTDatatableHtmlTableDemo = function() {
           sortable: false,
         },
         {
+          field: 'S/N',
+          autoHide: false,
+          sortable: false,
+          sortable: 'asc',
+          width: 70,
+          type: 'number',
+          selector: false,
+          textAlign: 'center',
+        },
+        {
           field: 'Date / Reference',
           autoHide: false,
           textAlign: 'left'

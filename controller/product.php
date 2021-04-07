@@ -6,7 +6,7 @@ require_once '../model/Api.php';
 
 $product = new Product($db);
 $wallet = new Wallet($db);
-$transaction = new Transaction($db);
+$transaction = new Transaction($db_transaction);
 $api = new Api($db);
 
 if (isset($_POST['get_network_code'])) {

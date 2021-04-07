@@ -15,6 +15,7 @@ define('PORT', $_SERVER['SERVER_PORT']);
 define('REQUEST_URI', $_SERVER['REQUEST_URI']);
 define('SCRIPT_NAME',$_SERVER['SCRIPT_NAME']);
 
+// SQL database parameters
 if (SERVER != 'localhost' AND SERVER != '127.0.0.1' ) {
     define('BASE_PATH', '/2021vtu/', true);
     define('DB_NAME', 'generals_2021vtu');
@@ -28,6 +29,7 @@ if (SERVER != 'localhost' AND SERVER != '127.0.0.1' ) {
     define('DB_PASSWORD', '');
     define('DB_HOST', 'localhost');
 }
+
 
 define('BASE_URL', SCHEME.'://'.SERVER.BASE_PATH, true);
 define('MODEL_DIR', ROOT.BASE_PATH.'model/');
@@ -46,7 +48,7 @@ define('APIURL', 'https://vtutopupbox.com/b2bhub/api/');
 define('APIUSER', '09036830349');
 define('APIPASS', 'D3vfr3$#3r');
 
-
+require_once VENDOR_DIR.'autoload.php';
 
 $page = explode('.', PAGE);
 define('PAGE_NAME', $page['0']);
@@ -62,10 +64,12 @@ try {
 }
 $db = new Database($pdo);
 
+require_once INCLUDES_DIR.'transactionConnect.php';
+
 include_once MODEL_DIR.'App.php';
 include_once MODEL_DIR.'Utility.php';
 
-$utility = new Utility($db);
+$utility = new Utility($db, $db_transaction);
 $app = new APP($db);
 $appInfo = $app->getAppInfo();
 

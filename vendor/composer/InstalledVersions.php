@@ -30,7 +30,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => 'e28a43d14ec25aa91dfeeaebbab2f433ba85a126',
+    'reference' => 'e6c418598e7912924793ebdbb2fb308caf57201a',
     'name' => '__root__',
   ),
   'versions' => 
@@ -42,7 +42,16 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => 'e28a43d14ec25aa91dfeeaebbab2f433ba85a126',
+      'reference' => 'e6c418598e7912924793ebdbb2fb308caf57201a',
+    ),
+    'composer/package-versions-deprecated' => 
+    array (
+      'pretty_version' => '1.11.99.1',
+      'version' => '1.11.99.1',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '7413f0b55a051e89485c5cb9f765fe24bb02a7b6',
     ),
     'guzzlehttp/guzzle' => 
     array (
@@ -71,6 +80,15 @@ private static $installed = array (
       ),
       'reference' => '53330f47520498c0ae1f61f7e2c90f55690c06a3',
     ),
+    'jean85/pretty-package-versions' => 
+    array (
+      'pretty_version' => '1.6.0',
+      'version' => '1.6.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '1e0104b46f045868f11942aea058cd7186d6c303',
+    ),
     'league/oauth2-client' => 
     array (
       'pretty_version' => '2.6.0',
@@ -88,6 +106,22 @@ private static $installed = array (
       array (
       ),
       'reference' => '18d1889897a8b18d85ecadacf74c9274d678d943',
+    ),
+    'mongodb/mongodb' => 
+    array (
+      'pretty_version' => '1.8.0',
+      'version' => '1.8.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '953dbc19443aa9314c44b7217a16873347e6840d',
+    ),
+    'ocramius/package-versions' => 
+    array (
+      'replaced' => 
+      array (
+        0 => '1.11.99',
+      ),
     ),
     'paragonie/random_compat' => 
     array (
@@ -147,6 +181,15 @@ private static $installed = array (
       array (
       ),
       'reference' => '120b605dfeb996808c31b6477290a714d356e822',
+    ),
+    'symfony/polyfill-php80' => 
+    array (
+      'pretty_version' => 'v1.22.1',
+      'version' => '1.22.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'dc3063ba22c2a1fd2f45ed856374d79114998f91',
     ),
   ),
 );

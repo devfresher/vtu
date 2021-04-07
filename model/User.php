@@ -102,6 +102,7 @@ class User extends Utility {
     }
 
     function getUser($key) {
+
         $plan = new Plan($this->db);
         $role = new Role($this->db);
         $wallet = new Wallet($this->db);
@@ -118,7 +119,7 @@ class User extends Utility {
 
             $this->responseBody->firstLetter = $this->responseBody->firstname[0].$this->responseBody->lastname[0];
             $this->responseBody->fullName = $this->responseBody->firstname.' '.$this->responseBody->lastname;
-
+           
             $userTransactions = $transaction->getAllUserTxn($this->responseBody->id);
             $userTxn1mnth = $transaction->getUserTxnWithin($this->responseBody->id, '1 month');
 

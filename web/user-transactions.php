@@ -9,15 +9,16 @@ require_once '../model/Transaction.php';
 if (isset($_GET['id'])) {
     $userId = $_GET['id'];
     $user = new User($db);
-    $transaction = new Transaction($db);
     
-    $transactionList = $transaction->getAllUserTxn($planId);
     $userDetail = $user->getUserById($userId);
-
+    
     if ($userDetail === false) {
         http_response_code(404);
         include '../error/404.php';
         die();
+    }else {
+        $transaction = new Transaction($db);
+        $transactionList = $transaction->getAllUserTxn($userId);
     }
 }else {
     http_response_code(404);
@@ -60,10 +61,24 @@ if (isset($_GET['id'])) {
                                         <div class="card card-custom">
                                             <div class="card-header flex-wrap border-0 pt-6 pb-0 ">
                                                 <div class="card-title">
-                                                    <h3 class="card-label"><?php echo $planDetail->plan_name?> Plan
-                                                    <span class="d-block text-muted pt-2 font-size-sm">Plan pricing settings</span></h3>
+                                                    <h3 class="card-label"><?php echo $userDetail->firstname.' '.$userDetail->lastname?>
+                                                    <span class="d-block text-muted pt-2 font-size-sm">Transaction History</span></h3>
                                                 </div>
                                                 <div class="card-toolbar">
+                                                    <a href="<?php echo BASE_URL.ADMIN_ROOT.'member-info'?>" class="btn btn-warning font-weight-bolder edit_list mr-2">
+                                                        <span class="svg-icon svg-icon-md">
+                                                            <!--begin::Svg Icon | path:assets/media/svg/icons/Design/Flatten.svg-->
+                                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                                    <rect x="0" y="0" width="24" height="24"/>
+                                                                    <path d="M11.0879549,18.2771971 L17.8286578,12.3976203 C18.0367595,12.2161036 18.0583109,11.9002555 17.8767943,11.6921539 C17.8622027,11.6754252 17.8465132,11.6596867 17.8298301,11.6450431 L11.0891271,5.72838979 C10.8815919,5.54622572 10.5656782,5.56679309 10.3835141,5.7743283 C10.3034433,5.86555116 10.2592899,5.98278612 10.2592899,6.10416552 L10.2592899,17.9003957 C10.2592899,18.1765381 10.4831475,18.4003957 10.7592899,18.4003957 C10.8801329,18.4003957 10.9968872,18.3566309 11.0879549,18.2771971 Z" fill="#000000" opacity="0.3" transform="translate(14.129645, 12.002277) scale(-1, 1) translate(-14.129645, -12.002277) "/>
+                                                                    <path d="M5.08795487,18.2771971 L11.8286578,12.3976203 C12.0367595,12.2161036 12.0583109,11.9002555 11.8767943,11.6921539 C11.8622027,11.6754252 11.8465132,11.6596867 11.8298301,11.6450431 L5.08912711,5.72838979 C4.8815919,5.54622572 4.56567821,5.56679309 4.38351414,5.7743283 C4.30344325,5.86555116 4.25928988,5.98278612 4.25928988,6.10416552 L4.25928988,17.9003957 C4.25928988,18.1765381 4.48314751,18.4003957 4.75928988,18.4003957 C4.88013293,18.4003957 4.99688719,18.3566309 5.08795487,18.2771971 Z" fill="#000000" transform="translate(8.129645, 12.002277) scale(-1, 1) translate(-8.129645, -12.002277) "/>
+                                                                </g>
+                                                            </svg>
+                                                            <!--end::Svg Icon-->
+                                                        </span>
+                                                        Back to Members
+                                                    </a>
                                                 </div>
                                             </div>
                                             <div class="card-body">                                            
@@ -157,51 +172,45 @@ if (isset($_GET['id'])) {
                                                 <!--end: Search Form-->
 
                                                 <!--begin: Datatable-->
-                                                <table class="datatable datatable-bordered datatable-head-custom" id="product_plan_datatable">
+                                                <table class="datatable datatable-bordered datatable-head-custom" id="kt_datatable">
                                                     <thead>
                                                         <tr>
                                                             <th title="Field #1" class="custom-th">S/N</th>
-                                                            <th title="Field #2" class="custom-th">Product</th>
-                                                            <th title="Field #3" class="custom-th">Cost Price</th>
-                                                            <th title="Field #4" class="custom-th">Selling Percentage (%)</th>
-                                                            <th title="Field #5" class="custom-th">Selling Price </th>
-                                                            <th title="Field #6" class="custom-th">Extra Charge</th>
-                                                            <th title="Field #7" class="custom-th">Net Selling Price</th>
+                                                            <th title="Field #2" class="custom-th">Date</th>
+                                                            <th title="Field #3" class="custom-th">Product</th>
+                                                            <th title="Field #4" class="custom-th">Receipient</th>
+                                                            <th title="Field #5" class="custom-th">Old Balance</th>
+                                                            <th title="Field #6" class="custom-th">Amount Charged</th>
+                                                            <th title="Field #7" class="custom-th">New Balance</th>
+                                                            <th title="Field #8" class="custom-th">Status</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <?php if($productList !== false){
+                                                        <?php if($transactionList !== false){
                                                             $i = 1;
-                                                            foreach ($productList as $product) {
-                                                                $sellingPrice = $appInfo->currency_code.number_format(($product['selling_percentage']/100)*$product['company_price'], 2);
-                                                                $netSellingPrice = $appInfo->currency_code.number_format((($product['selling_percentage']/100)*$product['company_price'] + $product['extra_charge']), 2);
-                                                            ?>
+                                                            foreach ($transactionList as $txnDetail) {?>
                                                                 <tr>
                                                                     <td><?php echo $i?></td>
                                                                     <td>
+                                                                        <?php echo $utility->niceDateFormat($txnDetail['date'])?>
+                                                                    </td>
+                                                                    <td>
                                                                         <div class="d-flex align-items-center mb-6">
                                                                             <div class="symbol symbol-40 flex-shrink-0">
-                                                                                <div class="symbol-label" style="background-image:url('<?php echo BASE_URL.$product['product_icon']?>')"></div>
+                                                                                <div class="symbol-label" style="background-image:url('<?php echo BASE_URL.$txnDetail['product_icon']?>')"></div>
                                                                             </div>
                                                                             <div class="ml-2">
-                                                                                <?php echo $product['product_name']?>
+                                                                                <?php echo $txnDetail['product_name']?>
                                                                             </div>
                                                                         </div>
                                                                     </td>
-                                                                    <td><?php echo $appInfo->currency_code.number_format($product['cost_price'], 2)?></td>
-                                                                    <td>    
-                                                                        <div class="input-group">
-                                                                            <input type="number" name="selling_percent<?php echo $product['id']?>" class="form-control list-input-sp" placeholder="0" value="<?php echo $product['selling_percentage']?>" aria-label="Percentage (to the nearest number)" disabled/>
-                                                                            <input type="hidden" class="company_price" name="company_price<?php echo $product['id']?>" value="<?php echo $product['company_price']?>">
-                                                                            <input type="hidden" class="product_code" name="product_code<?php echo $product['id']?>" value="<?php echo $product['product_code']?>">
-                                                                            <div class="input-group-append">
-                                                                                <span class="input-group-text"><i class="fas fa-percentage"></i></span>
-                                                                            </div>
-                                                                        </div>
+                                                                    <td>
+                                                                        <?php echo $txnDetail['received_by']?>
                                                                     </td>
-                                                                    <td class=""><span class="selling_price"><?php echo $sellingPrice?></span></td>
-                                                                    <td> <input type="number" name="extra_charge<?php echo $product['id']?>" value="<?php echo $product['extra_charge']?>" class="form-control list-input-xc"  placeholder="0.00" aria-label="Extra Charge" disabled/></td>
-                                                                    <td class=""><input type="text" name="selling_price<?php echo $product['id']?>" value="<?php echo $netSellingPrice?>" class="net_selling_price form-control" disabled /></td>
+                                                                    <td><?php echo $appInfo->currency_code.number_format($txnDetail['old_balance'], 2)?></td>
+                                                                    <td><?php echo $appInfo->currency_code.number_format($txnDetail['amount_charged'], 2)?></td>
+                                                                    <td><?php echo $appInfo->currency_code.number_format($txnDetail['balance_after'], 2)?></td>
+                                                                    <td><?php echo $txnDetail['status']?></td>
                                                                 </tr>
                                                             <?php $i++; } ?>
                                                         <?php } ?>
@@ -234,7 +243,7 @@ if (isset($_GET['id'])) {
 		<?php include_once '../components/js.php';?>
 
 		<!--begin::Page Vendors(used by this page)-->
-        <script src="<?php echo BASE_URL?>assets/js/pages/crud/ktdatatable/advanced/plan.js"></script>
+        <script src="<?php echo BASE_URL?>assets/js/pages/crud/ktdatatable/base/txn-table.js"></script>
         <script src="<?php echo BASE_URL?>assets/js/pages/features/miscellaneous/sweetalert2.js"></script>
 		<?php include_once '../components/message.php'?>
 

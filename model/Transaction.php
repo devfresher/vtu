@@ -8,9 +8,9 @@ class Transaction Extends Utility
         $this->table = 'transactions';
     }
 
-    public function getAllTxn($catId='')
+    public function getAllTxn($category='')
     {
-        if ($catId == '') {
+        if ($category == '') {
             $result = $this->db->getRecFrmQry(
                 "SELECT t.*, pp.product_code, pp.product_plan_name, pp.cost_price, p.product_name, p.product_icon, c.name AS category
                 FROM $this->table t 
@@ -26,7 +26,7 @@ class Transaction Extends Utility
                 LEFT JOIN product_plan pp ON t.product_plan_id = pp.id 
                 LEFT JOIN products p ON pp.product_id = p.id 
                 LEFT JOIN category c ON pp.cat_id = c.id
-                WHERE c.id = '$catId'
+                WHERE c.id = '$category'
                 ORDER BY t.date DESC"
             );
         }
@@ -40,9 +40,9 @@ class Transaction Extends Utility
         return $this->responseBody;
     }
 
-    public function getAllUserTxn($userId, $catId='')
+    public function getAllUserTxn($userId, $category='')
     {
-        if ($catId == '') {
+        if ($category == '') {
             $result = $this->db->getRecFrmQry(
                 "SELECT t.*, p.product_code,  pp.selling_percentage, p.product_name, p.product_icon, p.category
                 FROM $this->table t
@@ -57,7 +57,7 @@ class Transaction Extends Utility
                 FROM $this->table t
                 LEFT JOIN product_plan pp ON t.product_plan_id = pp.id 
                 LEFT JOIN products p ON pp.product_code = p.product_code
-                WHERE t.user_id = '$userId' AND p.category = '$catId'
+                WHERE t.user_id = '$userId' AND p.category = '$category'
                 ORDER BY t.date DESC"
             );
         }

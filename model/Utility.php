@@ -3,8 +3,9 @@ class Utility extends Database {
 
     protected $responseBody;
 
-    function __construct($db) {
+    function __construct($db, $db_transaction) {
         $this->db = $db;
+        $this->bd_transaction = $db_transaction;
         $this->responseBody	= array();
     }
 
