@@ -6,12 +6,15 @@ require_once '../model/User.php';
 require_once '../model/Wallet.php';
 require_once '../model/Role.php';
 require_once '../model/Plan.php';
+require_once '../model/Transaction.php';
 
 $user = new User($db);
 $wallet = new Wallet($db);
 
 $role = new Role($db);
 $plan = new Plan($db);
+
+$transaction = new Transaction($db);
 
 if (isset($_GET['role'])) {
 	$roleId = $_GET['role'];
@@ -24,6 +27,7 @@ $allplan = $plan->getAllPlans();
 $allrole = $role->getAllRoles();
 ?>
 		<!--begin::Page Vendors Styles(used by this page)-->
+		<link href="<?php echo BASE_URL.USER_ROOT?>assets/css/custom/style.css" rel="stylesheet" type="text/css" />
 		<!--end::Page Vendors Styles-->
 	</head>
 	<!--end::Head-->
@@ -111,13 +115,13 @@ $allrole = $role->getAllRoles();
 															<!--begin::User-->
 															<div class="mr-3">
 																<!--begin::Name-->
-																<a href="#" class="d-flex align-items-center text-dark text-hover-primary font-size-h5 font-weight-bold mr-3">
+																<a href="#" class="d-flex align-items-center text-dark text-hover-<?php echo $color ?> font-size-h5 font-weight-bold mr-3">
 																	<?php echo  $userDetail->firstname.' '.$userDetail->lastname.' '.$icon?>
 																</a>
 																<!--end::Name-->
 																<!--begin::Contacts-->
 																<div class="d-flex flex-wrap my-2">
-																	<a href="#" class="text-muted text-hover-primary font-weight-bold mr-lg-8 mr-5 mb-lg-0 mb-2">
+																	<a href="#" class="text-muted text-hover-<?php echo $color ?> font-weight-bold mr-lg-8 mr-5 mb-lg-0 mb-2">
 																		<span class="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
 																			<!--begin::Svg Icon | path:assets/media/svg/icons/Communication/Mail-notification.svg-->
 																			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -132,7 +136,7 @@ $allrole = $role->getAllRoles();
 																		<?php echo $userDetail->email ?>
 																	</a>
 
-																	<span class="text-muted text-hover-primary font-weight-bold mr-lg-8 mr-5 mb-lg-0 mb-2">
+																	<span class="text-muted text-hover-<?php echo $color ?> font-weight-bold mr-lg-8 mr-5 mb-lg-0 mb-2">
 																		<span class="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
 																			<!--begin::Svg Icon | path:assets/media/svg/icons/General/Lock.svg-->
 																			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -147,7 +151,7 @@ $allrole = $role->getAllRoles();
 																		<?php echo $userDetail->role->role_name?>
 																	</span>
 
-																	<span class="text-muted text-hover-primary font-weight-bold">
+																	<span class="text-muted text-hover-<?php echo $color ?> font-weight-bold  mr-lg-8 mr-5 mb-lg-0 mb-2">
 																		<span class="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
 																			<!--begin::Svg Icon | path:assets/media/svg/icons/Map/Marker2.svg-->
 																			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -159,6 +163,21 @@ $allrole = $role->getAllRoles();
 																			<!--end::Svg Icon-->
 																		</span>
 																		<?php echo $userDetail->plan->plan_name?>
+																	</span>
+
+																	<span class="text-muted text-hover-<?php echo $color ?> font-weight-bold">
+																		<span class="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
+																			<!--begin::Svg Icon | path:assets/media/svg/icons/Map/Marker2.svg-->
+																			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+																				<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+																					<rect x="0" y="0" width="24" height="24"/>
+																					<path d="M10.9630156,7.5 L11.0475062,7.5 C11.3043819,7.5 11.5194647,7.69464724 11.5450248,7.95024814 L12,12.5 L15.2480695,14.3560397 C15.403857,14.4450611 15.5,14.6107328 15.5,14.7901613 L15.5,15 C15.5,15.2109164 15.3290185,15.3818979 15.1181021,15.3818979 C15.0841582,15.3818979 15.0503659,15.3773725 15.0176181,15.3684413 L10.3986612,14.1087258 C10.1672824,14.0456225 10.0132986,13.8271186 10.0316926,13.5879956 L10.4644883,7.96165175 C10.4845267,7.70115317 10.7017474,7.5 10.9630156,7.5 Z" fill="#000000"/>
+																					<path d="M7.38979581,2.8349582 C8.65216735,2.29743306 10.0413491,2 11.5,2 C17.2989899,2 22,6.70101013 22,12.5 C22,18.2989899 17.2989899,23 11.5,23 C5.70101013,23 1,18.2989899 1,12.5 C1,11.5151324 1.13559454,10.5619345 1.38913364,9.65805651 L3.31481075,10.1982117 C3.10672013,10.940064 3,11.7119264 3,12.5 C3,17.1944204 6.80557963,21 11.5,21 C16.1944204,21 20,17.1944204 20,12.5 C20,7.80557963 16.1944204,4 11.5,4 C10.54876,4 9.62236069,4.15592757 8.74872191,4.45446326 L9.93948308,5.87355717 C10.0088058,5.95617272 10.0495583,6.05898805 10.05566,6.16666224 C10.0712834,6.4423623 9.86044965,6.67852665 9.5847496,6.69415008 L4.71777931,6.96995273 C4.66931162,6.97269931 4.62070229,6.96837279 4.57348157,6.95710938 C4.30487471,6.89303938 4.13906482,6.62335149 4.20313482,6.35474463 L5.33163823,1.62361064 C5.35654118,1.51920756 5.41437908,1.4255891 5.49660017,1.35659741 C5.7081375,1.17909652 6.0235153,1.2066885 6.2010162,1.41822583 L7.38979581,2.8349582 Z" fill="#000000" opacity="0.3"/>
+																				</g>
+																			</svg>
+																			<!--end::Svg Icon-->
+																		</span>
+																		<?php echo $utility->niceDateFormat($userDetail->date_joined)?>
 																	</span>
 																</div>
 																<!--end::Contacts-->
@@ -279,7 +298,7 @@ $allrole = $role->getAllRoles();
 															<i class="flaticon-folder icon-2x text-muted font-weight-bold"></i>
 														</span>
 														<div class="d-flex flex-column text-dark-75">
-															<span class="font-weight-bolder font-size-sm">Wallet Ballance</span>
+															<span class="font-weight-bolder font-size-sm">Wallet balance</span>
 															<span class="font-weight-bolder font-size-h5">
 																<span class="text-dark-50 font-weight-bold">
 																	<?php echo $appInfo->currency_code?>
@@ -332,6 +351,18 @@ $allrole = $role->getAllRoles();
 														</div>
 													</div>
 													<!--end: Item-->
+
+													<!--begin: Item-->
+													<div class="d-flex align-items-center flex-lg-fill mr-5 my-1">
+														<span class="mr-4">
+															<i class="flaticon-statistics icon-2x text-muted font-weight-bold"></i>
+														</span>
+														<div class="d-flex flex-column flex-lg-fill">
+															<span class="text-dark-75 font-weight-bolder font-size-sm">Statistics</span>
+															<a href="<?php echo BASE_URL.ADMIN_ROOT.'member-stats.php?id='.$userDetail->id?>" class="text-primary font-weight-bolder">View</a>
+														</div>
+													</div>
+													<!--end: Item-->
 												</div>
 												<!--end::Bottom-->
 											</div>
@@ -339,7 +370,7 @@ $allrole = $role->getAllRoles();
 										<!--end::Card-->
 
 										<!-- Modal-->
-										<form class="form" method="POST" id="manage-user-form" action="<?php echo BASE_URL?>controller/auth.php">
+										<form class="form" method="POST" id="manage-user-form<?php echo $userDetail->id?>" action="<?php echo BASE_URL?>controller/auth.php">
 											<div class="modal fade" id="manageUserForm<?php echo $userDetail->id?>" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="manageUserForm" aria-hidden="true">
 												<div class="modal-dialog modal-dialog-centered modal-md modal-dialog-scrollable" role="document">
 													<div class="modal-content">
@@ -489,9 +520,9 @@ $allrole = $role->getAllRoles();
 										<!-- Modal-->
 										
 										<!-- Modal-->
-										<form class="form" method="POST" id="modify-wallet-form" action="<?php echo BASE_URL?>controller/wallet.php">
+										<form class="form" method="POST" id="modify-wallet-form<?php echo $userDetail->id?>" action="<?php echo BASE_URL?>controller/wallet.php">
 											<div class="modal fade" id="modifyWalletForm<?php echo $userDetail->id?>" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="modifyWalletForm" aria-hidden="true">
-												<div class="modal-dialog modal-dialog-centered modal-md modal-dialog-scrollable" role="document">
+												<div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
 													<div class="modal-content">
 														<div class="modal-header">
 															<h5 class="modal-title" id="exampleModalLabel"><?php echo $userDetail->firstname ?>'s wallet</h5>
@@ -500,26 +531,54 @@ $allrole = $role->getAllRoles();
 															</button>
 														</div>
 														<div class="modal-body">
-															<div data-scroll="true" data-height="200">
+															<div>
 																<input type="hidden" name="form_url" value="<?php echo BASE_URL.ADMIN_ROOT?>member-info">
 																<input type="hidden" name="user_id" value="<?php echo $userDetail->id?>">
 
-																<div class="form-group row">
-																	<div class="col-md">
-																		<label class="col-form-label">Type</label>
-																		<select name="type" class="form-control selectpicker" data-size="4">
-																			<option value="fund">Fund</option>
-																			<option value="deduct">Deduct</option>
+																<div class="form-group">
+																	<label class="col-form-label">Type</label>
+																	<select name="type" class="form-control selectpicker" data-size="4" title="Choose one of the following...">
+																		<option value="fund">Fund</option>
+																		<option value="refund">Refund</option>
+																		<option value="deduct">Deduct</option>
+																	</select>
+																</div>
+
+																<div class="form-group">
+																	<label class="col-form-label">Amount</label>
+																	<input type="number" name="amount" class="form-control" />
+																</div>
+
+																<div class="form-group row" style="display: none;">
+																	<label class="col-form-label col-12">Transaction</label>
+																	<div class="col-12">
+																		<select name="transaction" class="form-control select2">
+																			<option label="Label"></option>
+																			<?php $userTxns = $transaction->getUserRefundableTxn($userDetail->id); foreach ($userTxns as $index => $txn) { ?>
+																				<option value="<?php echo $txn['reference']?>">
+																					<?php 
+																						if ($txn['category'] == 'Airtime Topup') {
+																							echo $appInfo->currency.$txn['amount_charged'].' - '.$txn['product_name'].' '.$txn['amount'].' - '.$txn['received_by'].' ('.$utility->niceDateFormat($txn['date']).')';
+																						} else {
+																							echo $appInfo->currency.$txn['amount_charged'].' - '.$txn['product_name'].' - '.$txn['received_by'].' ('.$utility->niceDateFormat($txn['date']).')';
+																						}
+																					?>
+																				</option>
+																			<?php } ?>
 																		</select>
 																	</div>
 																</div>
 
-																<div class="form-group row">
-																	<div class="col-md">
-																		<label class="col-form-label">Amount</label>
-																		<input type="number" name="amount" class="form-control" />
-																	</div>
+																<div class="form-group" style="display: none;">
+																	<label class="col-form-label">Description</label>
+																	<textarea class="form-control" name="description" rows="5"></textarea>
 																</div>
+
+																<div class="form-group" style="display: none;">
+																	<label class="col-form-label">Admin Pin</label>
+																	<input type="text" name="pin" class="form-control" />
+																</div>
+
 															</div>
 														</div>
 														<div class="modal-footer">
@@ -605,7 +664,6 @@ $allrole = $role->getAllRoles();
 		<?php include_once '../components/js.php';?>
 
 		<!--begin::Page Vendors(used by this page)-->
-        <script src="<?php echo BASE_URL?>assets/js/pages/crud/ktdatatable/advanced/modal.js"></script>
         <script src="<?php echo BASE_URL?>assets/js/pages/features/miscellaneous/sweetalert2.js"></script>
 		<?php include_once '../components/message.php'?>
 
@@ -705,6 +763,65 @@ $allrole = $role->getAllRoles();
 					}
 				})
 			})
+
+			$('select[name=amount]').on('keyup', function () {
+				
+			})
+
+			$('select[name=type]').on('change', function () {
+				var type = $(this).val();
+				var amount = $(this).parents('.form-group').siblings().find('input[name=amount]');
+				var transaction = $(this).parents('.form-group').siblings().find('select[name=transaction]');
+				var description = $(this).parents('.form-group').siblings().find('textarea[name=description]');
+				var pin = $(this).parents('.form-group').siblings().find('input[name=pin]');
+
+				switch (type) {
+					case 'fund':
+						amount.parents('.form-group').fadeIn();
+						transaction.parents('.form-group').fadeOut();
+						description.parents('.form-group').fadeOut();
+
+						if (amount.val() != '') {
+							pin.parents('.form-group').fadeIn();
+						} else{
+							pin.parents('.form-group').fadeOut();
+						}
+						break;
+
+					case 'refund':
+						amount.parents('.form-group').fadeOut();
+						transaction.parents('.form-group').fadeIn();
+						description.parents('.form-group').fadeIn();
+
+						if (transaction.val() != '') {
+							pin.parents('.form-group').fadeIn();
+						} else{
+							pin.parents('.form-group').fadeOut();
+						}
+
+						break;
+
+					case 'deduct':
+						amount.parents('.form-group').fadeIn();
+						transaction.parents('.form-group').fadeOut();
+						description.parents('.form-group').fadeIn();
+
+						if (amount.val() != '') {
+							pin.parents('.form-group').fadeIn();
+						} else{
+							pin.parents('.form-group').fadeOut();
+						}
+						break;
+				
+					default:
+						break;
+				}
+			})
+
+			$('select.select2').select2({
+				placeholder: "Select transaction you want to refund",
+				allowClear: true
+			});
 		</script>
 		<!--end::Page Vendors-->
 	</body>

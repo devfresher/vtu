@@ -53,7 +53,7 @@
 										<?php } ?>
 
 										<?php if (!$utility->accessAdmin()) {?>
-											<a href="<?php echo BASE_URL.ADMIN_ROOT?>system-settings" class="btn btn-transparent-white font-weight-bold py-3 px-6 mr-2">
+											<a href="<?php echo BASE_URL.USER_ROOT?>wallet" class="btn btn-transparent-white font-weight-bold py-3 px-6 mr-2">
 												<i class="fas fa-folder-plus"></i>
 												Fund Wallet
 											</a>
@@ -64,9 +64,9 @@
 											System Settings
 										</a>
 									<?php } else { ?>
-										<a href="<?php echo BASE_URL.ADMIN_ROOT?>system-settings" class="btn btn-transparent-white font-weight-bold py-3 px-6 mr-2">
+										<a href="<?php echo BASE_URL.USER_ROOT?>wallet" class="btn btn-transparent-white font-weight-bold py-3 px-6 mr-2">
 											<i class="fas fa-folder-plus"></i>
-											Fund 	
+											Fund Wallet
 										</a>
 									<?php } ?>
 									<!--end::Button-->

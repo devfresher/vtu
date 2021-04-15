@@ -309,7 +309,7 @@ if (isset($_GET['roleID'])) {
                                 button.removeAttr('disabled');
                                 button.html('Save Changes');
                                 console.log(result);
-                                // window.location = '<?php echo BASE_URL.ADMIN_ROOT.'set-permission?roleID='.$roleId?>';
+                                window.location = '<?php echo BASE_URL.ADMIN_ROOT.'set-permission?roleID='.$roleId?>';
                             }
                         })
                     }

@@ -2,6 +2,8 @@
 require_once '../includes/config.php';
 include_once '../model/User.php';
 
+$session = new Session($db);
+
 $user = new User($db);
 
 if (isset($_POST["login"])) {

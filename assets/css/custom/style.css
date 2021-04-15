@@ -11,3 +11,7 @@ th[data-field=Icon] > span{
 td[data-field=Icon] > div{
     width: 30px !important;
 }
+
+span.select2{
+    width: 100% !important;
+}

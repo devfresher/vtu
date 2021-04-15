@@ -330,8 +330,15 @@ class Database
 	
 	public function delete2($query)
     {
-        $stmt = $this->pdo->prepare($query);
-	    $stmt->execute();
+        try {
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute();
+
+            return $stmt->rowCount();
+            
+        } catch (\PDOException $e) {
+            throw new \RuntimeException("[".$e->getCode()."] : ". $e->getMessage());
+        }
     }
 
 
@@ -406,5 +413,9 @@ class Database
         } catch (\PDOException $e) {
             throw new \RuntimeException("[".$e->getCode()."] : ". $e->getMessage());
         }
+    }
+
+    public function close(){
+        $this->pdo = null;
     }
 }
