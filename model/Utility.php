@@ -161,6 +161,32 @@ class Utility extends Database {
                     return $ref; 
                 } 
                 break;
+                case 'refund_wallet':
+                    $prefix = 'RWA_';
+                    $table = 'wallet_in';
+                    $field = 'reference';
+    
+                    while ($is_unique === 0) { 
+                        try { 
+                            $randID = $this->randID(5); // 5 is the number of characters 
+                            $ref = $prefix.$randID;
+            
+                            $count = $this->db->getQueryCount($table, "*", "AND $field = '$ref'");
+            
+                            if ($count > 0) { 
+                                $randID = $this->randID(5); // 5 is the number of characters 
+                                $ref = $prefix.$randID;
+                            } else { 
+                                $is_unique = 1; 
+                            } 
+                        } 
+                        catch(PDOException $e) { 
+                            echo "Error generating or checking unique ID: " . $e->getMessage(); 
+                            exit(); 
+                        } 
+                        return $ref; 
+                    } 
+                    break;
             case 'share_wallet':
                 $prefix = 'SWA_';
                 $table1 = 'wallet_in';
@@ -189,33 +215,58 @@ class Utility extends Database {
                     return $ref; 
                 } 
                 break;
-                case 'admin_deduct':
-                    $prefix = 'ADD_';
-                    $table = 'wallet_out';
-                    $field = 'reference';
-    
-                    while ($is_unique === 0) { 
-                        try { 
+            case 'admin_deduct':
+                $prefix = 'ADD_';
+                $table = 'wallet_out';
+                $field = 'reference';
+
+                while ($is_unique === 0) { 
+                    try { 
+                        $randID = $this->randID(5); // 5 is the number of characters 
+                        $ref = $prefix.$randID;
+        
+                        $count = $this->db->getQueryCount($table, "*", "AND $field = '$ref'");
+        
+                        if ($count > 0) { 
                             $randID = $this->randID(5); // 5 is the number of characters 
                             $ref = $prefix.$randID;
-            
-                            $count = $this->db->getQueryCount($table, "*", "AND $field = '$ref'");
-            
-                            if ($count > 0) { 
-                                $randID = $this->randID(5); // 5 is the number of characters 
-                                $ref = $prefix.$randID;
-                            } else { 
-                                $is_unique = 1; 
-                            } 
+                        } else { 
+                            $is_unique = 1; 
                         } 
-                        catch(PDOException $e) { 
-                            echo "Error generating or checking unique ID: " . $e->getMessage(); 
-                            exit(); 
-                        } 
-                        return $ref; 
                     } 
-                    break;
-                
+                    catch(PDOException $e) { 
+                        echo "Error generating or checking unique ID: " . $e->getMessage(); 
+                        exit(); 
+                    } 
+                    return $ref; 
+                } 
+                break;
+            case 'monnify_user_ref':
+                $prefix = 'USER_';
+                $table1 = 'user_meta';
+                $field = 'meta_key';
+
+                while ($is_unique === 0) { 
+                    try { 
+                        $randID = $this->randID(7);
+                        $ref = $prefix.$randID;
+        
+                        $count = $this->db->getQueryCount($table1, "*", "AND $field = '$ref'");
+        
+                        if ($count > 0) { 
+                            $randID = $this->randID(7);
+                            $ref = $prefix.$randID;
+                        } else { 
+                            $is_unique = 1; 
+                        } 
+                    } 
+                    catch(PDOException $e) { 
+                        echo "Error generating or checking unique ID: " . $e->getMessage(); 
+                        exit(); 
+                    } 
+                    return $ref; 
+                } 
+                break; 
             
             default:
                 # code...
@@ -226,21 +277,18 @@ class Utility extends Database {
     } 
 
 
-    public function niceDateFormat($date)
-    {
+    public function niceDateFormat($date) {
         $timestamp = strtotime($date);
         $niceFormat = date('D j, M Y h:ia', $timestamp);
 
         return $niceFormat;
     }
 
-    public function is_cli()
-    {
+    public function is_cli() {
         return php_sapi_name() === 'cli';
     }
 
-    public function accessAdmin()
-    {
+    public function accessAdmin() {
         $admin_pages = array(
             BASE_PATH.ADMIN_ROOT.'dashboard.php',
             BASE_PATH.ADMIN_ROOT.'products.php',

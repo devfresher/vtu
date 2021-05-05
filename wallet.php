@@ -82,7 +82,9 @@ $histories = $wallet->getWalletFundingHistories($user->currentUser->id);
 																	<label>Payment Method:</label>
 																	<select name="method" id="pay_method" class="form-control selectpicker" data-size="4">
 																		<option value="">--Select--</option>
-																		<option value="auto_fund">Auto Funding (<?php echo $appInfo->auto_funding_bank?>)</option>
+																		<?php if ($appInfo->payment_settings->allowMonnifyPayment === true OR $appInfo->payment_settings->allowPaystackPayment === true OR $appInfo->payment_settings->allowRavePayment === true) {?>
+																			<option value="auto_fund">Auto Funding</option>
+																		<?php } ?>
 																		<option value="manual">Manual Funding (Bank Deposit/Tranfer)</option>
 																	</select>
 																	<span class="form-text text-muted">A preferred method of payment</span>
@@ -92,7 +94,30 @@ $histories = $wallet->getWalletFundingHistories($user->currentUser->id);
 																	<label>Amount to be Credited</label>
 																	<input class="form-control" name="" id="wallet_credit" value="0" disabled>
 																</div>
+																<?php if ($appInfo->payment_settings->allowMonnifyPayment === true OR $appInfo->payment_settings->allowPaystackPayment === true OR $appInfo->payment_settings->allowRavePayment === true) {?>
 
+																	<div class="form-group" style="display: none;">
+																		<label>Auto Type:</label>
+																		<select name="auto_type" id="auto_type" class="form-control selectpicker" data-size="4">
+																			<option value="">--Select--</option>
+
+																			<?php if ($appInfo->payment_settings->allowMonnifyPayment === true) {?>
+																				<option value="monnify_wema">Monify Payment (Wema)</option>
+																				<option value="monify_sterling">Monify Payment (Sterling)</option>
+																			<?php } ?>
+
+																			<?php if ($appInfo->payment_settings->allowRavePayment === true) {?>
+																				<option value="rave">Rave Payment</option>
+																			<?php } ?>
+
+																			<?php if ($appInfo->payment_settings->allowPaystackPayment === true) {?>
+																				<option value="paystack">Paystack Payment</option>
+																			<?php } ?>
+
+																		</select>
+																	</div>
+																<?php } ?>
+																
 																<input type="submit" name="fund_wallet" class="btn btn-primary mr-2" value="Request">
 															</form>
 
@@ -278,6 +303,8 @@ $histories = $wallet->getWalletFundingHistories($user->currentUser->id);
 
 									$('#wallet_credit').val(walletCredit);
 									$('#wallet_credit').parents().show();
+									$('#auto_type').parents('.form-group').hide();
+
 
 									$('#amount_requested').on('keyup', function () {
 										amountRequested = $('#amount_requested').val();
@@ -296,8 +323,8 @@ $histories = $wallet->getWalletFundingHistories($user->currentUser->id);
 							
 						case 'auto_fund':
 							Swal.fire({
-								title: "Auto Funding (<?php echo $appInfo->auto_funding_bank?>)",
-								text: "Funding via <?php echo $appInfo->auto_funding_bank?> attracts <?php echo $appInfo->currency.$appInfo->auto_funding_charge ?> charge on every payment. Wallet will be credited instantly after successful payment.",
+								title: "Auto Funding",
+								text: "Auto Funding attracts <?php echo $appInfo->currency.$appInfo->auto_funding_charge ?> charge on every payment. Wallet will be credited instantly after successful payment.",
 								icon: "info",
 								showCancelButton: true,
 								confirmButtonText: "Ok",
@@ -312,11 +339,14 @@ $histories = $wallet->getWalletFundingHistories($user->currentUser->id);
 											text: "Your Requested amount must be greater than <?php echo $appInfo->currency.$appInfo->auto_funding_charge?>.",
 											icon: "error",
 										});
-									} else{
+									} else {
 										var walletCredit = amountRequested - autoFundingCharge;
+
 										$('#wallet_credit').val(walletCredit);
-	
+
 										$('#wallet_credit').parent().show();
+
+										$('#auto_type').parents('.form-group').show();
 									}
 
 									$('#amount_requested').on('keyup', function () {
@@ -339,8 +369,8 @@ $histories = $wallet->getWalletFundingHistories($user->currentUser->id);
 	
 						default:
 							$('#wallet_credit').val(0);
-	
 							$('#wallet_credit').parent().hide();
+							$('#auto_type').parents('.form-group').hide();
 							break;
 					}
 

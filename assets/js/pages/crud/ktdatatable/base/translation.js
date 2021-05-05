@@ -71,33 +71,29 @@ var KTDatatableTranslationDemo = function() {
                 // callback function support for column rendering
                 template: function(row) {
                     var status = {
+                        0: {
+                          'title': 'Declined',
+                          'class': ' label-light-danger',
+                        },
                         1: {
-                            'title': 'Pending',
-                            'class': ' label-light-primary'
+                          'title': 'Pending',
+                          'class': ' label-light-warning',
                         },
                         2: {
-                            'title': 'Delivered',
-                            'class': ' label-light-danger'
+                          'title': 'Awaiting Response',
+                          'class': ' label-light-warning',
                         },
                         3: {
-                            'title': 'Canceled',
-                            'class': ' label-light-primary'
+                          'title': 'Approved',
+                          'class': ' label-light-success',
                         },
                         4: {
-                            'title': 'Success',
-                            'class': ' label-light-success'
+                          'title': 'Successful',
+                          'class': ' label-light-success',
                         },
                         5: {
-                            'title': 'Info',
-                            'class': ' label-light-info'
-                        },
-                        6: {
-                            'title': 'Danger',
-                            'class': ' label-light-danger'
-                        },
-                        7: {
-                            'title': 'Warning',
-                            'class': ' label-light-warning'
+                          'title': 'Refunded',
+                          'class': ' label-light-info',
                         },
                     };
                     return '<span class="label font-weight-bold label-lg ' + status[row.Status].class + ' label-inline">' + status[row.Status].title + '</span>';
@@ -109,17 +105,29 @@ var KTDatatableTranslationDemo = function() {
                 // callback function support for column rendering
                 template: function(row) {
                     var status = {
+                        0: {
+                          'title': 'Withdrawal',
+                          'state': 'danger',
+                        },
                         1: {
-                            'title': 'Online',
-                            'state': 'danger'
+                          'title': 'Fund Wallet',
+                          'state': 'Success',
                         },
                         2: {
-                            'title': 'Retail',
-                            'state': 'primary'
+                          'title': 'Recieve Money',
+                          'state': 'info',
                         },
                         3: {
-                            'title': 'Direct',
-                            'state': 'success'
+                          'title': 'Wallet refunded',
+                          'state': 'info',
+                        },
+                        4: {
+                          'title': 'Purchase',
+                          'state': 'Warning',
+                        },
+                        5: {
+                          'title': 'Share money',
+                          'state': 'danger',
                         },
                     };
                     return '<span class="label label-' + status[row.Type].state + ' label-dot mr-2"></span><span class="font-weight-bold text-' + status[row.Type].state + '">' +

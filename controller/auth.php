@@ -1,8 +1,7 @@
 <?php
 require_once '../includes/config.php';
 include_once '../model/User.php';
-
-$session = new Session($db);
+require_once '../model/Monnify.php';
 
 $user = new User($db);
 
@@ -22,15 +21,13 @@ if (isset($_POST["login"])) {
         }
     }
 
-    
-
     $userResult = $user->getUser($username);
     $hashPassword = $userResult->password;
     unset($userResult->password);
 
     if(!empty($userResult)) {
         if (password_verify($password, $hashPassword)) {
-            if ($userResult->status == 0) {
+            if ($userResult->disable == 1) {
                 $_SESSION['errorLoginMessage'] = $clientLang['account_not_active'];
                 header("Location: ".$_POST['form_url']);
                 exit();
@@ -126,11 +123,25 @@ elseif (isset($_POST["register"])) {
             $_SESSION["errorRegisterMessage"] = $clientLang['email_exist'];
             header("Location: ".$_POST['form_url']);
             exit();
-        }else {
+        }else {    
             $hashPassword = $user->hashPassword($password);
-        
             $token = md5(uniqid('lcw-'.mt_rand(),true));
             $date_joined = date('Y-m-d H:i:s');
+
+            $userMonnifyRef = $utility->genUniqueRef('monnify_user_ref');
+            $monnifySettings = json_decode($appInfo->monnify_settings, true);
+            $monnify = new Monnify($monnifySettings);
+            
+            $reserve = $monnify->reserveAccount(
+                $accountReference = $userMonnifyRef,
+                $accountName = $firstname.' '.$lastname,
+                $customerEmail = $email,
+                $customerName = $firstname.' '.$lastname,
+                $currencyCode = $appInfo->currencyText,
+            );
+
+            $userMonnifyDetails['accountReference'] = $reserve->accountReference;
+            $userMonnifyDetails['accounts'] = $reserve->accounts;
         
             $userData = array(
                 'email'=>$email,
@@ -140,10 +151,11 @@ elseif (isset($_POST["register"])) {
                 'password'=>$hashPassword,
                 'date_joined'=>$date_joined,
                 'status'=>1,
+                'monnify_details'=>json_encode($userMonnifyDetails),
                 'token'=>$token
-            );            
+            );    
+            
             $isRegitered = $user->processRegister($userData);
-    
             if ($isRegitered) {
                 header("Location: ".BASE_URL.USER_ROOT.'login');
                 exit();
@@ -247,7 +259,6 @@ elseif (isset($_POST["update_user"])) {
         
     }
 
-    // print_r($_SESSION);
     header("Location: ".$_POST['form_url']);
     exit();
 }
@@ -393,3 +404,4 @@ elseif (isset($_POST["enable_user"])) {
     header("Location: ".$_POST['form_url']);
     exit();
 }
+?>

@@ -12,8 +12,11 @@ class App Extends Utility
     {
         $result = $this->db->getAllRecords($this->table, "*");
 
-        foreach ($result as $i) { 
-            $feedback[$i['option_key']] = $i['option_value'];
+        foreach ($result as $record) { 
+            if ($record['option_key'] == "payment_settings") {
+                $record['option_value'] = json_decode($record['option_value']);
+            }
+            $feedback[$record['option_key']] = $record['option_value'];
         }
         $this->responseBody = $this->arrayToObject($feedback);
 

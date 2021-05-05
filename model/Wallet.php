@@ -114,7 +114,7 @@ class Wallet Extends Utility
         $walletResult = $this->db->getRecFrmQry("
         SELECT  `id`,`user_id`,`old_balance`,`amount`,`balance_after`,`reference`,`type`,`status`,`date`
             FROM $this->table2 
-            WHERE `user_id` = $userId AND `type` = '3' 
+            WHERE `user_id` = $userId AND `type` = '5' 
             UNION ALL
         SELECT  `id`,`user_id`,`old_balance`,`amount`,`balance_after`,`reference`,`type`,`status`,`date`
             FROM $this->table1
@@ -146,13 +146,9 @@ class Wallet Extends Utility
         return $this->responseBody;
     }
 
-    public function approveWalletRequest($reference)
+    public function approveWalletRequest($reference, $apprvdBy)
     {
-        $updateData = array(
-            'status' => 3,
-            'balance_after' => 'old_balance + amount'
-        );
-        $update = $this->db->update_new($this->table1, $updateData, "AND reference = '$reference'");
+        $update = $this->db->getRecFrmQry("UPDATE $this->table1 SET `status`=3, `approved_by` = $apprvdBy, `balance_after` = `old_balance` + `amount`  WHERE  `reference` = '$reference'");
 
         if ($update > 0) {
             $this->responseBody =  true;

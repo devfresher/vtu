@@ -250,7 +250,6 @@ class Database
 
     public function update_new($tableName, array $set, $cond = '')
     {
-        
         $arrSet = array_map(
            function($value) {
                 return $value . '=:' . $value;
@@ -335,7 +334,7 @@ class Database
             $stmt->execute();
 
             return $stmt->rowCount();
-            
+
         } catch (\PDOException $e) {
             throw new \RuntimeException("[".$e->getCode()."] : ". $e->getMessage());
         }

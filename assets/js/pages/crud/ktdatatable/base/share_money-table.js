@@ -37,13 +37,17 @@ var KTDatatableHtmlTableDemo = function() {
           // callback function support for column rendering
           template: function(row) {
             var status = {
+              0: {
+                'title': 'Declined',
+                'class': ' label-light-danger',
+              },
               1: {
                 'title': 'Pending',
                 'class': ' label-light-warning',
               },
               2: {
-                'title': 'Declined',
-                'class': ' label-light-danger',
+                'title': 'Awaiting Response',
+                'class': ' label-light-warning',
               },
               3: {
                 'title': 'Approved',
@@ -57,10 +61,6 @@ var KTDatatableHtmlTableDemo = function() {
                 'title': 'Refunded',
                 'class': ' label-light-info',
               },
-              6: {
-                'title': 'Successful',
-                'class': ' label-light-success',
-              },
             };
             return '<span class="label font-weight-bold label-lg' + status[row.Status].class + ' label-inline">' + status[row.Status].title + '</span>';
           },
@@ -73,24 +73,28 @@ var KTDatatableHtmlTableDemo = function() {
           // callback function support for column rendering
           template: function(row) {
             var status = {
+              0: {
+                'title': 'Withdrawal',
+                'state': 'danger',
+              },
               1: {
                 'title': 'Fund Wallet',
-                'state': 'primary',
+                'state': 'Success',
               },
               2: {
                 'title': 'Recieve Money',
                 'state': 'info',
               },
               3: {
-                'title': 'Send Money',
+                'title': 'Wallet refunded',
                 'state': 'info',
               },
               4: {
                 'title': 'Purchase',
-                'state': 'warning',
+                'state': 'Warning',
               },
               5: {
-                'title': 'Withdrawal',
+                'title': 'Share money',
                 'state': 'danger',
               },
             };

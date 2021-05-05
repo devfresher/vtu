@@ -59,7 +59,7 @@ elseif (isset($_POST['buy_airtime'])) {
         }
     }
 
-    if(!filter_var($amount, FILTER_VALIDATE_INT)){
+    if(!filter_var($amount, FILTER_VALIDATE_FLOAT)){
         $_SESSION["errorMessage"] = $clientLang['invalid_amount'];
     } elseif ($appInfo->min_airtime_vending > $amount) {
         $_SESSION["errorMessage"] = "You can not purchase airtime lesser than ".$appInfo->currency.$appInfo->min_airtime_vending;
@@ -69,15 +69,17 @@ elseif (isset($_POST['buy_airtime'])) {
         $_SESSION["errorMessage"] = $clientLang['invalid_phone_number'];
     } elseif (!password_verify($pin, $user->currentUser->transaction_pin)) {
         $_SESSION["errorMessage"] = $clientLang['incorrect_pin'];
-    }  else {
-        $amount = filter_var($_POST["amount"], FILTER_SANITIZE_NUMBER_INT);
+    } elseif ($user->currentUser->suspend == 1) {
+        $_SESSION["errorMessage"] = $clientLang['account_suspended'];
+    } else {
+        $amount = filter_var($_POST["amount"], FILTER_SANITIZE_NUMBER_FLOAT);
         $productCode = filter_var($_POST['network_type'], FILTER_SANITIZE_STRING);
 
         $productDetail = $product->getProductWithCode($productCode, $user->currentUser->plan->id);
         $percentageDiscount = $productDetail->percentage_discount;
 
         if ($percentageDiscount > 0) {
-            $toPay = $amount - ($amount* ($percentageDiscount/100));
+            $toPay = $amount - ($amount * ($percentageDiscount/100));
         } else {
             $toPay = $amount;
         }
@@ -193,7 +195,7 @@ elseif (isset($_POST['buy_airtime'])) {
                     'product_plan_id' => $productDetail->id, 
                     'order_id' => $response->orderid,
                     'date' => $date,
-                    'status' => 1,
+                    'status' => 2,
                     'amount' => $amount,
                     'amount_charged' => $toPay,
                     'old_balance' => $user->currentUser->walletBalance,
@@ -221,7 +223,7 @@ elseif (isset($_POST['buy_airtime'])) {
                         'product_plan_id' => $productDetail->id, 
                         'order_id' => NULL,
                         'date' => $date,
-                        'status' => 2,
+                        'status' => 0,
                         'amount' => $amount,
                         'amount_charged' => 0,
                         'old_balance' => $user->currentUser->walletBalance,
@@ -246,7 +248,7 @@ elseif (isset($_POST['buy_airtime'])) {
                         'product_plan_id' => $productDetail->id, 
                         'order_id' => NULL,
                         'date' => $date,
-                        'status' => 2,
+                        'status' => 0,
                         'amount' => $amount,
                         'amount_charged' => 0,
                         'old_balance' => $user->currentUser->walletBalance,
@@ -274,7 +276,7 @@ elseif (isset($_POST['buy_airtime'])) {
                     'product_plan_id' => $productDetail->id, 
                     'order_id' => NULL,
                     'date' => $date,
-                    'status' => 2,
+                    'status' => 0,
                     'amount' => $amount,
                     'amount_charged' => 0,
                     'old_balance' => $user->currentUser->walletBalance,
@@ -300,7 +302,7 @@ elseif (isset($_POST['buy_airtime'])) {
                     'product_plan_id' => $productDetail->id, 
                     'order_id' => NULL,
                     'date' => $date,
-                    'status' => 2,
+                    'status' => 0,
                     'amount' => $amount,
                     'amount_charged' => 0,
                     'old_balance' => $user->currentUser->walletBalance,
@@ -320,7 +322,6 @@ elseif (isset($_POST['buy_airtime'])) {
                     $_SESSION["errorMessage"] = "Unexpected error occured";
                 }
             }
-    
         }
     }
     header("Location: ".$_POST['form_url']);

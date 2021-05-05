@@ -24,6 +24,8 @@
 
 	$clientLang['account_not_active']='Account not active';
 
+	$clientLang['account_suspended']='This account has been suspended from all transactions';
+
 	$clientLang['unexpected_error']='Unexpected error occured';
 
 	$clientLang['incorrect_pin']='Incorrect transaction pin';

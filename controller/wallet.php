@@ -19,7 +19,7 @@ if (isset($_POST['fund_wallet'])) {
         }
     }
 
-    if(!filter_var($amount_requested, FILTER_VALIDATE_INT)){
+    if(!filter_var($amount_requested, FILTER_VALIDATE_FLOAT)){
         $_SESSION["errorMessage"] = $clientLang['invalid_amount'];
         header("Location: ".$_POST['form_url']);
         exit();
@@ -32,7 +32,7 @@ if (isset($_POST['fund_wallet'])) {
     }
 
     else {
-        $requestedAmount = filter_var($_POST["amount_requested"], FILTER_SANITIZE_NUMBER_INT);
+        $requestedAmount = filter_var($_POST["amount_requested"], FILTER_SANITIZE_NUMBER_FLOAT);
         $method = filter_var($_POST["method"], FILTER_SANITIZE_STRING);
 
         $reference = $utility->genUniqueRef('fund_wallet');
@@ -118,6 +118,8 @@ elseif (isset($_POST['share_money'])) {
         $_SESSION["errorMessage"] = $clientLang['invalid_phone_number'];
     } elseif (!password_verify($password, $currentUser->transaction_pin)) {
         $_SESSION["errorMessage"] = $clientLang['incorrect_pin'];
+    } elseif ($user->currentUser->suspend == 1) {
+        $_SESSION["errorMessage"] = $clientLang['account_suspended'];
     } else {
         $amount = filter_var($_POST["amount"], FILTER_SANITIZE_NUMBER_FLOAT);
         $phone = filter_var($_POST["phone_number"], FILTER_SANITIZE_STRING);
@@ -134,7 +136,7 @@ elseif (isset($_POST['share_money'])) {
             'balance_after' => $receipient->walletBalance + $amount,
             'reference' => $reference,
             'type' => 2,
-            'status' => 3,
+            'status' => 4,
             'date' => date('Y-m-d H:i:s'),
         );
 
@@ -144,8 +146,8 @@ elseif (isset($_POST['share_money'])) {
             'amount' => $amount,
             'balance_after' => $user->currentUser->walletBalance - $amount,
             'reference' => $reference,
-            'type' => 3,
-            'status' => 6,
+            'type' => 5,
+            'status' => 4,
             'date' => date('Y-m-d H:i:s'),
         );
         
@@ -171,7 +173,7 @@ elseif (isset($_POST['share_money'])) {
 elseif (isset($_POST['modify_wallet'])) {
     extract($_POST);
     
-    $required_fields = array('amount', 'type');
+    $required_fields = array('amount', 'type', 'pin');
     foreach ($required_fields as $field) {
         if (in_array($field, array_keys($_POST)) AND $_POST[$field] != '') {
             continue;
@@ -182,12 +184,18 @@ elseif (isset($_POST['modify_wallet'])) {
         }
     }
 
-    if(!filter_var($amount, FILTER_VALIDATE_INT)){
+    if(!filter_var($amount, FILTER_VALIDATE_FLOAT)){
 
         $_SESSION["errorMessage"] = $clientLang['invalid_amount'];
 
-    }else {
+    }elseif (!password_verify($pin, $user->currentUser->transaction_pin)) {
+        $_SESSION["errorMessage"] = $clientLang['incorrect_pin'];
+    } else {
         $userDetail = $user->getUserById($user_id);
+
+        $amount = filter_var($_POST["amount"], FILTER_SANITIZE_NUMBER_FLOAT);
+        $pin = filter_var($_POST['network_type'], FILTER_SANITIZE_NUMBER_INT);
+        $description = filter_var($_POST['description'], FILTER_SANITIZE_STRIPPED);
 
         if($type == 'deduct') {
             
@@ -204,6 +212,7 @@ elseif (isset($_POST['modify_wallet'])) {
                     'amount' => $amount,
                     'balance_after' => $userDetail->walletBalance - $amount,
                     'reference' => $reference,
+                    'description' => $description,
                     'type' => 3,
                     'status' => 6,
                     'date' => date('Y-m-d H:i:s'),
@@ -225,6 +234,7 @@ elseif (isset($_POST['modify_wallet'])) {
                 'amount' => $amount,
                 'balance_after' => $userDetail->walletBalance,
                 'reference' => $reference,
+                'description' => $description,
                 'method' => 'manual',
                 'type' => 1,
                 'status' => 1,
@@ -232,10 +242,34 @@ elseif (isset($_POST['modify_wallet'])) {
             );
             // print_r($walletRequestData);
             $request = $wallet->fundWalletRequest($walletRequestData);
-            $approve = $wallet->approveWalletRequest($reference);
+            $approve = $wallet->approveWalletRequest($reference, $user->currentUser->id);
 
             if ($request !== false AND $approve !== false){
-                $_SESSION["successMessage"] = $appInfo->currency.$amount.' added to '.$userDetail->firstname.'\'s wallet';
+                $_SESSION["successMessage"] = $appInfo->currency_text.$amount.' added to '.$userDetail->firstname.'\'s wallet';
+            } else {
+                $_SESSION["errorMessage"] = $clientLang['unexpected_error'];
+            }
+        }elseif ($type == 'refund') {
+            $reference = $utility->genUniqueRef('refund_wallet');
+
+            $walletRequestData = array(
+                'user_id' => $user_id,
+                'old_balance' => $userDetail->walletBalance,
+                'amount' => $amount,
+                'balance_after' => $userDetail->walletBalance,
+                'reference' => $reference,
+                'description' => $description,
+                'method' => 'manual',
+                'type' => 3,
+                'status' => 1,
+                'date' => date('Y-m-d H:i:s'),
+            );
+            // print_r($walletRequestData);
+            $request = $wallet->fundWalletRequest($walletRequestData);
+            $approve = $wallet->approveWalletRequest($reference, $user->currentUser->id);
+
+            if ($request !== false AND $approve !== false){
+                $_SESSION["successMessage"] = $appInfo->currency_text.$amount.' refunded to '.$userDetail->firstname.'\'s wallet';
             } else {
                 $_SESSION["errorMessage"] = $clientLang['unexpected_error'];
             }

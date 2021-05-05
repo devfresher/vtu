@@ -1,7 +1,15 @@
 <?php
 require_once MODEL_DIR.'Utility.php';
+require_once MODEL_DIR.'Http.php';
+
+use HttpRequest;
+
 class Api Extends Utility
 {
+    private $apiurl;
+    private $apiuser;
+    private $apipassword;
+
     public function __construct($db) {
         $this->db = $db;
         
@@ -16,26 +24,20 @@ class Api Extends Utility
         
         $data['username'] = $this->apiuser;
         $data['password'] = $this->apipassword;
-
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         
-        $response = curl_exec($ch);
-        return json_decode($response);
+        $response = HttpRequest::get($url, $data);
+
+        return $response;
     }
 
     public function verifyOrder($orderId)
     {
         $url = $this->apiurl.'verifyorder';
         $data = array('orderid' => $orderId);
-
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         
-        $response = curl_exec($ch);
-        return json_decode($response);
+        $response = HttpRequest::get($url, $data);
+
+        return $response;
     }
 }
 ?>

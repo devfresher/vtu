@@ -325,4 +325,8 @@ class User extends Utility {
 
         return $this->responseBody;
     }
+
+    private function reserveMonifyAccount()
+    {        
+    }
 }

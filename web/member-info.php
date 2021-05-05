@@ -214,35 +214,35 @@ $allrole = $role->getAllRoles();
 																			</li>
 																			<li class="navi-item">
 																				<?php if ($userDetail->disable == 0) { ?>
-																					<a href="javascript:;" data-id="<?php echo $userDetail->id?>" class="navi-link" id="enable">
-																						<span class="navi-icon">
-																							<i class="la la-file-pdf-o"></i>
-																						</span>
-																						<span class="navi-text">Enable User</span>
-																					</a>
-																				<?php }else { ?>
 																					<a href="javascript:;" data-id="<?php echo $userDetail->id?>" class="navi-link" id="disable">
 																						<span class="navi-icon">
 																							<i class="la la-file-pdf-o"></i>
 																						</span>
 																						<span class="navi-text">Disable User</span>
 																					</a>
+																				<?php }else { ?>
+																					<a href="javascript:;" data-id="<?php echo $userDetail->id?>" class="navi-link" id="enable">
+																						<span class="navi-icon">
+																							<i class="la la-file-pdf-o"></i>
+																						</span>
+																						<span class="navi-text">Enable User</span>
+																					</a>
 																				<?php } ?>
 																			</li>
 																			<li class="navi-item">
 																				<?php if ($userDetail->suspend == 0) { ?>
-																					<a href="javascript:;"  data-id="<?php echo $userDetail->id?>" class="navi-link" id="activate">
-																						<span class="navi-icon">
-																							<i class="la la-file-pdf-o"></i>
-																						</span>
-																						<span class="navi-text">Ativate User</span>
-																					</a>
-																				<?php }else { ?>
 																					<a href="javascript:;"  data-id="<?php echo $userDetail->id?>" class="navi-link" id="suspend">
 																						<span class="navi-icon">
 																							<i class="la la-file-pdf-o"></i>
 																						</span>
 																						<span class="navi-text">Suspend User</span>
+																					</a>
+																				<?php }else { ?>
+																					<a href="javascript:;"  data-id="<?php echo $userDetail->id?>" class="navi-link" id="activate">
+																						<span class="navi-icon">
+																							<i class="la la-file-pdf-o"></i>
+																						</span>
+																						<span class="navi-text">Activate User</span>
 																					</a>
 																				<?php } ?>
 																			</li>
@@ -537,7 +537,7 @@ $allrole = $role->getAllRoles();
 
 																<div class="form-group">
 																	<label class="col-form-label">Type</label>
-																	<select name="type" class="form-control selectpicker" data-size="4" title="Choose one of the following...">
+																	<select name="type" class="form-control selectpicker" data-size="4" title="Choose one of the following..." required>
 																		<option value="fund">Fund</option>
 																		<option value="refund">Refund</option>
 																		<option value="deduct">Deduct</option>
@@ -546,37 +546,17 @@ $allrole = $role->getAllRoles();
 
 																<div class="form-group">
 																	<label class="col-form-label">Amount</label>
-																	<input type="number" name="amount" class="form-control" />
+																	<input type="number" name="amount" class="form-control" required/>
 																</div>
 
-																<div class="form-group row" style="display: none;">
-																	<label class="col-form-label col-12">Transaction</label>
-																	<div class="col-12">
-																		<select name="transaction" class="form-control select2">
-																			<option label="Label"></option>
-																			<?php $userTxns = $transaction->getUserRefundableTxn($userDetail->id); foreach ($userTxns as $index => $txn) { ?>
-																				<option value="<?php echo $txn['reference']?>">
-																					<?php 
-																						if ($txn['category'] == 'Airtime Topup') {
-																							echo $appInfo->currency.$txn['amount_charged'].' - '.$txn['product_name'].' '.$txn['amount'].' - '.$txn['received_by'].' ('.$utility->niceDateFormat($txn['date']).')';
-																						} else {
-																							echo $appInfo->currency.$txn['amount_charged'].' - '.$txn['product_name'].' - '.$txn['received_by'].' ('.$utility->niceDateFormat($txn['date']).')';
-																						}
-																					?>
-																				</option>
-																			<?php } ?>
-																		</select>
-																	</div>
-																</div>
-
-																<div class="form-group" style="display: none;">
+																<div class="form-group">
 																	<label class="col-form-label">Description</label>
-																	<textarea class="form-control" name="description" rows="5"></textarea>
+																	<textarea class="form-control" name="description" rows="5" required></textarea>
 																</div>
 
-																<div class="form-group" style="display: none;">
+																<div class="form-group">
 																	<label class="col-form-label">Admin Pin</label>
-																	<input type="text" name="pin" class="form-control" />
+																	<input type="text" name="pin" class="form-control" required/>
 																</div>
 
 															</div>
@@ -681,12 +661,12 @@ $allrole = $role->getAllRoles();
 					data: data,
 
 					beforeSend: function(){
-						button.html("Wait <i class='fas fa-spinner fa-pulse'></i>");
+						button.html("Loading <i class='fas fa-spinner fa-pulse'></i>");
 						button.prop('disabled', true);
 					},
 					success: function(result) {
 						msg = JSON.parse(result);
-						console.log(msg);
+						console.log(result);
 						window.location = '<?php echo BASE_URL.ADMIN_ROOT.'member-info'?>';
 					}
 				})
@@ -705,12 +685,12 @@ $allrole = $role->getAllRoles();
 					data: data,
 
 					beforeSend: function(){
-						button.html("Wait <i class='fas fa-spinner fa-pulse'></i>");
+						button.html("Loading <i class='fas fa-spinner fa-pulse'></i>");
 						button.prop('disabled', true);
 					},
 					success: function(result) {
+						console.log(result);
 						msg = JSON.parse(result);
-						console.log(msg);
 						window.location = '<?php echo BASE_URL.ADMIN_ROOT.'member-info'?>';
 					}
 				})
@@ -729,11 +709,11 @@ $allrole = $role->getAllRoles();
 					data: data,
 
 					beforeSend: function(){
-						button.html("Wait <i class='fas fa-spinner fa-pulse'></i>");
+						button.html("Loading <i class='fas fa-spinner fa-pulse'></i>");
 						button.prop('disabled', true);
 					},
 					success: function(result) {
-						// msg = JSON.parse(result);
+						msg = JSON.parse(result);
 						console.log(result);
 						window.location = '<?php echo BASE_URL.ADMIN_ROOT.'member-info'?>';
 					}
@@ -753,75 +733,28 @@ $allrole = $role->getAllRoles();
 					data: data,
 
 					beforeSend: function(){
-						button.html("Wait <i class='fas fa-spinner fa-pulse'></i>");
+						button.html("Loading <i class='fas fa-spinner fa-pulse'></i>");
 						button.prop('disabled', true);
 					},
 					success: function(result) {
 						msg = JSON.parse(result);
-						console.log(msg);
+						console.log(result);
 						window.location = '<?php echo BASE_URL.ADMIN_ROOT.'member-info'?>';
 					}
 				})
 			})
 
-			$('select[name=amount]').on('keyup', function () {
-				
-			})
-
 			$('select[name=type]').on('change', function () {
 				var type = $(this).val();
 				var amount = $(this).parents('.form-group').siblings().find('input[name=amount]');
-				var transaction = $(this).parents('.form-group').siblings().find('select[name=transaction]');
 				var description = $(this).parents('.form-group').siblings().find('textarea[name=description]');
 				var pin = $(this).parents('.form-group').siblings().find('input[name=pin]');
-
-				switch (type) {
-					case 'fund':
-						amount.parents('.form-group').fadeIn();
-						transaction.parents('.form-group').fadeOut();
-						description.parents('.form-group').fadeOut();
-
-						if (amount.val() != '') {
-							pin.parents('.form-group').fadeIn();
-						} else{
-							pin.parents('.form-group').fadeOut();
-						}
-						break;
-
-					case 'refund':
-						amount.parents('.form-group').fadeOut();
-						transaction.parents('.form-group').fadeIn();
-						description.parents('.form-group').fadeIn();
-
-						if (transaction.val() != '') {
-							pin.parents('.form-group').fadeIn();
-						} else{
-							pin.parents('.form-group').fadeOut();
-						}
-
-						break;
-
-					case 'deduct':
-						amount.parents('.form-group').fadeIn();
-						transaction.parents('.form-group').fadeOut();
-						description.parents('.form-group').fadeIn();
-
-						if (amount.val() != '') {
-							pin.parents('.form-group').fadeIn();
-						} else{
-							pin.parents('.form-group').fadeOut();
-						}
-						break;
 				
-					default:
-						break;
+				if (type == 'fund') {
+					description.removeAttr('required');
 				}
 			})
 
-			$('select.select2').select2({
-				placeholder: "Select transaction you want to refund",
-				allowClear: true
-			});
 		</script>
 		<!--end::Page Vendors-->
 	</body>
