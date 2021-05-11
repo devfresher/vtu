@@ -73,7 +73,7 @@ $airtimePurchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 'A
                                                     <div class="tab-pane fade show active" id="fund_wallet" role="tabpanel" aria-labelledby="kt_tab_pane_1_4">
 														<div class="container">
 															<form class="form" method="POST" id="buy-airtime-form" action="<?php echo BASE_URL?>controller/product.php">
-																<input type="hidden" name="form_url" value="<?php echo BASE_URL.USER_ROOT?>airtime-topup.php">
+																<input type="hidden" name="form_url" value="<?php echo BASE_URL.USER_ROOT?>airtime-topup">
 
                                                                 <div class="form-group">
                                                                     <label class="col-form-label">Select a Network</label>
@@ -239,6 +239,7 @@ $airtimePurchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 'A
 																</thead>
 																<tbody>
 																	<?php if($airtimePurchaseHistory !== false){
+																		for($i = 0; )
 																	 	foreach ($airtimePurchaseHistory as $history) {?>
 																			<tr>
 																				<td><?php echo $utility->niceDateFormat($history['date']).'<br><br><strong>'.$history['reference']?></strong></td>

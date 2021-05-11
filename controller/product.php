@@ -328,6 +328,291 @@ elseif (isset($_POST['buy_airtime'])) {
     exit();
 }
 
+elseif (isset($_POST['buy_electricity'])) {
+    extract($_POST);
+
+    $required_fields = array('amount', 'disco_type', 'pin', 'metre_no',);
+    foreach ($required_fields as $field) {
+        if (in_array($field, array_keys($_POST)) AND $_POST[$field] != '') {
+            continue;
+        }else {
+            $_SESSION['errorMessage'] = $clientLang['required_fields'];
+            header("Location: ".$_POST['form_url']);
+            exit();
+        }
+    }
+
+    if(!filter_var($amount, FILTER_VALIDATE_FLOAT)){
+        $_SESSION["errorMessage"] = $clientLang['invalid_amount'];
+    } elseif (!password_verify($pin, $user->currentUser->transaction_pin)) {
+        $_SESSION["errorMessage"] = $clientLang['incorrect_pin'];
+    } elseif ($user->currentUser->suspend == 1) {
+        $_SESSION["errorMessage"] = $clientLang['account_suspended'];
+    } else {
+        $amount = filter_var($_POST["amount"], FILTER_SANITIZE_NUMBER_FLOAT);
+        $productCode = filter_var($_POST['disco_type'], FILTER_SANITIZE_STRING);
+
+        $productDetail = $product->getProductWithCode($productCode, $user->currentUser->plan->id);
+        $percentageDiscount = $productDetail->percentage_discount;
+
+        if ($percentageDiscount > 0) {
+            $toPay = $amount - ($amount * ($percentageDiscount/100));
+        } else {
+            $toPay = $amount;
+        }
+
+        $data = array(
+            'network' => $productCode,
+            'amount' => $amount,
+            'phone' => $phone_number 
+        );
+
+        $response = $api->sendGetRequest('electricity', $data);
+
+        $reference = $utility->genUniqueRef('electricity_purchase');
+        $date = date('Y-m-d H:i:s');
+
+        if ($response->status == "1") {
+            $verify = $api->verifyOrder($response->orderid);
+
+            if ($verify->status == "1") {
+
+                $walletOutData = array (
+                    'user_id' => $user->currentUser->id,
+                    'old_balance' => $user->currentUser->walletBalance,
+                    'amount' => $toPay,
+                    'balance_after' => $user->currentUser->walletBalance - $toPay,
+                    'reference' => $reference,
+                    'order_id' => $verify->orderid,
+                    'type' => 4,
+                    'status' => 4,
+                    'date' => $date,
+                );
+
+                $transactionData = array(
+                    'reference' => $reference,
+                    'product_plan_id' => $productDetail->id, 
+                    'order_id' => $verify->orderid,
+                    'date' => $date,
+                    'status' => 4,
+                    'amount' => $amount,
+                    'amount_charged' => $toPay,
+                    'old_balance' => $user->currentUser->walletBalance,
+                    'balance_after' => $user->currentUser->walletBalance - $toPay,
+                    'received_by' => $metre_no,
+                    'message' => $verify->msg,
+                    'user_id' => $user->currentUser->id,
+                );  
+                
+                $db->beginTransaction();
+                $spend = $wallet->spendFromWallet($walletOutData);
+                $tran = $transaction->create($transactionData);   
+    
+                if ($spend !== false AND $tran !== false){
+                    $db->commit();
+                    $_SESSION["successMessage"] = $verify->msg;
+                } else {
+                    $db->rollBack();
+                    $_SESSION["errorMessage"] = $verify->msg;
+                }
+            } elseif ($verify->status == "0"){
+                $walletOutData = array(
+                    'user_id' => $user->currentUser->id,
+                    'old_balance' => $user->currentUser->walletBalance,
+                    'amount' => $toPay,
+                    'balance_after' => $user->currentUser->walletBalance - $toPay,
+                    'reference' => $reference,
+                    'order_id' => $verify->orderid,
+                    'type' => 4,
+                    'status' => 4,
+                    'date' => $date,
+                );
+
+                $transactionData = array(
+                    'reference' => $reference,
+                    'product_plan_id' => $productDetail->id, 
+                    'order_id' => $response->orderid,
+                    'date' => $date,
+                    'status' => 1,
+                    'amount' => $amount,
+                    'amount_charged' => $toPay,
+                    'old_balance' => $user->currentUser->walletBalance,
+                    'balance_after' => $user->currentUser->walletBalance - $toPay,
+                    'received_by' => $phone_number,
+                    'message' => $response->msg,
+                    'user_id' => $user->currentUser->id,
+                );  
+                
+                $db->beginTransaction();
+                $spend = $wallet->spendFromWallet($walletOutData);
+                $tran = $transaction->create($transactionData);   
+    
+                if ($spend !== false AND $tran !== false){
+                    $db->commit();
+                    if ($send_sms == 'on') {
+                        $_SESSION["infoMessage"] = "Transaction sent. Token will be sent to ".$phone_number." shortly.";
+                    } else {
+                        $_SESSION["infoMessage"] = "Transaction sent.";
+                    }
+                } else {
+                    $db->rollBack();
+                    $_SESSION["errorMessage"] = "Unexpected error occured";
+                }
+            } elseif ($verify->status == "2"){
+                $walletOutData = array(
+                    'user_id' => $user->currentUser->id,
+                    'old_balance' => $user->currentUser->walletBalance,
+                    'amount' => $toPay,
+                    'balance_after' => $user->currentUser->walletBalance - $toPay,
+                    'reference' => $reference,
+                    'order_id' => $verify->orderid,
+                    'type' => 4,
+                    'status' => 4,
+                    'date' => $date,
+                );
+
+                $transactionData = array(
+                    'reference' => $reference,
+                    'product_plan_id' => $productDetail->id, 
+                    'order_id' => $response->orderid,
+                    'date' => $date,
+                    'status' => 2,
+                    'amount' => $amount,
+                    'amount_charged' => $toPay,
+                    'old_balance' => $user->currentUser->walletBalance,
+                    'balance_after' => $user->currentUser->walletBalance - $toPay,
+                    'received_by' => $phone_number,
+                    'message' => $response->msg,
+                    'user_id' => $user->currentUser->id,
+                );  
+                
+                $db->beginTransaction();
+                $spend = $wallet->spendFromWallet($walletOutData);
+                $tran = $transaction->create($transactionData);   
+    
+                if ($spend !== false AND $tran !== false){
+                    $db->commit();
+                    if ($send_sms == 'on') {
+                        $_SESSION["infoMessage"] = "Transaction sent. Token will be sent to ".$phone_number." shortly.";
+                    } else {
+                        $_SESSION["infoMessage"] = "Transaction sent.";
+                    }                
+                } else {
+                    $db->rollBack();
+                    $_SESSION["errorMessage"] = "Unexpected error occured";
+                }
+            } else {
+                if (isset($response->msg)) {
+                    $transactionData = array(
+                        'reference' => $reference,
+                        'product_plan_id' => $productDetail->id, 
+                        'order_id' => NULL,
+                        'date' => $date,
+                        'status' => 0,
+                        'amount' => $amount,
+                        'amount_charged' => 0,
+                        'old_balance' => $user->currentUser->walletBalance,
+                        'balance_after' => $user->currentUser->walletBalance,
+                        'received_by' => $phone_number,
+                        'message' => $response->msg,
+                        'user_id' => $user->currentUser->id,
+                    );
+                    $db->beginTransaction();
+                    $tran = $transaction->create($transactionData);   
+    
+                    if ($tran !== false){
+                        $db->commit();
+                        $_SESSION["errorMessage"] = $response->msg;
+                    } else {
+                        $db->rollBack();
+                        $_SESSION["errorMessage"] = "Unexpected error occured";
+                    } 
+                } else {
+                    $transactionData = array(
+                        'reference' => $reference,
+                        'product_plan_id' => $productDetail->id, 
+                        'order_id' => NULL,
+                        'date' => $date,
+                        'status' => 0,
+                        'amount' => $amount,
+                        'amount_charged' => 0,
+                        'old_balance' => $user->currentUser->walletBalance,
+                        'balance_after' => $user->currentUser->walletBalance,
+                        'received_by' => $phone_number,
+                        'message' => 'Electricity purchase topup not completed',
+                        'user_id' => $user->currentUser->id,
+                    );  
+                    $db->beginTransaction();
+                    $tran = $transaction->create($transactionData);   
+    
+                    if ($tran !== false){
+                        $db->commit();
+                        $_SESSION["errorMessage"] = "Electricity purchase not completed";
+                    } else {
+                        $db->rollBack();
+                        $_SESSION["errorMessage"] = "Unexpected error occured";
+                    }
+                }
+            } 
+        } else {
+            if (isset($response->msg)) {
+                $transactionData = array(
+                    'reference' => $reference,
+                    'product_plan_id' => $productDetail->id, 
+                    'order_id' => NULL,
+                    'date' => $date,
+                    'status' => 0,
+                    'amount' => $amount,
+                    'amount_charged' => 0,
+                    'old_balance' => $user->currentUser->walletBalance,
+                    'balance_after' => $user->currentUser->walletBalance,
+                    'received_by' => $phone_number,
+                    'message' => $response->msg,
+                    'user_id' => $user->currentUser->id,
+                );
+
+                $db->beginTransaction();
+                $tran = $transaction->create($transactionData);   
+
+                if ($tran !== false){
+                    $db->commit();
+                    $_SESSION["errorMessage"] = $response->msg;
+                } else {
+                    $db->rollBack();
+                    $_SESSION["errorMessage"] = "Unexpected error occured";
+                } 
+            } else {
+                $transactionData = array(
+                    'reference' => $reference,
+                    'product_plan_id' => $productDetail->id, 
+                    'order_id' => NULL,
+                    'date' => $date,
+                    'status' => 0,
+                    'amount' => $amount,
+                    'amount_charged' => 0,
+                    'old_balance' => $user->currentUser->walletBalance,
+                    'balance_after' => $user->currentUser->walletBalance,
+                    'received_by' => $phone_number,
+                    'message' => 'Electricity purchase not completed',
+                    'user_id' => $user->currentUser->id,
+                );  
+                $db->beginTransaction();
+                $tran = $transaction->create($transactionData);   
+
+                if ($tran !== false){
+                    $db->commit();
+                    $_SESSION["errorMessage"] = "Electricity purchase not completed";
+                } else {
+                    $db->rollBack();
+                    $_SESSION["errorMessage"] = "Unexpected error occured";
+                }
+            }
+        }
+    }
+    header("Location: ".$_POST['form_url']);
+    exit();
+}
+
 elseif (isset($_POST['fetch_products'])) {
     $url = 'http://vtutopup.com/telco/controller.php';
     $data['get_products'] = 1;

@@ -107,7 +107,33 @@ class Utility extends Database {
                     return $ref; 
                 } 
                 break;
+            case 'electricity_purchase':
+                $prefix = 'ETY_';
+                $table = 'transactions';
+                $field = 'reference';
 
+                while ($is_unique === 0) { 
+                    try { 
+                        $randID = $this->randID(5); // 5 is the number of characters 
+                        $ref = $prefix.$randID;
+        
+                        $count = $this->db->getQueryCount($table, "*", "AND $field = '$ref'");
+        
+                        if ($count > 0) { 
+                            $randID = $this->randID(5); // 5 is the number of characters 
+                            $ref = $prefix.$randID;
+                        } else { 
+                            $is_unique = 1; 
+                        } 
+                    } 
+                    catch(PDOException $e) { 
+                        echo "Error generating or checking unique ID: " . $e->getMessage(); 
+                        exit(); 
+                    } 
+                    return $ref; 
+                } 
+                break;
+    
                 case 'refund':
                     $prefix = 'REF_';
                     $table = 'transactions';

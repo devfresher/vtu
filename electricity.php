@@ -73,7 +73,7 @@ $purchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 'Electric
                                                     <div class="tab-pane fade show active" id="fund_wallet" role="tabpanel" aria-labelledby="kt_tab_pane_1_4">
 														<div class="container">
 															<form class="form" method="POST" id="buy-airtime-form" action="<?php echo BASE_URL?>controller/product.php">
-																<input type="hidden" name="form_url" value="<?php echo BASE_URL.USER_ROOT?>airtime-topup.php">
+																<input type="hidden" name="form_url" value="<?php echo BASE_URL.USER_ROOT?>electricity">
 
                                                                 <div class="form-group">
                                                                     <label class="col-form-label">Select a Distribution Company</label>
@@ -83,7 +83,7 @@ $purchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 'Electric
 																				<label class="option">
 																					<span class="option-control">
 																						<span class="radio radio-bold radio-brand">
-																							<input type="radio" name="dico_type" value="<?php echo $value['product_code']?>" data-percent = "<?php echo $value['selling_percentage']?>"/>
+																							<input type="radio" name="disco_type" value="<?php echo $value['product_code']?>" data-percent = "<?php echo $value['selling_percentage']?>"/>
 																							<span></span>
 																						</span>
 																					</span>
@@ -102,11 +102,18 @@ $purchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 'Electric
 																		<?php } ?>
                                                                     </div>
                                                                 </div>
-
+                                                                
 																<div class="form-group" >
 																	<label>Amount</label>
 																	<div class="">
 																		<input type="number" id="amount" name="amount" class="form-control" />
+																	</div>
+																</div>
+
+                                                                <div class="form-group" >
+																	<label>Metre Number</label>
+																	<div class="">
+																		<input type="text" id="metre_no" name="metre_no" class="form-control" />
 																	</div>
 																</div>
 
@@ -127,7 +134,7 @@ $purchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 'Electric
                                                                 
 																<div class="form-group" style="display: none;">
 																	<label>Reciever's Phone Number</label>
-																	<input type="text" name="phone_number" id="phone_number" class="form-control" maxlength="11"/>
+																	<input type="text" name="phone_number" id="phone_number" class="form-control" maxlength="11" required/>
 																</div>
 
 
@@ -237,15 +244,15 @@ $purchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 'Electric
 																<thead>
 																	<tr>
 																		<th title="Field #1" class="custom-th">Date / Reference</th>
-																		<th title="Field #2" class="custom-th">Network / Receipient</th>
+																		<th title="Field #2" class="custom-th">Meter No / Token</th>
 																		<th title="Field #3" class="custom-th">Amount & Balances</th>
 																		<th title="Field #4" class="custom-th">Status</th>
 																		<th title="Field #5" class="custom-th">Message</th>
 																	</tr>
 																</thead>
 																<tbody>
-																	<?php if($airtimePurchaseHistory !== false){
-																	 	foreach ($airtimePurchaseHistory as $history) {?>
+																	<?php if($purchaseHistory !== false){
+																	 	foreach ($purchaseHistory as $history) {?>
 																			<tr>
 																				<td><?php echo $utility->niceDateFormat($history['date']).'<br><br><strong>'.$history['reference']?></strong></td>
 																				<td>
@@ -307,8 +314,8 @@ $purchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 'Electric
 			var currentUser = <?php echo "'".json_encode($user->currentUser)."'"?>;
 			currentUser = JSON.parse(currentUser);
 
-			function showTxnPin(amount, discoType) {
-				if (amount != '' && amount != undefined && discoType != '' && discoType != undefined) {
+			function showTxnPin(discoType, metreNo, amount) {
+				if (amount != '' && amount != undefined && metreNo != '' && metreNo != undefined && discoType != '' && discoType != undefined) {
 					$('#pin').parent().show();
 				} else {
 					$('#pin').val('');
@@ -325,121 +332,131 @@ $purchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 'Electric
 					$('#buyBtn').prop('disabled', true);
 				} 
 			}
-			
-			// $(document).ready(function() {
-				$('#phone_number').on('keyup', function () {
-					var amount = $('#amount').val()
-					var to_pay = $('#to_pay').val()
-	
-					var phone = $(this).val();
-					var networkMsg = $("#networkMsg");
-					var discoType = $("input[name='disco_type']:checked").val();
-	
-					if(phone != '' && phone.length >= 4){
-						getNetwork(phone, networkMsg);
-					}else{
-						networkMsg.html("");
-					}
-	
-					showTxnPin(amount, phone, discoType);
-				})
-	
-				$('#amount').on('keyup', function () {
-					
-					var discoType = $("input[name='disco_type']:checked").val();
-	
-					var amount = $('#amount').val()
-					var sellingPercentage = $("input[name='disco_type']:checked").attr('data-percent');
 
-					var to_pay = amount*sellingPercentage/100;
-	
-					$('#to_pay').val(to_pay);
-	
-	
-					if (discoType == '' || discoType == undefined) {
-						$('#amount').val('');
-						$('#to_pay').parent().hide();
-						Swal.fire({
-							title: "Error",
-							text: "Select a distribution company",
-							icon: "error"
-						});
-					} else if (to_pay > currentUser.walletBalance) {
-						$('#amount').val('');
-						$('#to_pay').parent().hide();
-						Swal.fire({
-							title: "Error",
-							text: "Insufficient wallet balance",
-							icon: "error"
-						});
-					} else if (amount == '' || amount == undefined) {
-						$('#to_pay').parent().hide();
-					} else {
-						$('#to_pay').parent().show();
-					}
-					showTxnPin(amount, discoType);
-				})
-	
-				$("input[name='disco_type']").on('change', function () {
-					var amount = $('#amount').val()
-					var phone = $("#phone_number").val();
-					var discoType = $("input[name='disco_type']:checked").val();
-	
-					$("input[name='disco_type']").parents('label.option').removeClass('selected');
-					$("input[name='disco_type']:checked").parents('label.option').addClass('selected');
-	
-					showTxnPin(amount, discoType);
-				})
-	
-				$('#pin').on('keyup', function () {
-					showBtn();
-				})
+            $('#send_sms').on('change', function name() {
 
-				$("#buyBtn").closest('form').on('submit', function(e) {
-					var form = this;
-					e.preventDefault();
+                var discoType = $("input[name='disco_type']:checked").val();
+                var amount = $('#amount').val()
+                var metreNo = $('#metre_no').val();
 
-					var amount = $('#amount').val()	
-					var discoType = $("input[name='disco_type']:checked").val();
+                if ($('#send_sms').is(':checked')) {
+                    $("#phone_number").parents('.form-group').show();
+                }else{
+                    $("#phone_number").parents('.form-group').hide();
+                }
 
-					Swal.fire({
-						title: 'Electricity Purchase',
-						text: 'Are you sure you want to vend <?php echo $appInfo->currency_text?> '+amount+' '+discoType.toUpperCase() + metre_no,
-						icon: 'question',
-						showCancelButton: true,
-						confirmButtonText: "Yes",
-						cancelButtonText: "No, Cancel",
-					}).then(function(result) {
-						if (result.value) {
-							$('form').append("<input type='hidden' name='buy_electricity'/>");
-							form.submit();
-						}
-					});
-					
-				})
+                showTxnPin(discoType, metreNo, amount);
+            });
 
-				$('.requeryBtn').each(function() {
-					var button = $(this);
-					var orderId = button.attr('data-orderId');
+            $('#metre_no').on('keyup', function () {
+                var amount = $('#amount').val();
+                var metreNo = $(this).val();
+                var discoType = $("input[name='disco_type']:checked").val();
 
-					$('.requeryBtn').on('click', function() {
-						$.ajax({
-							url: "<?php echo BASE_URL.'/webhook.php'?>",
-							type: "post",
-							data: {
-								"order_id" : orderId,
-								"requery" : 1
-							},
-							beforeSend: function(){
-								button.html("<i class='fas fa-stroopwafel fa-spin'></i>");
-							},
-							success: function(result) {
-								button.html('Requery');
-							}
-						})
-					})
-				})
-			// })
+
+                showTxnPin(discoType, metreNo, amount);
+            })
+
+            $('#amount').on('keyup', function () {
+
+                var discoType = $("input[name='disco_type']:checked").val();
+                var amount = $('#amount').val()
+                var metreNo = $('#metre_no').val();
+                var sellingPercentage = $("input[name='disco_type']:checked").attr('data-percent');
+
+                var to_pay = amount*sellingPercentage/100;
+                $('#to_pay').val(to_pay);
+
+                if (discoType == '' || discoType == undefined) {
+                    $('#amount').val('');
+                    $('#to_pay').parent().hide();
+                    Swal.fire({
+                        title: "Error",
+                        text: "Select a distribution company",
+                        icon: "error"
+                    });
+                } else if (to_pay > currentUser.walletBalance) {
+                    $('#amount').val('');
+                    $('#to_pay').parent().hide();
+                    Swal.fire({
+                        title: "Error",
+                        text: "Insufficient wallet balance",
+                        icon: "error"
+                    });
+                } else if (amount == '' || amount == undefined) {
+                    $('#to_pay').parent().hide();
+                } else {
+                    $('#to_pay').parent().show();
+                }
+
+                showTxnPin(discoType, metreNo, amount);
+            })
+
+            $("input[name='disco_type']").on('change', function () {
+                var amount = $('#amount').val()
+                var discoType = $("input[name='disco_type']:checked").val();
+                var metreNo = $('#metre_no').val();
+
+                $("input[name='disco_type']").parents('label.option').removeClass('selected');
+                $("input[name='disco_type']:checked").parents('label.option').addClass('selected');
+
+                var sellingPercentage = $("input[name='disco_type']:checked").attr('data-percent');
+
+                var to_pay = amount*sellingPercentage/100;
+                $('#to_pay').val(to_pay);
+
+                showTxnPin(discoType, metreNo, amount);
+            })
+
+            $('#pin').on('keyup', function () {
+                showBtn();
+            })
+
+            $("#buyBtn").closest('form').on('submit', function(e) {
+                var form = this;
+                var metreNo = $('#metre_no').val();
+                e.preventDefault();
+
+                var amount = $('#amount').val()	
+                var discoType = $("input[name='disco_type']:checked").val();
+
+                Swal.fire({
+                    title: 'Electricity Purchase',
+                    text: 'Are you sure you want to vend <?php echo $appInfo->currency_text?> '+amount+' '+discoType.toUpperCase() +' to '+ metreNo,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: "Yes",
+                    cancelButtonText: "No, Cancel",
+                }).then(function(result) {
+                    if (result.value) {
+                        $('form').append("<input type='hidden' name='buy_electricity'/>");
+                        form.submit();
+                    }
+                });
+                
+            })
+
+            $('.requeryBtn').each(function() {
+                var button = $(this);
+                var orderId = button.attr('data-orderId');
+
+                $('.requeryBtn').on('click', function() {
+                    $.ajax({
+                        url: "<?php echo BASE_URL.'/webhook.php'?>",
+                        type: "post",
+                        data: {
+                            "order_id" : orderId,
+                            "requery" : 1
+                        },
+                        beforeSend: function(){
+                            button.html("<i class='fas fa-stroopwafel fa-spin'></i>");
+                        },
+                        success: function(result) {
+                            button.html('Requery');
+                        }
+                    })
+                })
+            })
 
 
 		</script>

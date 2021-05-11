@@ -22,4 +22,24 @@ class App Extends Utility
 
         return $this->responseBody;
     }
+
+    public function saveAppInfo($optionKey, $optionValue, $date = date('Y-m-d H:i:s'))
+    {
+        $saveData = $this->db->update(
+            $this->table, 
+            array(
+                'option_value' => $optionValue,
+                'update' => $date
+            ), 
+            array(
+                'option_key' => $optionKey
+            )
+        );
+
+        if (count($saveData) > 0) {
+            $this->responseBody = true;
+        }
+        
+        return $this->responseBody;
+    }
 }

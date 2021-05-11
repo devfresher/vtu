@@ -91,6 +91,33 @@ var KTDatatableColumnRenderingDemo = function() {
 		});
 
 
+		$('#sms_settings_datatable').KTDatatable({
+
+
+			// layout definition
+			layout: {
+				overflow: 'visible',
+				class: 'datatable-bordered',
+				scroll: true,
+			},
+
+			// column sorting
+			sortable: true,
+
+			pagination: false,
+
+			search: {
+				input: $('#kt_datatable_search_query'),
+				delay: 400,
+				key: 'generalSearch'
+			},
+
+			// columns definition
+			columns: [
+				
+			],
+		});
+
 		$('#kt_datatable_search_status').on('change', function() {
 			datatable.search($(this).val().toLowerCase(), 'Status');
 		});
