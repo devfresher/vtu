@@ -35,7 +35,7 @@ if (isset($_POST['save_settings'])) {
     $db->beginTransaction();
     $status = true;
     foreach ($data as $optionKey => $optionValue) {
-        if($app->saveAppInfo($optionKey, $optionValue) != true){
+        if($app->saveAppInfo($optionKey, $optionValue, date('Y-m-d H:i:s')) != true){
             $status = false;
         }
     }
@@ -54,19 +54,16 @@ if (isset($_POST['save_settings'])) {
 elseif (isset($_POST['save_messages'])) {
     extract($_POST);
 
-    $required_fields = array('sender_id', 'sms_route');
-    foreach ($required_fields as $field) {
-        if (in_array($field, array_keys($_POST)) AND $_POST[$field] != '') {
-            continue;
-        }else {
-            $_SESSION['errorMessage'] = $clientLang['required_fields'];
-            header("Location: ".$_POST['form_url']);
-            exit();
-        }
-    }
-
-    $senderId = filter_var($_POST["sender_id"], FILTER_SANITIZE_STRING);
-    $route = filter_var($_POST['sms_route'], FILTER_SANITIZE_STRING);
+    $walletRequestMsg = filter_var($_POST["wallet_request_msg"], FILTER_SANITIZE_STRING);
+    $senderWalletShareMsg = filter_var($_POST['sender_wallet_share_msg'], FILTER_SANITIZE_STRING);
+    $registerMsg = filter_var($_POST['reg_msg'], FILTER_SANITIZE_STRING);
+    $receiverWalletShareMsg = filter_var($_POST['receiver_wallet_share_msg'], FILTER_SANITIZE_STRING);
+    $orderRefundMsg = filter_var($_POST['order_refund_msg'], FILTER_SANITIZE_STRING);
+    $lowWalletMsg = filter_var($_POST['low_wallet_msg'], FILTER_SANITIZE_STRING);
+    $electricityMsg = filter_var($_POST['electricity_msg'], FILTER_SANITIZE_STRING);
+    $deductionMsg = filter_var($_POST['deduction_msg'], FILTER_SANITIZE_STRING);
+    $blockedRegMsg = filter_var($_POST['bl_reg_msg'], FILTER_SANITIZE_STRING);
+    $approvalMsg = filter_var($_POST['approval_msg'], FILTER_SANITIZE_STRING);
 
     $data = array(
         'sms_sender_id' => $senderId,
@@ -76,7 +73,7 @@ elseif (isset($_POST['save_messages'])) {
     $db->beginTransaction();
     $status = true;
     foreach ($data as $optionKey => $optionValue) {
-        if($app->saveAppInfo($optionKey, $optionValue) != true){
+        if($app->saveAppInfo($optionKey, $optionValue, date('Y-m-d H:i:s')) != true){
             $status = false;
         }
     }

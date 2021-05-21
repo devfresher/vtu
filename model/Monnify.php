@@ -323,6 +323,7 @@ class Monnify
             "currencyCode" => $currencyCode ?? $this->config['defaultCurrencyCode'],
             "contractCode" => $this->config['contractCode'],
             "customerEmail" => $customerEmail,
+            // "preferredBanks" => ['035', '232', '50515'],
             "getAllAvailableBanks"=> true,
             // "restrictPaymentSource" => $restrictPaymentSource,
         ];

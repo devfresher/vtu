@@ -239,7 +239,6 @@ $airtimePurchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 'A
 																</thead>
 																<tbody>
 																	<?php if($airtimePurchaseHistory !== false){
-																		for($i = 0; )
 																	 	foreach ($airtimePurchaseHistory as $history) {?>
 																			<tr>
 																				<td><?php echo $utility->niceDateFormat($history['date']).'<br><br><strong>'.$history['reference']?></strong></td>
