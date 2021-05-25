@@ -61,13 +61,17 @@ var KTDatatableHtmlTableDemo = function() {
           // callback function support for column rendering
           template: function(row) {
             var status = {
+              0: {
+                'title': 'Declined',
+                'class': ' label-light-danger',
+              },
               1: {
                 'title': 'Pending',
                 'class': ' label-light-warning',
               },
               2: {
-                'title': 'Declined',
-                'class': ' label-light-danger',
+                'title': 'Awaiting Response',
+                'class': ' label-light-warning',
               },
               3: {
                 'title': 'Approved',
@@ -80,11 +84,7 @@ var KTDatatableHtmlTableDemo = function() {
               5: {
                 'title': 'Refunded',
                 'class': ' label-light-info',
-              },
-              6: {
-                'title': 'Successful',
-                'class': ' label-light-success',
-              },
+              }
             };
             return '<span class="label font-weight-bold label-lg' + status[row.Status].class + ' label-inline">' + status[row.Status].title + '</span>';
           },

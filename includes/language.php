@@ -97,4 +97,8 @@
 
 	$clientLang['role_deleted']="You have deleted a role";
 
+	$clientLang['settings_saved']="Settings Saved Successfully";
+
+	$clientLang['receipient_is_sender']="Sender can not be the receipient";
+
 ?>

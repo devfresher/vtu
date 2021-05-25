@@ -97,7 +97,7 @@ class Wallet Extends Utility
 
     public function getWalletFundingHistories($userId)
     {
-        $walletResult = $this->db->getAllRecords($this->table1, "*", "AND user_id = '$userId' AND type = 1", "ORDER BY date DESC");
+        $walletResult = $this->db->getAllRecords($this->table1, "*", "AND user_id = '$userId' AND type = '1'", "ORDER BY date DESC");
 
         if ($walletResult) {
             $feedback = $walletResult;
@@ -107,6 +107,7 @@ class Wallet Extends Utility
         }
 
         return $this->responseBody;
+        var_dump($this->responseBody);
     }
 
     public function getMoneyShareHistories($userId)

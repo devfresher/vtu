@@ -3,12 +3,17 @@ require_once './components/head.php';
 require_once './model/Product.php';
 require_once './model/Transaction.php';
 
+include_once './model/Beneficiary.php';
+
 $wallet = new Wallet($db);
 $product = new Product($db);
 $transaction = new Transaction($db);
+$beneficiary = new Beneficiary($db);
 
 $airtimeProducts = $product->getProductsWithPlan($user->currentUser->plan->id, 'Airtime Topup');
 $airtimePurchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 'Airtime Topup');
+
+$myBeneficiaries = $beneficiary->getUserBeneficiaries($user->currentUser->id);
 ?>
 		<!--begin::Page Vendors Styles(used by this page)-->
 		<link href="<?php echo BASE_URL.USER_ROOT?>assets/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
@@ -117,13 +122,29 @@ $airtimePurchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 'A
 																	<label>Amount to pay</label>
 																	<input type="text" class="form-control" name="to_pay" id="to_pay" disabled>
 																</div>
-	
+																
+																<div class="form-group">
+																	<label>Choose Beneficiary</label>
+																	<select name="beneficiary" class="form-control select2" id="select_beneficiary" data-size="4">
+																		<option value="">--Select--</option>
+																		<?php foreach ($myBeneficiaries as $index => $beneficiaryItem) { ?>
+																			<option value="<?php echo $beneficiaryItem['phone_number']?>">
+																				<?php echo $beneficiaryItem['phone_number'].' - '.(empty($beneficiaryItem['beneficiary_name']) ? 'No Name' : $beneficiaryItem['beneficiary_name'])?>
+																			</option>
+																		<?php } ?>
+																	</select>
+																</div>
+
 																<div class="form-group">
 																	<label>Reciever's Phone Number</label>
 																	<input type="text" name="phone_number" id="phone_number" class="form-control" maxlength="11"/>
-																	<span class="text-danger" id="networkMsg"></span>
+																	<span class="text-danger network_msg"></span>
 																</div>
 
+																<div class="form-group">
+																	<label>Add to Beneficiary?</label>
+																	<input data-switch="true" name="add_beneficiary" id="add_beneficiary" type="checkbox" data-handle-width="50" data-on-text="Yes" data-off-text="No" data-on-color="success" data-off-color="warning"/>
+																</div>
 
 																<div class="form-group" style="display: none;">
 																	<label>Transaction Pin</label>
@@ -294,6 +315,8 @@ $airtimePurchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 'A
 		<!--begin::Page Scripts(used by this page)-->
 		<script src="<?php echo BASE_URL?>assets/js/pages/crud/ktdatatable/base/txn-table.js"></script>
 		<script src="<?php echo BASE_URL?>assets/js/pages/features/miscellaneous/sweetalert2.js"></script>
+		<script src="<?php echo BASE_URL?>assets/js/pages/switch.js"></script>
+		<script src="<?php echo BASE_URL?>assets/js/pages/select2.js"></script>
 		<?php include_once './components/message.php'?>
 
 		<script>
@@ -302,8 +325,7 @@ $airtimePurchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 'A
 			currentUser = JSON.parse(currentUser);
 
 
-			function getNetwork(phone, output) {
-
+			function getNetwork(phone) {
 				$.ajax({
 					url: ajaxProcessUrl,
 					type: "post",
@@ -312,10 +334,10 @@ $airtimePurchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 'A
 						"get_network_code" : 1
 					},
 					beforeSend: function(){
-						output.html("Getting network...");
+						$('.network_msg').html("Getting network...");
 					},
 					success: function(result) {
-						output.html(result);
+						$('.network_msg').html(result);
 					}
 				}) 
         	}
@@ -339,6 +361,7 @@ $airtimePurchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 'A
 
 			function showTxnPin(amount, phone, networkType) {
 				if (amount != '' && amount != undefined && phone.length == 11 && networkType != '' && networkType != undefined) {
+					$('#pin').val('');
 					$('#pin').parent().show();
 				} else {
 					$('#pin').val('');
@@ -362,7 +385,7 @@ $airtimePurchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 'A
 					var to_pay = $('#to_pay').val()
 	
 					var phone = $(this).val();
-					var networkMsg = $("#networkMsg");
+					var networkMsg = $(".networkMsg");
 					var networkType = $("input[name='network_type']:checked").val();
 	
 					if(phone != '' && phone.length >= 4){
@@ -373,10 +396,31 @@ $airtimePurchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 'A
 	
 					showTxnPin(amount, phone, networkType);
 				})
+
+				$('#select_beneficiary').on('change', function () {
+					var amount = $('#amount').val()
+					var to_pay = $('#to_pay').val()
+					
+					var phone = $("[name='phone_number']").val();
+					var beneficiary = $(this).val();
+					var networkMsg = $(".networkMsg");
+					var networkType = $("input[name='network_type']:checked").val();
+	
+					if(beneficiary != '' && beneficiary.length >= 4){
+						getNetwork(beneficiary, networkMsg);
+						$('#phone_number').val(beneficiary);
+						$('#add_beneficiary').parents('.form-group').hide();
+					}else{
+						networkMsg.html("");
+						$('#phone_number').val('');
+						$('#add_beneficiary').parents('.form-group').show();
+					}
+	
+					showTxnPin(amount, phone, networkType);
+				})
 	
 				$('#amount').on('keyup', function () {
-					
-					var phone = $("#phone_number").val();
+					var phone = $("[name='phone_number']").val();
 					var networkType = $("input[name='network_type']:checked").val();
 					var minAirtime = <?php echo $appInfo->min_airtime_vending;?>;
 					var maxAirtime = <?php echo $appInfo->max_airtime_vending;?>;
@@ -415,12 +459,12 @@ $airtimePurchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 'A
 	
 				$("input[name='network_type']").on('change', function () {
 					var amount = $('#amount').val()
-					var phone = $("#phone_number").val();
+					var phone = $("[name='phone_number']").val();
 					var networkType = $("input[name='network_type']:checked").val();
 	
 					$("input[name='network_type']").parents('label.option').removeClass('selected');
 					$("input[name='network_type']:checked").parents('label.option').addClass('selected');
-	
+					console.log(amount+' '+phone+' '+networkType);
 					showTxnPin(amount, phone, networkType);
 				})
 	
@@ -433,7 +477,7 @@ $airtimePurchaseHistory = $transaction->getAllUserTxn($user->currentUser->id, 'A
 					e.preventDefault();
 
 					var amount = $('#amount').val()	
-					var phone = $("#phone_number").val();
+					var phone = $("[name='phone_number']").val();
 					var networkType = $("input[name='network_type']:checked").val();
 
 					Swal.fire({

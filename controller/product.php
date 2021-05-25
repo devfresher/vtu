@@ -4,6 +4,7 @@ require_once '../model/Product.php';
 require_once '../model/Transaction.php';
 require_once '../model/Api.php';
 
+include_once '../model/Beneficiary.php';
 $product = new Product($db);
 $wallet = new Wallet($db);
 $transaction = new Transaction($db);
@@ -323,6 +324,13 @@ elseif (isset($_POST['buy_airtime'])) {
                 }
             }
         }
+
+        if ($add_beneficiary == 'on') {
+            $beneficiary = new Beneficiary($db);
+
+            $beneficiaryData = array('phone_number' => $phone_number, 'user_id' => $user->currentUser->id );
+            $beneficiary->create($beneficiaryData);
+        }
     }
     header("Location: ".$_POST['form_url']);
     exit();
@@ -372,11 +380,11 @@ elseif (isset($_POST['buy_electricity'])) {
         $reference = $utility->genUniqueRef('electricity_purchase');
         $date = date('Y-m-d H:i:s');
 
+        
         if ($response->status == "1") {
             $verify = $api->verifyOrder($response->orderid);
 
             if ($verify->status == "1") {
-
                 $walletOutData = array (
                     'user_id' => $user->currentUser->id,
                     'old_balance' => $user->currentUser->walletBalance,
@@ -614,8 +622,8 @@ elseif (isset($_POST['buy_electricity'])) {
 }
 
 elseif (isset($_POST['fetch_products'])) {
-    $url = 'http://vtutopup.com/telco/controller.php';
-    $data['get_products'] = 1;
+    $url = 'http://vtutopup.com/telco/api';
+    $data['method'] = 'all_products';
 
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

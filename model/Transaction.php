@@ -134,7 +134,7 @@ class Transaction Extends Utility
     public function getTxn($orderId)
     {
         $result = $this->db->getRecFrmQry(
-            "SELECT t.*, pp.*, p.*
+            "SELECT t.*, pp.product_code, p.product_name, p.category
             FROM $this->table t 
             LEFT JOIN product_plan pp ON t.product_plan_id = pp.id 
             LEFT JOIN products p ON pp.product_code = p.product_code

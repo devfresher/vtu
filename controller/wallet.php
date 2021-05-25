@@ -116,6 +116,8 @@ elseif (isset($_POST['share_money'])) {
         $_SESSION["errorMessage"] = $clientLang['invalid_amount'];
     } elseif (!is_numeric($phone_number) OR strlen($phone_number) != 11){
         $_SESSION["errorMessage"] = $clientLang['invalid_phone_number'];
+    } elseif ($phone_number == $user->currentUser->phone_number){
+        $_SESSION["errorMessage"] = $clientLang['receipient_is_sender'];
     } elseif (!password_verify($password, $currentUser->transaction_pin)) {
         $_SESSION["errorMessage"] = $clientLang['incorrect_pin'];
     } elseif ($user->currentUser->suspend == 1) {
@@ -128,7 +130,8 @@ elseif (isset($_POST['share_money'])) {
 
         $receipient = $user->getUserByPhone($phone);
         $receipient->walletBalance = $wallet->getWalletBalance($receipient->id);
-
+        
+        $db->beginTransaction();
         $walletInData = array(
             'user_id' => $receipient->id,
             'old_balance' => $receipient->walletBalance,
@@ -139,6 +142,7 @@ elseif (isset($_POST['share_money'])) {
             'status' => 4,
             'date' => date('Y-m-d H:i:s'),
         );
+        $fund = $wallet->fundWalletRequest($walletInData);
 
         $walletOutData = array(
             'user_id' => $user->currentUser->id,
@@ -150,9 +154,6 @@ elseif (isset($_POST['share_money'])) {
             'status' => 4,
             'date' => date('Y-m-d H:i:s'),
         );
-        
-        $db->beginTransaction();
-        $fund = $wallet->fundWalletRequest($walletInData);
         $spend = $wallet->spendFromWallet($walletOutData);
 
         if ($fund !== false AND $spend !== false){

@@ -103,76 +103,76 @@ require_once '../components/head.php';
                                                                         <tr>
                                                                             <td>Registration Message</td>
                                                                             <td>
-                                                                                <textarea name="reg_msg" id="reg_msg" row="7" value="<?php echo $appInfo->sms_registration_msg?>" class="form-control"></textarea>
+                                                                                <textarea name="reg_msg" id="reg_msg" row="7" value="" class="form-control"><?php echo $appInfo->sms_registration_msg?></textarea>
                                                                             </td>
                                                                         </tr>
 
                                                                         <tr>
                                                                             <td>Blocked Registration Message</td>
                                                                             <td>
-                                                                                <textarea name="bl_reg_msg" id="bl_reg_msg" row="7" value="<?php echo $appInfo->sms_blocked_registeration?>" class="form-control"></textarea>
+                                                                                <textarea name="bl_reg_msg" id="bl_reg_msg" row="7" class="form-control"><?php echo $appInfo->sms_blocked_registeration?></textarea>
                                                                             </td>
                                                                         </tr>
 
                                                                         <tr>
                                                                             <td>Approval Message</td>
                                                                             <td>
-                                                                                <textarea name="approval_msg" id="approval_msg" row="7" value="<?php echo $appInfo->sms_wallet_request_approval?>" class="form-control"></textarea>
+                                                                                <textarea name="approval_msg" id="approval_msg" row="7" class="form-control"><?php echo $appInfo->sms_wallet_request_approval?></textarea>
                                                                             </td>
                                                                         </tr>
 
                                                                         <tr>
                                                                             <td>Order Refund Message</td>
                                                                             <td>
-                                                                                <textarea name="order_refund_msg" id="order_refund_msg" row="7" value="<?php echo $appInfo->sms_order_refund?>" class="form-control"></textarea>
+                                                                                <textarea name="order_refund_msg" id="order_refund_msg" row="7" class="form-control"><?php echo $appInfo->sms_order_refund?></textarea>
                                                                             </td>
                                                                         </tr>
 
                                                                         <tr>
                                                                             <td>Wallet Crediting Request Message</td>
                                                                             <td>
-                                                                                <textarea name="wallet_request_msg" id="wallet_request_msg" row="7" value="<?php echo $appInfo->sms_wallet_crediting?>" class="form-control"></textarea>
+                                                                                <textarea name="wallet_request_msg" id="wallet_request_msg" row="7" class="form-control"><?php echo $appInfo->sms_wallet_crediting?></textarea>
                                                                             </td>
                                                                         </tr>
 
                                                                         <tr>
                                                                             <td>Low Credit Message</td>
                                                                             <td>
-                                                                                <textarea name="low_wallet_msg" id="low_wallet_msg" row="7" value="<?php echo $appInfo->sms_low_credit?>" class="form-control"></textarea>
+                                                                                <textarea name="low_wallet_msg" id="low_wallet_msg" row="7" class="form-control"><?php echo $appInfo->sms_low_credit?></textarea>
                                                                             </td>
                                                                         </tr>
 
                                                                         <tr>
                                                                             <td>Wallet Share (Sender)</td>
                                                                             <td>
-                                                                                <textarea name="sender_wallet_share_msg" id="sender_wallet_share_msg" row="7" value="<?php echo $appInfo->sms_sender_wallet_share?>" class="form-control"></textarea>
+                                                                                <textarea name="sender_wallet_share_msg" id="sender_wallet_share_msg" row="7" class="form-control"><?php echo $appInfo->sms_sender_wallet_share?></textarea>
                                                                             </td>
                                                                         </tr>
 
                                                                         <tr>
                                                                             <td>Wallet Share (Receiver)</td>
                                                                             <td>
-                                                                                <textarea name="receiver_wallet_share_msg" id="receiver_wallet_share_msg" row="7" value="<?php echo $appInfo->sms_receiver_wallet_share?>" class="form-control"></textarea>
+                                                                                <textarea name="receiver_wallet_share_msg" id="receiver_wallet_share_msg" row="7" class="form-control"><?php echo $appInfo->sms_receiver_wallet_share?></textarea>
                                                                             </td>
                                                                         </tr>
 
                                                                         <tr>
                                                                             <td>Deduction Message</td>
                                                                             <td>
-                                                                                <textarea name="deduction_msg" id="deduction_msg" row="7" value="<?php echo $appInfo->sms_deduction?>" class="form-control"></textarea>
+                                                                                <textarea name="deduction_msg" id="deduction_msg" row="7" class="form-control"><?php echo $appInfo->sms_deduction?></textarea>
                                                                             </td>
                                                                         </tr>
 
                                                                         <tr>
                                                                             <td>Electricity Message</td>
                                                                             <td>
-                                                                                <textarea name="electricity_msg" id="electricity_msg" row="7" value="<?php echo $appInfo->sms_electricity?>" class="form-control"></textarea>
+                                                                                <textarea name="electricity_msg" id="electricity_msg" row="7" class="form-control"><?php echo $appInfo->sms_electricity?></textarea>
                                                                             </td>
                                                                         </tr>
                                                                     </tbody>
                                                                 </table>
                                                                 
-                                                                <input type="submit" name="save_messages" class="btn btn-primary mr-2" value="Save Changes" id="saveSettings">
+                                                                <input type="submit" name="save_messages" class="btn btn-primary mr-2" value="Save Changes" id="saveMessages">
                                                             </form>
                                                             <!--end: Datatable-->                                                     
                                                         </div>
@@ -209,7 +209,6 @@ require_once '../components/head.php';
 		<?php include_once '../components/message.php'?>
 
         <script>
-            
         </script>
 		<!--end::Page Vendors-->
 	</body>

@@ -65,7 +65,7 @@ var KTDatatableHtmlTableDemo = function() {
               5: {
                 'title': 'Refunded',
                 'class': ' label-light-info',
-              },
+              }
             };
             return '<span class="label font-weight-bold label-lg' + status[row.STATUS].class + ' label-inline">' + status[row.STATUS].title + '</span>';
           },

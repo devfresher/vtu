@@ -1,9 +1,14 @@
 <?php
 require_once './includes/config.php';
 require_once './components/head.php';
+include_once './model/Beneficiary.php';
 
 $wallet = new Wallet($db);
+$beneficiary = new Beneficiary($db);
+
 $histories = $wallet->getMoneyShareHistories($user->currentUser->id);
+$myBeneficiaries = $beneficiary->getUserBeneficiaries($user->currentUser->id);
+
 ?>
 		<!--begin::Page Vendors Styles(used by this page)-->
 		<link href="<?php echo BASE_URL.USER_ROOT?>assets/plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
@@ -75,16 +80,32 @@ $histories = $wallet->getMoneyShareHistories($user->currentUser->id);
 																		<input type="number" name="amount" id="amount" class="form-control" />
 																	</div>
 																</div>
+
+																<div class="form-group">
+																	<label>Choose Beneficiary</label>
+																	<select name="beneficiary" class="form-control select2" id="select_beneficiary" data-size="4">
+																		<option value="">--Select--</option>
+																		<?php foreach ($myBeneficiaries as $index => $beneficiaryItem) { ?>
+																			<option value="<?php echo $beneficiaryItem['phone_number']?>">
+																				<?php echo $beneficiaryItem['phone_number'].' - '.(empty($beneficiaryItem['beneficiary_name']) ? 'No Name' : $beneficiaryItem['beneficiary_name'])?>
+																			</option>
+																		<?php } ?>
+																	</select>
+																</div>
 	
 																<div class="form-group">
 																	<label>Reciever's Phone Number</label>
 																	<input type="text" name="phone_number" id="phone_number" class="form-control" maxlength="11"/>
 																	<a class="text-danger" href="javascript:;" id="verify_phone" style="float: right;">Verify Phone Number</a>
 																</div>
-
+																
+																<div class="form-group">
+																	<label>Add to Beneficiary?</label>
+																	<input data-switch="true" name="add_beneficiary" id="add_beneficiary" type="checkbox" data-handle-width="50" data-on-text="Yes" data-off-text="No" data-on-color="success" data-off-color="warning"/>
+																</div>
 
 																<div class="form-group" style="display: none;">
-																	<label>Password</label>
+																	<label>Transaction Pin</label>
 																	<input type="password" class="form-control" name="password" id="password">
 																</div>
 
@@ -250,6 +271,8 @@ $histories = $wallet->getMoneyShareHistories($user->currentUser->id);
 		<!--begin::Page Scripts(used by this page)-->
 		<script src="<?php echo BASE_URL?>assets/js/pages/crud/ktdatatable/base/share_money-table.js"></script>
 		<script src="<?php echo BASE_URL?>assets/js/pages/features/miscellaneous/sweetalert2.js"></script>
+		<script src="<?php echo BASE_URL?>assets/js/pages/switch.js"></script>
+		<script src="<?php echo BASE_URL?>assets/js/pages/select2.js"></script>
 		<?php include_once './components/message.php'?>
 
 		<script>
@@ -271,8 +294,9 @@ $histories = $wallet->getMoneyShareHistories($user->currentUser->id);
 						title: "Error",
 						text: "Enter receiver's phone number",
 						icon: "error",
-					});	
+					});
 				} else if (receiverPhone == currentUser.phone_number) {
+					$('#phone_number').val('')
 					$('#phone_number').focus()
 					Swal.fire({
 						title: "Error",
@@ -280,6 +304,7 @@ $histories = $wallet->getMoneyShareHistories($user->currentUser->id);
 						icon: "error",
 					});
 				} else if (amount > currentUser.walletBalance) {
+					$('#amount').val('')
 					$('#amount').focus()
 					Swal.fire({
 						title: "Error",
@@ -360,11 +385,20 @@ $histories = $wallet->getMoneyShareHistories($user->currentUser->id);
 				});
 			}
 
+			function showBtn() {
+				var password = $('#password').val();
+				if (password != '' && password != undefined) {
+					$('#shareBtn').removeAttr('disabled');
+				} else {
+					$('#shareBtn').prop('disabled', true);
+				} 
+			}
+
 			$('#phone_number, #amount').on('keydown', function () {
 				$('#password').val('');
 				$('#password').parent().hide();
-				$('#shareBtn').prop('disabled', true);
 
+				showBtn();
 			})
 			
 			$('#phone_number').on('keyup', function () {
@@ -378,6 +412,20 @@ $histories = $wallet->getMoneyShareHistories($user->currentUser->id);
 				
 				if (receiverPhone.length == 11) {
 					validate(amount, receiverPhone);
+				}
+			})
+
+			$('#select_beneficiary').on('change', function () {
+				var amount = $('#amount').val()
+				var beneficiary = $(this).val();
+
+				if(beneficiary != ''){
+					validate(amount, beneficiary);
+					$('#phone_number').val(beneficiary);
+					$('#add_beneficiary').parents('.form-group').hide();
+				}else{
+					$('#phone_number').val('');
+					$('#add_beneficiary').parents('.form-group').show();
 				}
 			})
 

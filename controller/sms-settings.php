@@ -42,8 +42,10 @@ if (isset($_POST['save_settings'])) {
 
     if ($status == true) {
         $db->commit();
+        $_SESSION["successMessage"] = $clientLang['settings_saved'];
     } else {
         $db->rollBack();
+        $_SESSION["errorMessage"] = $clientLang['unexpected_error'];
     }
 
     header("Location: ".$_POST['form_url']);
@@ -66,8 +68,16 @@ elseif (isset($_POST['save_messages'])) {
     $approvalMsg = filter_var($_POST['approval_msg'], FILTER_SANITIZE_STRING);
 
     $data = array(
-        'sms_sender_id' => $senderId,
-        'sms_route' => $route,
+        'sms_registration_msg' => $walletRequestMsg,
+        'sms_sender_wallet_share' => $senderWalletShareMsg,
+        'sms_registration_msg' => $registerMsg,
+        'sms_receiver_wallet_share' => $receiverWalletShareMsg,
+        'sms_order_refund' => $orderRefundMsg,
+        'sms_low_wallet' => $lowWalletMsg,
+        'sms_electricity' => $electricityMsg,
+        'sms_deduction' => $deductionMsg,
+        'sms_blocked_registeration' => $blockedRegMsg,
+        'sms_wallet_request_approval' => $approvalMsg,
     );
 
     $db->beginTransaction();
@@ -80,8 +90,10 @@ elseif (isset($_POST['save_messages'])) {
 
     if ($status == true) {
         $db->commit();
+        $_SESSION["successMessage"] = $clientLang['settings_saved'];
     } else {
         $db->rollBack();
+        $_SESSION["errorMessage"] = $clientLang['unexpected_error'];
     }
 
     header("Location: ".$_POST['form_url']);
